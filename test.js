@@ -161,6 +161,7 @@ createRadio({
   id: "myRadioInput",
   labelText: "Radio input:",
   name: "radioInputName",
+  labelfirst: false,
   value: 3,
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
