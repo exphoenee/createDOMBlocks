@@ -115,15 +115,16 @@ function createRadio({
       text: option.text,
       parent,
       attrs: {
-        for: id,
+        for: `${id}-${option.value}`,
         class: `input-label${classes ? ` ${classes}` : ""}`,
       },
     },
     {
-      tag: "radio",
+      tag: input,
       parent,
       attrs: {
-        id,
+        id: `${id}-${option.value}`,
+        type: "radio",
         name: name || id,
         class: `select-input${classes ? ` ${classes}` : ""}`,
         value: option.value,
@@ -140,7 +141,9 @@ function createRadio({
     tag: div,
     parent,
     attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
-    children: labelfirst ? children : children.reverse(),
+    children: labelfirst
+      ? children.flat()
+      : children.map((radio) => radio.reverse()).flat(),
   });
 }
 function createCheckbox({
