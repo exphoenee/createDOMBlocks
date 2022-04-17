@@ -106,12 +106,15 @@ createSelect({
     { text: "third", value: 3 },
   ],
 });
+/* create a textarea input */
 createTextarea({
   parent: document.getElementById("app"),
-  id: "mySelectInput",
-  labelText: "Select input:",
-  value: 3,
-  placeholder: "Number placeholder",
+  id: "myTextareaInput",
+  labelText: "Textarea input:",
+  value: "Delete this text to show up the placeholder.",
+  placeholder: "Write something here...",
+  rows: 10,
+  cols: 50,
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
@@ -123,10 +126,5 @@ createTextarea({
       event: "mouseleave",
       cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
     },
-  ],
-  options: [
-    { text: "first", value: 1 },
-    { text: "second", value: 2 },
-    { text: "third", value: 3 },
   ],
 });
