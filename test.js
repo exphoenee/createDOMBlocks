@@ -112,6 +112,7 @@ createSelect({
     { text: "third", value: 3 },
   ],
 });
+/* create a checkbox input */
 createCheckbox({
   parent: document.getElementById("app"),
   id: "myCheckbox",
@@ -153,5 +154,29 @@ createTextarea({
       event: "mouseleave",
       cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
     },
+  ],
+});
+createRadio({
+  parent: document.getElementById("app"),
+  id: "myRadioInput",
+  labelText: "Radio input:",
+  name: "radioInputName",
+  value: 3,
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+  options: [
+    { text: "first", value: 1 },
+    { text: "second", value: 2 },
+    { text: "third", value: 3 },
   ],
 });
