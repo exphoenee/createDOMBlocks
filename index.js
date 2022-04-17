@@ -92,18 +92,19 @@ function createSelect({
     ],
   });
 }
-
 function createTextarea({
   parent,
   classes,
   id,
   name,
   labelText,
+  placeholder,
   value,
+  rows,
+  cols,
   onChange,
   click,
   handleEvent,
-  options,
 }) {
   createDOMElem({
     tag: div,
@@ -122,11 +123,14 @@ function createTextarea({
       {
         tag: textarea,
         parent,
+        text: value,
         attrs: {
           id,
+          rows,
+          cols,
+          placeholder,
           name: name || id,
           class: `input-container${classes ? ` ${classes}` : ""}`,
-          value,
         },
         handleEvent: [
           onChange && { event: "change", cb: onChange },
