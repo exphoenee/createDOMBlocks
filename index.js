@@ -96,6 +96,53 @@ function createSelect({
     children: labelfirst ? children : children.reverse(),
   });
 }
+function createRadio({
+  parent,
+  labelfirst = true,
+  classes,
+  id,
+  name,
+  labelText,
+  value,
+  onChange,
+  click,
+  handleEvent,
+  options,
+}) {
+  const children = options.map((option) => [
+    {
+      tag: label,
+      text: option.text,
+      parent,
+      attrs: {
+        for: id,
+        class: `input-label${classes ? ` ${classes}` : ""}`,
+      },
+    },
+    {
+      tag: "radio",
+      parent,
+      attrs: {
+        id,
+        name: name || id,
+        class: `select-input${classes ? ` ${classes}` : ""}`,
+        value: option.value,
+      },
+      handleEvent: [
+        onChange && { event: "change", cb: onChange },
+        click && { event: "click", cb: click },
+        ...(handleEvent && makeThatArray(handleEvent)),
+      ],
+    },
+  ]);
+  console.log(children);
+  createDOMElem({
+    tag: div,
+    parent,
+    attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
+    children: labelfirst ? children : children.reverse(),
+  });
+}
 function createCheckbox({
   parent,
   labelfirst = true,
@@ -126,7 +173,7 @@ function createCheckbox({
         id,
         name: name || id,
         type: "checkbox",
-        class: `$checkbox-input${classes ? ` ${classes}` : ""}`,
+        class: `checkbox-input${classes ? ` ${classes}` : ""}`,
         value,
         checked,
       },
