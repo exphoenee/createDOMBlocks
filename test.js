@@ -487,3 +487,47 @@ createHiddenInput({
   ],
 });
 separator();
+createFileInput({
+  parent: document.getElementById("app"),
+  id: "myFileInput",
+  labelText: "File hozzáadása: ",
+  text: "Add a file!",
+  name: "selectIFileName",
+  placeholder: "placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+separator();
+createRangeInput({
+  parent: document.getElementById("app"),
+  id: "myRangeInput",
+  labelText: "Range input: ",
+  name: "selectIRangeName",
+  placeholder: "placeholder",
+  min: 0,
+  max: 10,
+  step: 2,
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+separator();
