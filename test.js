@@ -7,7 +7,7 @@ function separator() {
 }
 separator();
 /* Creating a text input */
-createInput({
+createTextInput({
   parent: document.getElementById("app"),
   id: "myInput",
   labelText: "Text input:",
@@ -15,6 +15,107 @@ createInput({
   name: "textInputName",
   labelfirst: false,
   placeholder: "placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createTelInput({
+  parent: document.getElementById("app"),
+  id: "myTelInput",
+  labelText: "Tel input:",
+  value: "phone number",
+  name: "telInputName",
+  placeholder: "+363066677788",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createUrlInput({
+  parent: document.getElementById("app"),
+  id: "myInput",
+  labelText: "Text input:",
+  value: "something",
+  name: "textInputName",
+  labelfirst: false,
+  placeholder: "placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createSearchInput({
+  parent: document.getElementById("app"),
+  id: "mySearchInput",
+  labelText: "Search input:",
+  value: "Searching",
+  name: "SearchtextInputName",
+  placeholder: "I don't find it!",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createEmailInput({
+  parent: document.getElementById("app"),
+  id: "myEmailInput",
+  labelText: "Email input:",
+  value: "email@email.email",
+  name: "emailInputName",
+  placeholder: "email",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createPasswordInput({
+  parent: document.getElementById("app"),
+  id: "myPasswordInput",
+  labelText: "Password input:",
+  value: "password",
+  name: "passwordInputName",
+  placeholder: "password",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
@@ -70,6 +171,26 @@ createDateInput({
     },
   ],
 });
+createDatetimeInput({
+  parent: document.getElementById("app"),
+  id: "myDatetimeInput",
+  labelText: "Datetime input:",
+  name: "datetimeInputName",
+  value: "2018-06-12T19:30",
+  placeholder: "Datetime placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
 /* Creating a time input */
 createTimeInput({
   parent: document.getElementById("app"),
@@ -78,6 +199,46 @@ createTimeInput({
   name: "timeInputName",
   value: "18:24",
   placeholder: "Number placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createMonthInput({
+  parent: document.getElementById("app"),
+  id: "myMonthInput",
+  labelText: "Month input:",
+  name: "weekInputName",
+  value: "18:24",
+  placeholder: "Month placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+createWeekInput({
+  parent: document.getElementById("app"),
+  id: "myWeekInput",
+  labelText: "Week input:",
+  name: "weekInputName",
+  value: "18:24",
+  placeholder: "Week placeholder",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
@@ -273,6 +434,26 @@ createColorInput({
   value: "#ff0000",
   name: "colorInputName",
   placeholder: "placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+separator();
+createHiddenInput({
+  parent: document.getElementById("app"),
+  id: "myHiddenInput",
+  text: "Hidden!",
+  name: "selectIHiddenName",
+  value: 3,
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
