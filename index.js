@@ -53,7 +53,6 @@ function createInputContainer(params, children) {
     children,
   };
 }
-
 /* DOM creator functions */
 function createInput(params) {
   const conf = {
@@ -79,99 +78,45 @@ function createRadio(params) {
     labelfirst: params.labelfirst ?? true,
     type: "radio",
   };
-  const options = conf.options;
+  const { options, type, labelfirst, name, id, classes } = conf;
   createDOMElem(
     createInputContainer(
       conf,
       options
         .map((option, index) =>
-          createChildren(input, {
-            labelText: option.text,
-            type: conf.type,
-            labelfirst: conf.labelfirst,
-            name: conf.name || conf.id,
-            id: `${conf.id}-${option.value}`,
-            checked:
-              typeof value === "string"
-                ? option.text === value
-                : typeof value === "number"
-                ? value === index + 1
-                : false,
-            classes: conf.classes,
-            onChange: option.onChange && {
-              event: "change",
-              cb: option.onChange,
-            },
-            click: option.click && { event: "click", cb: option.click },
-            handleEvent: option.handleEvent && option.handleEvent,
+          createDOMElem({
+            tag: div,
+            attrs: { classes: "radio-option" },
+            children: createChildren(input, {
+              labelText: option.text,
+              type,
+              labelfirst,
+              name: name || id,
+              id: `${id}-${option.value}`,
+              checked:
+                typeof value === "string"
+                  ? option.text === value
+                  : typeof value === "number"
+                  ? value === index + 1
+                  : false,
+              classes,
+              onChange: option.onChange && {
+                event: "change",
+                cb: option.onChange,
+              },
+              click: option.click && { event: "click", cb: option.click },
+              handleEvent: option.handleEvent && option.handleEvent,
+            }),
           })
         )
         .flat()
     )
   );
-  /*
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
-    children: options
-      .map((option, index) =>
-        createChildren(input, {
-          labelText: option.text,
-          type: "radio",
-          labelfirst,
-          name: name || id,
-          id: `${id}-${option.value}`,
-          checked:
-            typeof value === "string"
-              ? option.text === value
-              : typeof value === "number"
-              ? value === index + 1
-              : false,
-          classes,
-          name,
-          onChange: option.onChange && { event: "change", cb: option.onChange },
-          click: option.click && { event: "click", cb: option.click },
-          handleEvent: option.handleEvent && option.handleEvent,
-        })
-      )
-      .flat(),
-  });
-  */
 }
-function createTextarea({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  labelText,
-  placeholder,
-  value,
-  rows,
-  cols,
-  onChange,
-  click,
-  handleEvent,
-}) {
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `textarea-container${classes ? ` ${classes}` : ""}` },
-    children: createChildren(textarea, {
-      parent,
-      labelfirst,
-      classes,
-      id,
-      name,
-      labelText,
-      placeholder,
-      value,
-      rows,
-      cols,
-      onChange,
-      click,
-      handleEvent,
-    }),
-  });
+function createTextarea(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+  };
+  createDOMElem(createInputContainer(conf, createChildren(textarea, conf)));
 }
