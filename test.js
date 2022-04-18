@@ -1,14 +1,15 @@
+const parent = document.getElementById("app");
 function separator() {
   createDOMElem({
     tag: p,
-    parent: document.getElementById("app"),
-    text: "-----------------------------------------------",
+    parent,
+    text: "_____________________________________________________________",
   });
 }
 separator();
 /* Creating a text input */
 createTextInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myInput",
   labelText: "Text input:",
   value: "something",
@@ -29,7 +30,7 @@ createTextInput({
   ],
 });
 createTelInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myTelInput",
   labelText: "Tel input:",
   value: "+363066677788",
@@ -49,7 +50,7 @@ createTelInput({
   ],
 });
 createUrlInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myURLInput",
   labelText: "Url input:",
   value: "http://bozzayviktor.hu",
@@ -69,7 +70,7 @@ createUrlInput({
   ],
 });
 createSearchInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "mySearchInput",
   labelText: "Search input:",
   value: "Searching",
@@ -89,7 +90,7 @@ createSearchInput({
   ],
 });
 createEmailInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myEmailInput",
   labelText: "Email input:",
   value: "email@email.email",
@@ -109,7 +110,7 @@ createEmailInput({
   ],
 });
 createPasswordInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myPasswordInput",
   labelText: "Password input:",
   value: "password",
@@ -130,7 +131,7 @@ createPasswordInput({
 });
 /* Creating a number input */
 createNumberInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myNumInput",
   name: "numInputName",
   labelText: "Number input:",
@@ -151,7 +152,7 @@ createNumberInput({
 });
 /* Creating a date input */
 createDateInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myDateInput",
   labelText: "Date input:",
   name: "dateInputName",
@@ -171,7 +172,7 @@ createDateInput({
   ],
 });
 createDatetimeInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myDatetimeInput",
   labelText: "Datetime input:",
   name: "datetimeInputName",
@@ -192,7 +193,7 @@ createDatetimeInput({
 });
 /* Creating a time input */
 createTimeInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myTimeInput",
   labelText: "Time input:",
   name: "timeInputName",
@@ -212,7 +213,7 @@ createTimeInput({
   ],
 });
 createMonthInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myMonthInput",
   labelText: "Month input:",
   name: "weekInputName",
@@ -232,7 +233,7 @@ createMonthInput({
   ],
 });
 createWeekInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myWeekInput",
   labelText: "Week input:",
   name: "weekInputName",
@@ -254,7 +255,7 @@ createWeekInput({
 separator();
 /* create a Select input */
 createSelect({
-  parent: document.getElementById("app"),
+  parent,
   id: "mySelectInput",
   labelText: "Select input:",
   name: "selectInputName",
@@ -281,7 +282,7 @@ createSelect({
 separator();
 /* create a checkbox input */
 createCheckbox({
-  parent: document.getElementById("app"),
+  parent,
   id: "myCheckbox",
   name: "checkboxName",
   labelText: "Checkbox input:",
@@ -304,7 +305,7 @@ createCheckbox({
 separator();
 /* create a textarea input */
 createTextarea({
-  parent: document.getElementById("app"),
+  parent,
   id: "myTextareaInput",
   labelText: "Textarea input:",
   value: "Delete this text to show up the placeholder.",
@@ -328,7 +329,7 @@ createTextarea({
 separator();
 /* create a checkbox input */
 createRadio({
-  parent: document.getElementById("app"),
+  parent,
   id: "myRadioInput",
   labelText: "Radio input:",
   name: "radioInputName",
@@ -387,7 +388,7 @@ createRadio({
 });
 separator();
 createButtonInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myButtonInput",
   text: "I'm a button!",
   name: "selectIButtonName",
@@ -407,7 +408,7 @@ createButtonInput({
 });
 separator();
 createSubmitInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "mySubmitInput",
   text: "Submit!",
   name: "selectISubmitName",
@@ -427,7 +428,7 @@ createSubmitInput({
 });
 separator();
 createResetInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myResetInput",
   text: "Reset!",
   name: "selectResetName",
@@ -447,7 +448,7 @@ createResetInput({
 });
 separator();
 createColorInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myColor",
   labelText: "Color input:",
   value: "#ff0000",
@@ -468,7 +469,7 @@ createColorInput({
 });
 separator();
 createHiddenInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myHiddenInput",
   text: "Hidden!",
   name: "selectIHiddenName",
@@ -488,7 +489,7 @@ createHiddenInput({
 });
 separator();
 createFileInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myFileInput",
   labelText: "File hozzáadása: ",
   text: "Add a file!",
@@ -509,7 +510,7 @@ createFileInput({
 });
 separator();
 createRangeInput({
-  parent: document.getElementById("app"),
+  parent,
   id: "myRangeInput",
   labelText: "Range input: ",
   name: "selectIRangeName",
@@ -532,13 +533,13 @@ createRangeInput({
 });
 separator();
 createUnorderedList(["first", "second", "third", "fourth", "fifth"], {
-  parent: document.getElementById("app"),
+  parent,
   class: "listOfNumbers",
   id: "myUnsortedList",
 });
 separator();
 createOrderedList(["ten", "eleven", "twelve", "thirteen", "forthteen"], {
-  parent: document.getElementById("app"),
+  parent,
   class: "listOfNumbers",
   id: "myUnsortedList",
   start: 10,
@@ -547,14 +548,14 @@ separator();
 newLine(document.getElementById("app"));
 separator();
 createParagraph({
-  parent: document.getElementById("app"),
+  parent,
   text: "This is a text",
   class: "text",
 });
 separator();
 createTitle(
   {
-    parent: document.getElementById("app"),
+    parent,
     text: "Title level 1",
     class: "text",
   },
@@ -562,7 +563,7 @@ createTitle(
 );
 createTitle(
   {
-    parent: document.getElementById("app"),
+    parent,
     text: "Title level 2",
     class: "text",
   },
@@ -570,7 +571,7 @@ createTitle(
 );
 createTitle(
   {
-    parent: document.getElementById("app"),
+    parent,
     text: "Title level 3",
     class: "text",
   },
@@ -578,7 +579,7 @@ createTitle(
 );
 createTitle(
   {
-    parent: document.getElementById("app"),
+    parent,
     text: "Title level 4",
     class: "text",
   },
@@ -586,7 +587,7 @@ createTitle(
 );
 createTitle(
   {
-    parent: document.getElementById("app"),
+    parent,
     text: "Title level 5",
     class: "text",
   },
@@ -594,10 +595,46 @@ createTitle(
 );
 createTitle(
   {
-    parent: document.getElementById("app"),
-    text: "Title level 5",
+    parent,
+    text: "Title level 6",
     class: "text",
   },
   6
 );
+createTitle(
+  {
+    parent,
+    text: "Title level 50",
+    class: "text",
+  },
+  50
+);
+createTitle(
+  {
+    parent,
+    text: "Title level -1",
+    class: "text",
+  },
+  -1
+);
+createTitle({
+  parent,
+  text: "Title without given level",
+  class: "text",
+});
 separator();
+const data1 = [
+  ["Fisrt column", "Second column", "Third column", "Fourth column"],
+  ["Data1", "Data2", "Data3", "Data4"],
+  ["Data5", "Data6", "Data7", "Data8"],
+  ["Data9", "Data10", "Data11", "Data12"],
+  ["Data13", "Data14", "Data15", "Data16"],
+  ["Data17", "Data18", "Data19", "Data20"],
+];
+createTable(data1, {
+  parent,
+  hasHeader: true,
+  hasFooter: true,
+  class: "listOfNumbers",
+  id: "myUnsortedList",
+});
