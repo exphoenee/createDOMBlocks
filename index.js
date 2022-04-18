@@ -85,14 +85,71 @@ function createInput(params) {
   };
   createDOMElem(createInputContainer(conf, createChildren(input, conf)));
 }
+function createTextInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "text",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createTelInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "tel",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createUrlInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "url",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createSearchInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "search",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createEmailInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "email",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createPasswordInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "password",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
 function createCheckbox(params) {
   createInput({ ...params, type: "checkbox" });
 }
-function createDateInput(params) {
-  createInput({ ...params, type: "date" });
-}
 function createNumberInput(params) {
   createInput({ ...params, type: "number" });
+}
+function createDatetimeInput(params) {
+  createInput({ ...params, type: "datetime-local" });
+}
+function createMonthInput(params) {
+  createInput({ ...params, type: "month" });
+}
+function createWeekInput(params) {
+  createInput({ ...params, type: "week" });
+}
+function createDateInput(params) {
+  createInput({ ...params, type: "date" });
 }
 function createTimeInput(params) {
   createInput({ ...params, type: "time" });
@@ -171,6 +228,15 @@ function createSubmitInput(params) {
       parent: params.parent,
       value: params.text,
       type: "submit",
+    })
+  );
+}
+function createHiddenInput(params) {
+  createDOMElem(
+    createInputElem(input, {
+      ...params,
+      parent: params.parent,
+      type: "hidden",
     })
   );
 }
