@@ -337,10 +337,42 @@ function createTitle(params, level = 1) {
   });
 }
 function createTable(data, params) {
-  const headers = params.hasHeader ? data.shift() : [];
+  const cellNames = params.cellNames ?? {
+    sum: "Sum",
+    total: "Total",
+    rowNr: "Row #",
+  };
+  let headers = params.hasHeader ? data.shift() : [];
   const rows = data;
+  let footers = Array(headers.length).fill(0);
 
-  console.log(headers, rows);
+  if (params.hasFooter) {
+    rows.forEach((row) =>
+      row.forEach((cell, cellIdx) => (footers[cellIdx] += parseFloat(cell)))
+    );
+    footers.forEach((footer, footeIdx) => {
+      footers[footeIdx] = Number.isNaN(footer) ? headers[footeIdx] : footer;
+    });
+  }
+
+  if (params.sumRowValues && params.hasFooter) {
+    params.hasHeader && headers.push(cellNames.sum);
+    const total = footers.reduce(
+      (acc, cell) => acc + (Number.isNaN(+cell) ? 0 : +cell),
+      0
+    );
+    footers.push(total.toString());
+    rows.forEach((row) => row.push(row.reduce((acc, cell) => acc + +cell, 0)));
+  }
+
+  if (params.addRowNumbers) {
+    params.hasHeader && headers.unshift(cellNames.rowNr);
+    footers.unshift(cellNames.total);
+    rows.forEach((row, rowIdx) => {
+      row.unshift(rowIdx + 1);
+    });
+  }
+
   createDOMElem({
     parent: params.parent,
     tag: table,
@@ -373,13 +405,29 @@ function createTable(data, params) {
             attrs: { class: `table-row-${rowInd}` },
             children: row.map((col, colIdx) => {
               return {
-                tag: td,
+                tag: params.addRowNumbers && colIdx === 0 ? th : td,
                 text: col,
                 attrs: { class: `table-col-${colIdx}` },
               };
             }),
           };
         }),
+      },
+      {
+        tag: tfoot,
+        children: {
+          tag: tr,
+          attrs: {
+            class: `footer-row`,
+          },
+          children: footers.map((col, index) => {
+            return {
+              tag: th,
+              text: col,
+              attrs: { class: `table-col-${index}` },
+            };
+          }),
+        },
       },
     ],
   });
