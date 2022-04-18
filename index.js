@@ -22,7 +22,7 @@ function createChildren(elemType, params) {
         cols: params.cols,
         placeholder: params.placeholder,
         name: params.name || params.id,
-        class: `textarea-input${
+        class: `${elemType}-input${
           params.classes ? ` ${makeThatArray(params.classes)}` : ""
         }`,
       },
