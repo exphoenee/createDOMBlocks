@@ -1,3 +1,10 @@
+function separator() {
+  createDOMElem({
+    tag: p,
+    parent: document.getElementById("app"),
+    text: "-----------------------------------------------",
+  });
+}
 /* Creating a text input */
 createInput({
   parent: document.getElementById("app"),
@@ -86,6 +93,7 @@ createInput({
     },
   ],
 });
+separator();
 /* create a Select input */
 createSelect({
   parent: document.getElementById("app"),
@@ -112,6 +120,7 @@ createSelect({
     { text: "third", value: 3 },
   ],
 });
+separator();
 /* create a checkbox input */
 createCheckbox({
   parent: document.getElementById("app"),
@@ -133,6 +142,7 @@ createCheckbox({
     },
   ],
 });
+separator();
 /* create a textarea input */
 createTextarea({
   parent: document.getElementById("app"),
@@ -156,6 +166,7 @@ createTextarea({
     },
   ],
 });
+separator();
 /* create a checkbox input */
 createRadio({
   parent: document.getElementById("app"),
@@ -215,50 +226,4 @@ createRadio({
     },
   ],
 });
-/* refactored functions */
-inputTest({
-  parent: document.getElementById("app"),
-  id: "myInput2",
-  labelText: "Text input2:",
-  value: "something",
-  name: "textInputName2",
-  labelfirst: false,
-  placeholder: "placeholder",
-  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
-  click: (e) => console.log(`Clicked: ${e.target.id}`),
-  handleEvent: [
-    {
-      event: "mouseenter",
-      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
-    },
-    {
-      event: "mouseleave",
-      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
-    },
-  ],
-});
-selectTest({
-  parent: document.getElementById("app"),
-  id: "mySelectInput2",
-  labelText: "Select input2:",
-  name: "selectInputName2",
-  value: 3,
-  placeholder: "Number placeholder2",
-  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
-  click: (e) => console.log(`Clicked: ${e.target.id}`),
-  handleEvent: [
-    {
-      event: "mouseenter",
-      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
-    },
-    {
-      event: "mouseleave",
-      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
-    },
-  ],
-  options: [
-    { text: "first", value: 1 },
-    { text: "second", value: 2 },
-    { text: "third", value: 3 },
-  ],
-});
+separator();
