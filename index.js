@@ -41,14 +41,26 @@ function createChildren(elemType, params) {
   ];
   return params.labelfirst ? children : children.reverse();
 }
-function createInputContainer(params, children) {}
+function createInputContainer(params, children) {
+  return {
+    tag: div,
+    parent: params.parent,
+    attrs: {
+      class: `${params.type}-input${
+        params.classes ? ` ${params.classes}` : ""
+      }`,
+    },
+    children,
+  };
+}
+
 /* DOM creator functions */
-/* they are the refactored functions!!! */
 function createCheckbox({
   parent,
   labelfirst = true,
   classes,
   id,
+  type = "checkbox",
   name,
   labelText,
   value,
@@ -57,7 +69,40 @@ function createCheckbox({
   handleEvent,
   checked,
 }) {
-  const type = "checkbox";
+  createDOMElem({
+    tag: div,
+    parent,
+    attrs: { class: `${type}-container${classes ? ` ${classes}` : ""}` },
+    children: createChildren(input, {
+      parent,
+      labelfirst,
+      classes,
+      id,
+      name,
+      labelText,
+      type,
+      value,
+      onChange,
+      click,
+      handleEvent,
+      checked,
+    }),
+  });
+}
+function createCheckbox2({
+  parent,
+  labelfirst = true,
+  classes,
+  id,
+  type = "checkbox",
+  name,
+  labelText,
+  value,
+  onChange,
+  click,
+  handleEvent,
+  checked,
+}) {
   createDOMElem({
     tag: div,
     parent,
@@ -186,21 +231,8 @@ function createRadio({
     parent,
     attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
     children: options
-      .map((option, index) => {
-        console.table({
-          type: typeof value,
-          text: option.text,
-          value: value,
-          index: index + 1,
-          textAndValueSame: option.text === value,
-          decision:
-            typeof value === "string"
-              ? option.text === value
-              : typeof value === "number"
-              ? value === index + 1
-              : false,
-        });
-        return createChildren(input, {
+      .map((option, index) =>
+        createChildren(input, {
           labelText: option.text,
           type: "radio",
           labelfirst,
@@ -217,8 +249,8 @@ function createRadio({
           onChange: option.onChange && { event: "change", cb: option.onChange },
           click: option.click && { event: "click", cb: option.click },
           handleEvent: option.handleEvent && option.handleEvent,
-        });
-      })
+        })
+      )
       .flat(),
   });
 }
