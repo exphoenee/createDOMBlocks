@@ -215,6 +215,7 @@ createRadio({
     },
   ],
 });
+/* refactored functions */
 inputTest({
   parent: document.getElementById("app"),
   id: "myInput2",
