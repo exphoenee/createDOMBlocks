@@ -90,57 +90,6 @@ function createCheckbox({
     children: labelfirst ? children : children.reverse(),
   });
 }
-function createTextarea({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  labelText,
-  placeholder,
-  value,
-  rows,
-  cols,
-  onChange,
-  click,
-  handleEvent,
-}) {
-  const children = [
-    {
-      tag: label,
-      text: labelText,
-      parent,
-      attrs: {
-        for: id,
-        class: `input-label${classes ? ` ${classes}` : ""}`,
-      },
-    },
-    {
-      tag: textarea,
-      parent,
-      text: value,
-      attrs: {
-        id,
-        rows,
-        cols,
-        placeholder,
-        name: name || id,
-        class: `textarea-input${classes ? ` ${classes}` : ""}`,
-      },
-      handleEvent: [
-        onChange && { event: "change", cb: onChange },
-        click && { event: "click", cb: click },
-        ...(handleEvent && makeThatArray(handleEvent)),
-      ],
-    },
-  ];
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `textarea-container${classes ? ` ${classes}` : ""}` },
-    children: labelfirst ? children : children.reverse(),
-  });
-}
 /* they are the refactored functions!!! */
 function createInput({
   parent,
@@ -265,5 +214,41 @@ function createRadio({
         })
       )
       .flat(),
+  });
+}
+function createTextarea({
+  parent,
+  labelfirst = true,
+  classes,
+  id,
+  name,
+  labelText,
+  placeholder,
+  value,
+  rows,
+  cols,
+  onChange,
+  click,
+  handleEvent,
+}) {
+  createDOMElem({
+    tag: div,
+    parent,
+    attrs: { class: `textarea-container${classes ? ` ${classes}` : ""}` },
+    children: createChildren(textarea, {
+      parent,
+      labelfirst,
+      classes,
+      id,
+      name,
+      labelText,
+      placeholder,
+      value,
+      rows,
+      cols,
+      onChange,
+      click,
+      handleEvent,
+    }),
   });
 }
