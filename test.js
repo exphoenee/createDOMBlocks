@@ -156,6 +156,7 @@ createTextarea({
     },
   ],
 });
+/* create a checkbox input */
 createRadio({
   parent: document.getElementById("app"),
   id: "myRadioInput",
@@ -163,6 +164,65 @@ createRadio({
   name: "radioInputName",
   labelfirst: false,
   value: 3,
+  options: [
+    {
+      text: "first",
+      value: 1,
+      onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+      click: (e) => console.log(`Clicked: ${e.target.id}`),
+      handleEvent: [
+        {
+          event: "mouseenter",
+          cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+        },
+        {
+          event: "mouseleave",
+          cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+        },
+      ],
+    },
+    {
+      text: "second",
+      value: 2,
+      onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+      click: (e) => console.log(`Clicked: ${e.target.id}`),
+      handleEvent: [
+        {
+          event: "mouseenter",
+          cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+        },
+        {
+          event: "mouseleave",
+          cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+        },
+      ],
+    },
+    {
+      text: "third",
+      value: 3,
+      onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+      click: (e) => console.log(`Clicked: ${e.target.id}`),
+      handleEvent: [
+        {
+          event: "mouseenter",
+          cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+        },
+        {
+          event: "mouseleave",
+          cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+        },
+      ],
+    },
+  ],
+});
+inputTest({
+  parent: document.getElementById("app"),
+  id: "myInput2",
+  labelText: "Text input2:",
+  value: "something",
+  name: "textInputName2",
+  labelfirst: false,
+  placeholder: "placeholder",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
@@ -174,10 +234,5 @@ createRadio({
       event: "mouseleave",
       cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
     },
-  ],
-  options: [
-    { text: "first", value: 1 },
-    { text: "second", value: 2 },
-    { text: "third", value: 3 },
   ],
 });
