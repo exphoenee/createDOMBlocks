@@ -1,4 +1,4 @@
-/* Helper method */
+/* Helper methods */
 function createChildren(elemType, params) {
   const children = [
     {
@@ -18,7 +18,10 @@ function createChildren(elemType, params) {
         type: params.type,
         value: params.value,
         id: params.id,
-        checked: params.checked,
+        checked:
+          params.checked ?? [("radio", "checkbox")].includes(params.type)
+            ? params.checked
+            : "",
         rows: params.rows,
         cols: params.cols,
         placeholder: params.placeholder,
@@ -65,6 +68,15 @@ function createInput(params) {
 function createCheckbox(params) {
   createInput({ ...params, type: "checkbox" });
 }
+function createDateInput(params) {
+  createInput({ ...params, type: "date" });
+}
+function createNumberInput(params) {
+  createInput({ ...params, type: "number" });
+}
+function createTimeInput(params) {
+  createInput({ ...params, type: "time" });
+}
 function createSelect(params) {
   const conf = {
     ...params,
@@ -78,15 +90,15 @@ function createRadio(params) {
     labelfirst: params.labelfirst ?? true,
     type: "radio",
   };
-  const { options, type, labelfirst, name, id, classes } = conf;
+  const { value, options, type, labelfirst, name, id, classes } = conf;
   createDOMElem(
     createInputContainer(
       conf,
       options
-        .map((option, index) =>
-          createDOMElem({
+        .map((option, index) => {
+          return {
             tag: div,
-            attrs: { classes: "radio-option" },
+            attrs: { class: "radio-option" },
             children: createChildren(input, {
               labelText: option.text,
               type,
@@ -107,8 +119,8 @@ function createRadio(params) {
               click: option.click && { event: "click", cb: option.click },
               handleEvent: option.handleEvent && option.handleEvent,
             }),
-          })
-        )
+          };
+        })
         .flat()
     )
   );
@@ -116,6 +128,7 @@ function createRadio(params) {
 function createTextarea(params) {
   const conf = {
     ...params,
+    type: textarea,
     labelfirst: params.labelfirst ?? true,
   };
   createDOMElem(createInputContainer(conf, createChildren(textarea, conf)));
