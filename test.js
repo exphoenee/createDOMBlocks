@@ -237,3 +237,28 @@ inputTest({
     },
   ],
 });
+selectTest({
+  parent: document.getElementById("app"),
+  id: "mySelectInput2",
+  labelText: "Select input2:",
+  name: "selectInputName2",
+  value: 3,
+  placeholder: "Number placeholder2",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+  options: [
+    { text: "first", value: 1 },
+    { text: "second", value: 2 },
+    { text: "third", value: 3 },
+  ],
+});
