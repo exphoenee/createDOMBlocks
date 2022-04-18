@@ -211,6 +211,16 @@ function createTextarea(params) {
   };
   createDOMElem(createInputContainer(conf, createChildren(textarea, conf)));
 }
+function createResetInput(params) {
+  createDOMElem(
+    createInputElem(input, {
+      ...params,
+      parent: params.parent,
+      value: params.text,
+      type: "reset",
+    })
+  );
+}
 function createButtonInput(params) {
   createDOMElem(
     createInputElem(input, {
