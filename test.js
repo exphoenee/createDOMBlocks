@@ -546,9 +546,58 @@ createOrderedList(["ten", "eleven", "twelve", "thirteen", "forthteen"], {
 separator();
 newLine(document.getElementById("app"));
 separator();
-paragraph({
+createParagraph({
   parent: document.getElementById("app"),
   text: "This is a text",
   class: "text",
 });
+separator();
+createTitle(
+  {
+    parent: document.getElementById("app"),
+    text: "Title level 1",
+    class: "text",
+  },
+  1
+);
+createTitle(
+  {
+    parent: document.getElementById("app"),
+    text: "Title level 2",
+    class: "text",
+  },
+  2
+);
+createTitle(
+  {
+    parent: document.getElementById("app"),
+    text: "Title level 3",
+    class: "text",
+  },
+  3
+);
+createTitle(
+  {
+    parent: document.getElementById("app"),
+    text: "Title level 4",
+    class: "text",
+  },
+  4
+);
+createTitle(
+  {
+    parent: document.getElementById("app"),
+    text: "Title level 5",
+    class: "text",
+  },
+  5
+);
+createTitle(
+  {
+    parent: document.getElementById("app"),
+    text: "Title level 5",
+    class: "text",
+  },
+  6
+);
 separator();
