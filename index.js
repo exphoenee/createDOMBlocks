@@ -18,11 +18,12 @@ function createChildren(elemType, params) {
         type: params.type,
         value: params.value,
         id: params.id,
+        checked: params.checked,
         rows: params.rows,
         cols: params.cols,
         placeholder: params.placeholder,
         name: params.name || params.id,
-        class: `${elemType}-input${
+        class: `${params.type || elemType}-input${
           params.classes ? ` ${makeThatArray(params.classes)}` : ""
         }`,
       },
@@ -40,8 +41,9 @@ function createChildren(elemType, params) {
   ];
   return params.labelfirst ? children : children.reverse();
 }
+function createInputContainer(params, children) {}
 /* DOM creator functions */
-
+/* they are the refactored functions!!! */
 function createCheckbox({
   parent,
   labelfirst = true,
@@ -55,42 +57,27 @@ function createCheckbox({
   handleEvent,
   checked,
 }) {
-  const children = [
-    {
-      tag: label,
-      text: labelText,
-      parent,
-      attrs: {
-        for: id,
-        class: `input-label${classes ? ` ${classes}` : ""}`,
-      },
-    },
-    {
-      tag: input,
-      parent,
-      attrs: {
-        id,
-        name: name || id,
-        type: "checkbox",
-        class: `checkbox-input${classes ? ` ${classes}` : ""}`,
-        value,
-        checked,
-      },
-      handleEvent: [
-        onChange && { event: "change", cb: onChange },
-        click && { event: "click", cb: click },
-        ...(handleEvent && makeThatArray(handleEvent)),
-      ],
-    },
-  ];
+  const type = "checkbox";
   createDOMElem({
     tag: div,
     parent,
-    attrs: { class: `checkbox-container${classes ? ` ${classes}` : ""}` },
-    children: labelfirst ? children : children.reverse(),
+    attrs: { class: `${type}-container${classes ? ` ${classes}` : ""}` },
+    children: createChildren(input, {
+      parent,
+      labelfirst,
+      classes,
+      id,
+      name,
+      labelText,
+      type,
+      value,
+      onChange,
+      click,
+      handleEvent,
+      checked,
+    }),
   });
 }
-/* they are the refactored functions!!! */
 function createInput({
   parent,
   labelfirst = true,
@@ -105,7 +92,6 @@ function createInput({
   click,
   handleEvent,
 }) {
-  console.log(type);
   createDOMElem({
     tag: div,
     parent,
@@ -190,6 +176,7 @@ function createRadio({
   parent,
   labelfirst = true,
   classes,
+  value,
   id,
   name,
   options,
@@ -199,20 +186,39 @@ function createRadio({
     parent,
     attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
     children: options
-      .map((option) =>
-        createChildren(input, {
+      .map((option, index) => {
+        console.table({
+          type: typeof value,
+          text: option.text,
+          value: value,
+          index: index + 1,
+          textAndValueSame: option.text === value,
+          decision:
+            typeof value === "string"
+              ? option.text === value
+              : typeof value === "number"
+              ? value === index + 1
+              : false,
+        });
+        return createChildren(input, {
           labelText: option.text,
           type: "radio",
           labelfirst,
           name: name || id,
           id: `${id}-${option.value}`,
+          checked:
+            typeof value === "string"
+              ? option.text === value
+              : typeof value === "number"
+              ? value === index + 1
+              : false,
           classes,
           name,
           onChange: option.onChange && { event: "change", cb: option.onChange },
           click: option.click && { event: "click", cb: option.click },
           handleEvent: option.handleEvent && option.handleEvent,
-        })
-      )
+        });
+      })
       .flat(),
   });
 }
