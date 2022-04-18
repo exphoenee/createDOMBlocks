@@ -1,6 +1,6 @@
 {
   "name": "createdomblocks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Creating complex HTML blocks using JS.",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,8 @@
     "url": "git+https://github.com/exphoenee/createDOMBlocks.git"
   },
   "keywords": [
-    "#DOM",
-    "manipulating"
+    "DOM",
+    "dom manipulation"
   ],
   "author": "VIKTOR, Bozzay",
   "license": "MIT",
