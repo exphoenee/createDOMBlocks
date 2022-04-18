@@ -18,8 +18,8 @@ function createChildren(elemType, params) {
         type: params.type,
         value: params.value,
         id: params.id,
-        rows: params.rows && params.rows,
-        cols: params.cols && params.cols,
+        rows: params.rows,
+        cols: params.cols,
         placeholder: params.placeholder,
         name: params.name || params.id,
         class: `${elemType}-input${
@@ -40,6 +40,7 @@ function createChildren(elemType, params) {
   ];
   return params.labelfirst ? children : children.reverse();
 }
+/* DOM creator functions */
 function createInput({
   parent,
   labelfirst = true,
