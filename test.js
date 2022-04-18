@@ -174,7 +174,7 @@ createRadio({
   labelText: "Radio input:",
   name: "radioInputName",
   labelfirst: false,
-  value: 3,
+  value: 2, //here can you add the value or text of the option you want to be selected by default
   options: [
     {
       text: "first",
