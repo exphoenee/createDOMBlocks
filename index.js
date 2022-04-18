@@ -41,148 +41,7 @@ function createChildren(elemType, params) {
   return params.labelfirst ? children : children.reverse();
 }
 /* DOM creator functions */
-function createInput({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  type = "text",
-  labelText,
-  value,
-  placeholder,
-  onChange,
-  click,
-  handleEvent,
-}) {
-  const children = [
-    {
-      tag: label,
-      text: labelText,
-      parent,
-      attrs: {
-        for: id,
-        class: `input-label${classes ? ` ${classes}` : ""}`,
-      },
-    },
-    {
-      tag: input,
-      parent,
-      attrs: {
-        id,
-        name: name || id,
-        class: `${type}-input${classes ? ` ${classes}` : ""}`,
-        type,
-        placeholder,
-        value,
-      },
-      handleEvent: [
-        onChange && { event: "change", cb: onChange },
-        click && { event: "click", cb: click },
-        ...(handleEvent && makeThatArray(handleEvent)),
-      ],
-    },
-  ];
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `${type}-input${classes ? ` ${classes}` : ""}` },
-    children: labelfirst ? children : children.reverse(),
-  });
-}
-function createSelect({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  labelText,
-  value,
-  onChange,
-  click,
-  handleEvent,
-  options,
-}) {
-  const children = [
-    {
-      tag: label,
-      text: labelText,
-      parent,
-      attrs: {
-        for: id,
-        class: `input-label${classes ? ` ${classes}` : ""}`,
-      },
-    },
-    {
-      tag: select,
-      parent,
-      attrs: {
-        id,
-        name: name || id,
-        class: `select-input${classes ? ` ${classes}` : ""}`,
-        value,
-      },
-      handleEvent: [
-        onChange && { event: "change", cb: onChange },
-        click && { event: "click", cb: click },
-        ...(handleEvent && makeThatArray(handleEvent)),
-      ],
-      children: options.map(({ text, value }) => {
-        return { tag: option, text, attrs: { value } };
-      }),
-    },
-  ];
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `select-container${classes ? ` ${classes}` : ""}` },
-    children: labelfirst ? children : children.reverse(),
-  });
-}
-function createRadio({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  options,
-}) {
-  const children = options.map((option) => [
-    {
-      tag: label,
-      text: option.text,
-      parent,
-      attrs: {
-        for: `${id}-${option.value}`,
-        class: `input-label${classes ? ` ${classes}` : ""}`,
-      },
-    },
-    {
-      tag: input,
-      parent,
-      attrs: {
-        id: `${id}-${option.value}`,
-        type: "radio",
-        name: name || id,
-        class: `select-input${classes ? ` ${classes}` : ""}`,
-        value: option.value,
-      },
-      handleEvent: [
-        option.onChange && { event: "change", cb: option.onChange },
-        option.click && { event: "click", cb: option.click },
-        ...(option.handleEvent && makeThatArray(option.handleEvent)),
-      ],
-    },
-  ]);
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
-    children: labelfirst
-      ? children.flat()
-      : children.map((radio) => radio.reverse()).flat(),
-  });
-}
+
 function createCheckbox({
   parent,
   labelfirst = true,
@@ -283,7 +142,7 @@ function createTextarea({
   });
 }
 /* they are the refactored functions!!! */
-function inputTest({
+function createInput({
   parent,
   labelfirst = true,
   classes,
@@ -317,7 +176,7 @@ function inputTest({
     }),
   });
 }
-function selectTest({
+function createSelect({
   parent,
   labelfirst = true,
   classes,
@@ -376,5 +235,35 @@ function selectTest({
       handleEvent,
       options,
     }),
+  });
+}
+function createRadio({
+  parent,
+  labelfirst = true,
+  classes,
+  id,
+  name,
+  options,
+}) {
+  createDOMElem({
+    tag: div,
+    parent,
+    attrs: { class: `radio-container${classes ? ` ${classes}` : ""}` },
+    children: options
+      .map((option) =>
+        createChildren(input, {
+          labelText: option.text,
+          type: "radio",
+          labelfirst,
+          name: name || id,
+          id: `${id}-${option.value}`,
+          classes,
+          name,
+          onChange: option.onChange && { event: "change", cb: option.onChange },
+          click: option.click && { event: "click", cb: option.click },
+          handleEvent: option.handleEvent && option.handleEvent,
+        })
+      )
+      .flat(),
   });
 }
