@@ -27,6 +27,9 @@ function createInputElem(elemType, params) {
           : null,
       rows: params.rows,
       cols: params.cols,
+      min: params.min,
+      max: params.max,
+      step: params.step,
       placeholder: params.placeholder,
       name: params.name || params.id,
       class: `${params.type || elemType}-input${
@@ -252,4 +255,20 @@ function createHiddenInput(params) {
 }
 function createColorInput(params) {
   createInput({ ...params, type: "color" });
+}
+function createFileInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: params.type ?? "file",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createRangeInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "range",
+  };
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
 }
