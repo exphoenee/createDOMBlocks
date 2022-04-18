@@ -11,7 +11,6 @@ function createLabelElem(elemType, params) {
     },
   };
 }
-
 function createInputElem(elemType, params) {
   return {
     tag: elemType,
@@ -25,6 +24,7 @@ function createInputElem(elemType, params) {
         params.checked ?? [("radio", "checkbox")].includes(params.type)
           ? params.checked
           : null,
+      start: params.start,
       rows: params.rows,
       cols: params.cols,
       min: params.min,
@@ -57,7 +57,6 @@ function createInputElem(elemType, params) {
       }),
   };
 }
-
 function createChildren(elemType, params) {
   const inputElem = createInputElem(elemType, params);
 
@@ -271,4 +270,56 @@ function createRangeInput(params) {
     type: "range",
   };
   createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+}
+function createUnorderedList(data, params) {
+  createDOMElem({
+    parent: params.parent,
+    tag: ul,
+    attrs: {
+      class: `unsorted-list${params.class && ` ${params.class}`}`,
+      id: params.id,
+    },
+    children: data.map((item, index) =>
+      createDOMElem({
+        tag: li,
+        text: item,
+        attrs: { id: `${params.id}-${index}`, class: "list-elem" },
+      })
+    ),
+  });
+}
+function createOrderedList(data, params) {
+  createDOMElem({
+    parent: params.parent,
+    tag: ol,
+    attrs: {
+      start: params.start,
+      class: `unsorted-list${params.class && ` ${params.class}`}`,
+      id: params.id,
+    },
+    children: data.map((item, index) =>
+      createDOMElem({
+        tag: li,
+        text: item,
+        attrs: { id: `${params.id}-${index}`, class: "list-elem" },
+      })
+    ),
+  });
+}
+function newLine(parent) {
+  createDOMElem({
+    parent,
+    tag: br,
+  });
+}
+function paragraph(params) {
+  createDOMElem({
+    tag: p,
+    text: params.text,
+    parent: params.parent,
+    attrs: {
+      id: params.id,
+      class: params.class && params.class,
+    },
+  });
 }
