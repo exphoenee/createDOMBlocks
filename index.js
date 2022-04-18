@@ -279,13 +279,13 @@ function createUnorderedList(data, params) {
       class: `unsorted-list${params.class && ` ${params.class}`}`,
       id: params.id,
     },
-    children: data.map((item, index) =>
-      createDOMElem({
+    children: data.map((item, index) => {
+      return {
         tag: li,
         text: item,
         attrs: { id: `${params.id}-${index}`, class: "list-elem" },
-      })
-    ),
+      };
+    }),
   });
 }
 function createOrderedList(data, params) {
@@ -297,13 +297,13 @@ function createOrderedList(data, params) {
       class: `unsorted-list${params.class && ` ${params.class}`}`,
       id: params.id,
     },
-    children: data.map((item, index) =>
-      createDOMElem({
+    children: data.map((item, index) => {
+      return {
         tag: li,
         text: item,
         attrs: { id: `${params.id}-${index}`, class: "list-elem" },
-      })
-    ),
+      };
+    }),
   });
 }
 function newLine(parent) {
@@ -334,5 +334,53 @@ function createTitle(params, level = 1) {
       id: params.id,
       class: params.class && params.class,
     },
+  });
+}
+function createTable(data, params) {
+  const headers = params.hasHeader ? data.shift() : [];
+  const rows = data;
+
+  console.log(headers, rows);
+  createDOMElem({
+    parent: params.parent,
+    tag: table,
+    attrs: {
+      class: `table${params.class && ` ${params.class}`}`,
+      id: params.id,
+    },
+    children: [
+      {
+        tag: thead,
+        children: {
+          tag: tr,
+          attrs: {
+            class: `header-row`,
+          },
+          children: headers.map((col, index) => {
+            return {
+              tag: th,
+              text: col,
+              attrs: { class: `table-col-${index}` },
+            };
+          }),
+        },
+      },
+      {
+        tag: tbody,
+        children: rows.map((row, rowInd) => {
+          return {
+            tag: tr,
+            attrs: { class: `table-row-${rowInd}` },
+            children: row.map((col, colIdx) => {
+              return {
+                tag: td,
+                text: col,
+                attrs: { class: `table-col-${colIdx}` },
+              };
+            }),
+          };
+        }),
+      },
+    ],
   });
 }
