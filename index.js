@@ -312,9 +312,22 @@ function newLine(parent) {
     tag: br,
   });
 }
-function paragraph(params) {
+function createParagraph(params) {
   createDOMElem({
     tag: p,
+    text: params.text,
+    parent: params.parent,
+    attrs: {
+      id: params.id,
+      class: params.class && params.class,
+    },
+  });
+}
+function createTitle(params, level = 1) {
+  createDOMElem({
+    tag: [h1, h2, h3, h4, h5, h6][
+      Math.max(1, Math.min(6, Math.abs(level))) - 1
+    ],
     text: params.text,
     parent: params.parent,
     attrs: {
