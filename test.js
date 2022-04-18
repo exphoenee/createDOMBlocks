@@ -32,9 +32,9 @@ createTelInput({
   parent: document.getElementById("app"),
   id: "myTelInput",
   labelText: "Tel input:",
-  value: "phone number",
+  value: "+363066677788",
   name: "telInputName",
-  placeholder: "+363066677788",
+  placeholder: "phone number",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
@@ -50,12 +50,11 @@ createTelInput({
 });
 createUrlInput({
   parent: document.getElementById("app"),
-  id: "myInput",
-  labelText: "Text input:",
-  value: "something",
+  id: "myURLInput",
+  labelText: "Url input:",
+  value: "http://bozzayviktor.hu",
   name: "textInputName",
-  labelfirst: false,
-  placeholder: "placeholder",
+  placeholder: "webpage adress",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
   handleEvent: [
@@ -412,6 +411,26 @@ createSubmitInput({
   id: "mySubmitInput",
   text: "Submit!",
   name: "selectISubmitName",
+  value: 3,
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+separator();
+createResetInput({
+  parent: document.getElementById("app"),
+  id: "myResetInput",
+  text: "Reset!",
+  name: "selectResetName",
   value: 3,
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
