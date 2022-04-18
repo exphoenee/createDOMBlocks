@@ -1,47 +1,67 @@
 /* Helper methods */
+function createLabelElem(elemType, params) {
+  return {
+    tag: label,
+    text: params.labelText,
+    attrs: {
+      for: params.id,
+      class: `${elemType}-label${
+        params.classes ? ` ${makeThatArray(params.classes)}` : ""
+      }`,
+    },
+  };
+}
+
+function createInputElem(elemType, params) {
+  return {
+    tag: elemType,
+    text: params.value,
+    parent: params.parent,
+    attrs: {
+      type: params.type,
+      value: params.value,
+      id: params.id,
+      checked:
+        params.checked ?? [("radio", "checkbox")].includes(params.type)
+          ? params.checked
+          : null,
+      rows: params.rows,
+      cols: params.cols,
+      placeholder: params.placeholder,
+      name: params.name || params.id,
+      class: `${params.type || elemType}-input${
+        params.classes ? ` ${makeThatArray(params.classes)}` : ""
+      }`,
+    },
+    handleEvent: [
+      params.onChange && { event: "change", cb: params.onChange },
+      params.click && { event: "click", cb: params.click },
+      ...(params.handleEvent && makeThatArray(params.handleEvent)),
+    ],
+    children:
+      params.options &&
+      elemType === select &&
+      params.options.map((opt, index) => {
+        return {
+          tag: option,
+          text: opt.text,
+          attrs: {
+            value: opt.value,
+            selected:
+              params.value && params.value === opt.value ? "selected" : null,
+          },
+        };
+      }),
+  };
+}
+
 function createChildren(elemType, params) {
-  const children = [
-    {
-      tag: label,
-      text: params.labelText,
-      attrs: {
-        for: params.id,
-        class: `${elemType}-label${
-          params.classes ? ` ${makeThatArray(params.classes)}` : ""
-        }`,
-      },
-    },
-    {
-      tag: elemType,
-      text: params.value,
-      attrs: {
-        type: params.type,
-        value: params.value,
-        id: params.id,
-        checked:
-          params.checked ?? [("radio", "checkbox")].includes(params.type)
-            ? params.checked
-            : "",
-        rows: params.rows,
-        cols: params.cols,
-        placeholder: params.placeholder,
-        name: params.name || params.id,
-        class: `${params.type || elemType}-input${
-          params.classes ? ` ${makeThatArray(params.classes)}` : ""
-        }`,
-      },
-      handleEvent: [
-        params.onChange && { event: "change", cb: params.onChange },
-        params.click && { event: "click", cb: params.click },
-        ...(params.handleEvent && makeThatArray(params.handleEvent)),
-      ],
-      children:
-        params.options &&
-        params.options.map((opt) => {
-          return { tag: option, text: opt.text, attrs: { value: opt.value } };
-        }),
-    },
-  ];
+  const inputElem = createInputElem(elemType, params);
+
+  const children = params.labelText
+    ? [createLabelElem(elemType, params), inputElem]
+    : [inputElem];
+
   return params.labelfirst ? children : children.reverse();
 }
 function createInputContainer(params, children) {
@@ -80,6 +100,7 @@ function createTimeInput(params) {
 function createSelect(params) {
   const conf = {
     ...params,
+    type: select,
     labelfirst: params.labelfirst ?? true,
   };
   createDOMElem(createInputContainer(conf, createChildren(select, conf)));
@@ -132,4 +153,27 @@ function createTextarea(params) {
     labelfirst: params.labelfirst ?? true,
   };
   createDOMElem(createInputContainer(conf, createChildren(textarea, conf)));
+}
+function createButtonInput(params) {
+  createDOMElem(
+    createInputElem(input, {
+      ...params,
+      parent: params.parent,
+      value: params.text,
+      type: "button",
+    })
+  );
+}
+function createSubmitInput(params) {
+  createDOMElem(
+    createInputElem(input, {
+      ...params,
+      parent: params.parent,
+      value: params.text,
+      type: "submit",
+    })
+  );
+}
+function createColorInput(params) {
+  createInput({ ...params, type: "color" });
 }
