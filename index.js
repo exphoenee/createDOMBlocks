@@ -1,3 +1,39 @@
+function createChildren(elemType, params) {
+  const children = [
+    {
+      tag: label,
+      text: params.labelText,
+      parent: params.parent,
+      attrs: {
+        for: params.id,
+        class: `${elemType}-label${
+          params.classes ? ` ${makeThatArray(params.classes)}` : ""
+        }`,
+      },
+    },
+    {
+      tag: elemType,
+      parent,
+      text: params.value,
+      attrs: {
+        id: params.id,
+        rows: params.rows,
+        cols: params,
+        placeholder: params,
+        name: params.name || params.id,
+        class: `textarea-input${
+          params.classes ? ` ${makeThatArray(params.classes)}` : ""
+        }`,
+      },
+      handleEvent: [
+        params.onChange && { event: "change", cb: params.onChange },
+        params.click && { event: "click", cb: params.click },
+        ...(params.handleEvent && makeThatArray(params.handleEvent)),
+      ],
+    },
+  ];
+  return params.labelfirst ? children : children.reverse();
+}
 function createInput({
   parent,
   labelfirst = true,
@@ -102,11 +138,6 @@ function createRadio({
   classes,
   id,
   name,
-  labelText,
-  value,
-  onChange,
-  click,
-  handleEvent,
   options,
 }) {
   const children = options.map((option) => [
@@ -130,9 +161,9 @@ function createRadio({
         value: option.value,
       },
       handleEvent: [
-        onChange && { event: "change", cb: onChange },
-        click && { event: "click", cb: click },
-        ...(handleEvent && makeThatArray(handleEvent)),
+        option.onChange && { event: "change", cb: option.onChange },
+        option.click && { event: "click", cb: option.click },
+        ...(option.handleEvent && makeThatArray(option.handleEvent)),
       ],
     },
   ]);
@@ -243,5 +274,67 @@ function createTextarea({
     parent,
     attrs: { class: `textarea-container${classes ? ` ${classes}` : ""}` },
     children: labelfirst ? children : children.reverse(),
+  });
+}
+function inputTest({
+  parent,
+  labelfirst = true,
+  classes,
+  id,
+  name,
+  type = "text",
+  labelText,
+  value,
+  placeholder,
+  onChange,
+  click,
+  handleEvent,
+}) {
+  const children = [
+    {
+      tag: label,
+      text: labelText,
+      parent,
+      attrs: {
+        for: id,
+        class: `input-label${classes ? ` ${classes}` : ""}`,
+      },
+    },
+    {
+      tag: input,
+      parent,
+      attrs: {
+        id,
+        name: name || id,
+        class: `${type}-input${classes ? ` ${classes}` : ""}`,
+        type,
+        placeholder,
+        value,
+      },
+      handleEvent: [
+        onChange && { event: "change", cb: onChange },
+        click && { event: "click", cb: click },
+        ...(handleEvent && makeThatArray(handleEvent)),
+      ],
+    },
+  ];
+  createDOMElem({
+    tag: div,
+    parent,
+    attrs: { class: `${type}-input${classes ? ` ${classes}` : ""}` },
+    children: createChildren(input, {
+      parent,
+      labelfirst,
+      classes,
+      id,
+      name,
+      type,
+      labelText,
+      value,
+      placeholder,
+      onChange,
+      click,
+      handleEvent,
+    }),
   });
 }
