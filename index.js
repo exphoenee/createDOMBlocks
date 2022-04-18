@@ -55,81 +55,61 @@ function createInputContainer(params, children) {
 }
 
 /* DOM creator functions */
-
-function createInput({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  type = "text",
-  labelText,
-  value,
-  placeholder,
-  onChange,
-  click,
-  handleEvent,
-}) {
-  const params = {
-    parent,
-    labelfirst,
-    classes,
-    id,
-    name,
-    type,
-    labelText,
-    value,
-    placeholder,
-    onChange,
-    click,
-    handleEvent,
+function createInput(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: params.type ?? "text",
   };
-  createDOMElem(createInputContainer(params, createChildren(input, params)));
+  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
 }
 function createCheckbox(params) {
   createInput({ ...params, type: "checkbox" });
 }
-function createSelect({
-  parent,
-  labelfirst = true,
-  classes,
-  id,
-  name,
-  labelText,
-  value,
-  onChange,
-  click,
-  handleEvent,
-  options,
-}) {
-  createDOMElem({
-    tag: div,
-    parent,
-    attrs: { class: `select-container${classes ? ` ${classes}` : ""}` },
-    children: createChildren(select, {
-      parent,
-      labelfirst,
-      classes,
-      id,
-      name,
-      labelText,
-      value,
-      onChange,
-      click,
-      handleEvent,
-      options,
-    }),
-  });
+function createSelect(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+  };
+  createDOMElem(createInputContainer(conf, createChildren(select, conf)));
 }
-function createRadio({
-  parent,
-  labelfirst = true,
-  classes,
-  value,
-  id,
-  name,
-  options,
-}) {
+function createRadio(params) {
+  const conf = {
+    ...params,
+    labelfirst: params.labelfirst ?? true,
+    type: "radio",
+  };
+  const options = conf.options;
+  createDOMElem(
+    createInputContainer(
+      conf,
+      options
+        .map((option, index) =>
+          createChildren(input, {
+            labelText: option.text,
+            type: conf.type,
+            labelfirst: conf.labelfirst,
+            name: conf.name || conf.id,
+            id: `${conf.id}-${option.value}`,
+            checked:
+              typeof value === "string"
+                ? option.text === value
+                : typeof value === "number"
+                ? value === index + 1
+                : false,
+            classes: conf.classes,
+            onChange: option.onChange && {
+              event: "change",
+              cb: option.onChange,
+            },
+            click: option.click && { event: "click", cb: option.click },
+            handleEvent: option.handleEvent && option.handleEvent,
+          })
+        )
+        .flat()
+    )
+  );
+  /*
   createDOMElem({
     tag: div,
     parent,
@@ -157,6 +137,7 @@ function createRadio({
       )
       .flat(),
   });
+  */
 }
 function createTextarea({
   parent,
