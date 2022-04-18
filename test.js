@@ -216,7 +216,7 @@ createMonthInput({
   id: "myMonthInput",
   labelText: "Month input:",
   name: "weekInputName",
-  value: "18:24",
+  value: "2022-04",
   placeholder: "Month placeholder",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
@@ -236,7 +236,7 @@ createWeekInput({
   id: "myWeekInput",
   labelText: "Week input:",
   name: "weekInputName",
-  value: "18:24",
+  value: "2022-W15",
   placeholder: "Week placeholder",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
@@ -529,5 +529,26 @@ createRangeInput({
       cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
     },
   ],
+});
+separator();
+createUnorderedList(["first", "second", "third", "fourth", "fifth"], {
+  parent: document.getElementById("app"),
+  class: "listOfNumbers",
+  id: "myUnsortedList",
+});
+separator();
+createOrderedList(["ten", "eleven", "twelve", "thirteen", "forthteen"], {
+  parent: document.getElementById("app"),
+  class: "listOfNumbers",
+  id: "myUnsortedList",
+  start: 10,
+});
+separator();
+newLine(document.getElementById("app"));
+separator();
+paragraph({
+  parent: document.getElementById("app"),
+  text: "This is a text",
+  class: "text",
 });
 separator();
