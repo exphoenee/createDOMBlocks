@@ -5,6 +5,7 @@ function separator() {
     text: "-----------------------------------------------",
   });
 }
+separator();
 /* Creating a text input */
 createInput({
   parent: document.getElementById("app"),
@@ -97,7 +98,7 @@ createSelect({
   id: "mySelectInput",
   labelText: "Select input:",
   name: "selectInputName",
-  value: 3,
+  value: 2,
   placeholder: "Number placeholder",
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
   click: (e) => console.log(`Clicked: ${e.target.id}`),
@@ -221,6 +222,67 @@ createRadio({
           cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
         },
       ],
+    },
+  ],
+});
+separator();
+createButtonInput({
+  parent: document.getElementById("app"),
+  id: "myButtonInput",
+  text: "I'm a button!",
+  name: "selectIButtonName",
+  value: 3,
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+separator();
+createSubmitInput({
+  parent: document.getElementById("app"),
+  id: "mySubmitInput",
+  text: "Submit!",
+  name: "selectISubmitName",
+  value: 3,
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
+    },
+  ],
+});
+separator();
+createColorInput({
+  parent: document.getElementById("app"),
+  id: "myColor",
+  labelText: "Color input:",
+  value: "#ff0000",
+  name: "colorInputName",
+  placeholder: "placeholder",
+  onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
+  click: (e) => console.log(`Clicked: ${e.target.id}`),
+  handleEvent: [
+    {
+      event: "mouseenter",
+      cb: (e) => console.log(`Mouse entering: ${e.target.id}`),
+    },
+    {
+      event: "mouseleave",
+      cb: (e) => console.log(`Mouse leaving: ${e.target.id}`),
     },
   ],
 });
