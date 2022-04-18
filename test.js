@@ -661,3 +661,47 @@ createTable(data2, {
   class: "listOfNumbers",
   id: "myUnsortedList",
 });
+separator();
+const data3 = [
+  {
+    "Fisrt column": "Data1",
+    "Second column": "Data2",
+    "Third column": "Data3",
+    "Fourth column": "Data4",
+  },
+  {
+    "Fisrt column": "Data5",
+    "Second column": "Data6",
+    "Third column": "Data7",
+    "Fourth column": "Data8",
+  },
+  {
+    "Fisrt column": "Data9",
+    "Second column": "Data10",
+    "Third column": "Data11",
+    "Fourth column": "Data12",
+  },
+  {
+    "Fisrt column": "Data13",
+    "Second column": "Data14",
+    "Third column": "Data15",
+    "Fourth column": "Data16",
+  },
+  {
+    "Fisrt column": "Data17",
+    "Second column": "Data18",
+    "Third column": "Data19",
+    "Fourth column": "Data20",
+  },
+];
+createTable(data3, {
+  parent,
+  hasHeader: false,
+  hasFooter: true,
+  addRowNumbers: false,
+  sumRowValues: true,
+  cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
+  precision: 2,
+  class: "listOfNumbers",
+  id: "myUnsortedList",
+});
