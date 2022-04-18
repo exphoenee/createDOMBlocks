@@ -28,10 +28,9 @@ createInput({
   ],
 });
 /* Creating a number input */
-createInput({
+createNumberInput({
   parent: document.getElementById("app"),
   id: "myNumInput",
-  type: "number",
   name: "numInputName",
   labelText: "Number input:",
   value: "521",
@@ -50,10 +49,9 @@ createInput({
   ],
 });
 /* Creating a date input */
-createInput({
+createDateInput({
   parent: document.getElementById("app"),
   id: "myDateInput",
-  type: "date",
   labelText: "Date input:",
   name: "dateInputName",
   value: "2021-04-24",
@@ -72,10 +70,9 @@ createInput({
   ],
 });
 /* Creating a time input */
-createInput({
+createTimeInput({
   parent: document.getElementById("app"),
   id: "myTimeInput",
-  type: "time",
   labelText: "Time input:",
   name: "timeInputName",
   value: "18:24",
