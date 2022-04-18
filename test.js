@@ -625,16 +625,39 @@ createTitle({
 separator();
 const data1 = [
   ["Fisrt column", "Second column", "Third column", "Fourth column"],
-  ["Data1", "Data2", "Data3", "Data4"],
-  ["Data5", "Data6", "Data7", "Data8"],
-  ["Data9", "Data10", "Data11", "Data12"],
-  ["Data13", "Data14", "Data15", "Data16"],
-  ["Data17", "Data18", "Data19", "Data20"],
+  ["Data1", "1", "Data3", "Data4"],
+  ["2", "1", "2", "2"],
+  ["Data9", "1", "Data11", "Data12"],
+  ["Data13", "1", "Data15", "Data16"],
+  ["Data17", "1", "Data19", "Data20"],
 ];
 createTable(data1, {
   parent,
   hasHeader: true,
   hasFooter: true,
+  addRowNumbers: true,
+  sumRowValues: true,
+  cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
+  precision: 2,
+  class: "listOfNumbers",
+  id: "myUnsortedList",
+});
+separator();
+const data2 = [
+  ["Data1", "1", "Data3", "Data4"],
+  ["2", "1", "2", "2"],
+  ["Data9", "1", "Data11", "Data12"],
+  ["Data13", "1", "Data15", "Data16"],
+  ["Data17", "1", "Data19", "Data20"],
+];
+createTable(data2, {
+  parent,
+  hasHeader: false,
+  hasFooter: true,
+  addRowNumbers: false,
+  sumRowValues: true,
+  cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
+  precision: 2,
   class: "listOfNumbers",
   id: "myUnsortedList",
 });
