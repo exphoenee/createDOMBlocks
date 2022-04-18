@@ -127,6 +127,7 @@ createCheckbox({
   id: "myCheckbox",
   name: "checkboxName",
   labelText: "Checkbox input:",
+  type: "checkbox",
   value: "something",
   checked: true,
   onChange: (e) => console.log(`Changed ${e.target.id}: ${e.target.value}`),
