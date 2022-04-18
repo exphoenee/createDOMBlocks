@@ -1,9 +1,9 @@
 function createChildren(elemType, params) {
+  console.log(params);
   const children = [
     {
       tag: label,
       text: params.labelText,
-      parent: params.parent,
       attrs: {
         for: params.id,
         class: `${elemType}-label${
@@ -13,13 +13,14 @@ function createChildren(elemType, params) {
     },
     {
       tag: elemType,
-      parent,
       text: params.value,
       attrs: {
+        type: params.type,
+        value: params.value,
         id: params.id,
         rows: params.rows,
-        cols: params,
-        placeholder: params,
+        cols: params.cols,
+        placeholder: params.placeholder,
         name: params.name || params.id,
         class: `textarea-input${
           params.classes ? ` ${makeThatArray(params.classes)}` : ""
@@ -167,7 +168,6 @@ function createRadio({
       ],
     },
   ]);
-  console.log(children);
   createDOMElem({
     tag: div,
     parent,
@@ -290,40 +290,12 @@ function inputTest({
   click,
   handleEvent,
 }) {
-  const children = [
-    {
-      tag: label,
-      text: labelText,
-      parent,
-      attrs: {
-        for: id,
-        class: `input-label${classes ? ` ${classes}` : ""}`,
-      },
-    },
-    {
-      tag: input,
-      parent,
-      attrs: {
-        id,
-        name: name || id,
-        class: `${type}-input${classes ? ` ${classes}` : ""}`,
-        type,
-        placeholder,
-        value,
-      },
-      handleEvent: [
-        onChange && { event: "change", cb: onChange },
-        click && { event: "click", cb: click },
-        ...(handleEvent && makeThatArray(handleEvent)),
-      ],
-    },
-  ];
+  console.log(type);
   createDOMElem({
     tag: div,
     parent,
     attrs: { class: `${type}-input${classes ? ` ${classes}` : ""}` },
     children: createChildren(input, {
-      parent,
       labelfirst,
       classes,
       id,
