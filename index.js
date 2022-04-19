@@ -343,31 +343,29 @@ function createTable(data, params) {
     ...params,
     showHeader: params.showHeader ?? true,
     showFooter: params.showFooter ?? true,
+    dataIsArray: Array.isArray(data[0]),
   };
   const cellNames = params.cellNames ?? {
     sum: "Sum",
     total: "Total",
     rowNr: "Row #",
   };
-  let headers, rows, footers;
 
-  if (Array.isArray(data[0])) {
+  let headers, rows;
+
+  if (params.dataIsArray) {
+    params.hasHeader = true;
     headers = params.hasHeader
       ? data.shift()
       : data[0].map((cell, index) => `Column #${index}`);
     rows = data;
-    footers = Array(headers.length).fill(0);
   } else {
     headers = Object.keys(data[0]);
     rows = data.map((row) => Object.values(row));
-    footers = Array(headers.length).fill(0);
-
-    console.table(headers);
-    console.table(rows);
-    console.table(footers);
   }
+  let footers = Array(headers.length).fill(0);
 
-  if (params.hasFooter) {
+  if (params.hasFooter && params.showFooter) {
     rows.forEach((row) =>
       row.forEach((cell, cellIdx) => (footers[cellIdx] += parseFloat(cell)))
     );
@@ -376,8 +374,8 @@ function createTable(data, params) {
     });
   }
 
-  if (params.sumRowValues && params.hasFooter) {
-    params.hasHeader && headers.push(cellNames.sum);
+  if (params.sumRowValues) {
+    (params.hasHeader || !params.dataIsArray) && headers.push(cellNames.sum);
     const total = footers.reduce(
       (acc, cell) => acc + (Number.isNaN(+cell) ? 0 : +cell),
       0
