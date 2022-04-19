@@ -339,7 +339,11 @@ function createTitle(params, level = 1) {
   });
 }
 function createTable(data, params) {
-  params = { ...params, showHeader: params.showHeader ?? true };
+  params = {
+    ...params,
+    showHeader: params.showHeader ?? true,
+    showFooter: params.showFooter ?? true,
+  };
   const cellNames = params.cellNames ?? {
     sum: "Sum",
     total: "Total",
@@ -406,6 +410,7 @@ function createTable(data, params) {
       }),
     },
   };
+
   const tableBody = {
     tag: tbody,
     children: rows.map((row, rowInd) => {
