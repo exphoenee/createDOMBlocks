@@ -708,3 +708,6 @@ createTable(data3, {
   class: "listOfNumbers",
   id: "myUnsortedList",
 });
+separator();
+createModal({ tag: p, text: "This is a modal" }, { parent, id: "myModal" });
+separator();
