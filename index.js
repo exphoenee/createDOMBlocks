@@ -339,6 +339,7 @@ function createTitle(params, level = 1) {
   });
 }
 function createTable(data, params) {
+  params = { ...params, showHeader: params.showHeader ?? true };
   const cellNames = params.cellNames ?? {
     sum: "Sum",
     total: "Total",
@@ -347,14 +348,19 @@ function createTable(data, params) {
   let headers, rows, footers;
 
   if (Array.isArray(data[0])) {
-    headers = params.hasHeader ? data.shift() : [];
+    headers = params.hasHeader
+      ? data.shift()
+      : data[0].map((cell, index) => `Column #${index}`);
     rows = data;
     footers = Array(headers.length).fill(0);
   } else {
     headers = Object.keys(data[0]);
     rows = data.map((row) => Object.values(row));
     footers = Array(headers.length).fill(0);
-    console.table(headers, rows, footers);
+
+    console.table(headers);
+    console.table(rows);
+    console.table(footers);
   }
 
   if (params.hasFooter) {
@@ -384,6 +390,61 @@ function createTable(data, params) {
     });
   }
 
+  const tableHead = {
+    tag: thead,
+    children: {
+      tag: tr,
+      attrs: {
+        class: `header-row`,
+      },
+      children: headers.map((col, index) => {
+        return {
+          tag: th,
+          text: col,
+          attrs: { class: `table-col-${index}` },
+        };
+      }),
+    },
+  };
+  const tableBody = {
+    tag: tbody,
+    children: rows.map((row, rowInd) => {
+      return {
+        tag: tr,
+        attrs: { class: `table-row-${rowInd}` },
+        children: row.map((col, colIdx) => {
+          return {
+            tag: params.addRowNumbers && colIdx === 0 ? th : td,
+            text: col,
+            attrs: { class: `table-col-${colIdx}` },
+          };
+        }),
+      };
+    }),
+  };
+
+  const tableFoot = {
+    tag: tfoot,
+    children: {
+      tag: tr,
+      attrs: {
+        class: `footer-row`,
+      },
+      children: footers.map((col, index) => {
+        return {
+          tag: th,
+          text: col,
+          attrs: { class: `table-col-${index}` },
+        };
+      }),
+    },
+  };
+
+  const tableElem = [];
+  if (params.showHeader) tableElem.push(tableHead);
+  tableElem.push(tableBody);
+  if (params.showFooter) tableElem.push(tableFoot);
+
   createDOMElem({
     parent: params.parent,
     tag: table,
@@ -391,55 +452,6 @@ function createTable(data, params) {
       class: `table${params.class && ` ${params.class}`}`,
       id: params.id,
     },
-    children: [
-      {
-        tag: thead,
-        children: {
-          tag: tr,
-          attrs: {
-            class: `header-row`,
-          },
-          children: headers.map((col, index) => {
-            return {
-              tag: th,
-              text: col,
-              attrs: { class: `table-col-${index}` },
-            };
-          }),
-        },
-      },
-      {
-        tag: tbody,
-        children: rows.map((row, rowInd) => {
-          return {
-            tag: tr,
-            attrs: { class: `table-row-${rowInd}` },
-            children: row.map((col, colIdx) => {
-              return {
-                tag: params.addRowNumbers && colIdx === 0 ? th : td,
-                text: col,
-                attrs: { class: `table-col-${colIdx}` },
-              };
-            }),
-          };
-        }),
-      },
-      {
-        tag: tfoot,
-        children: {
-          tag: tr,
-          attrs: {
-            class: `footer-row`,
-          },
-          children: footers.map((col, index) => {
-            return {
-              tag: th,
-              text: col,
-              attrs: { class: `table-col-${index}` },
-            };
-          }),
-        },
-      },
-    ],
+    children: tableElem,
   });
 }
