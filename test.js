@@ -625,11 +625,11 @@ createTitle({
 separator();
 const data1 = [
   ["Fisrt column", "Second column", "Third column", "Fourth column"],
-  ["Data1", "1", "Data3", "Data4"],
+  ["1", "1", "3", "4"],
   ["2", "1", "2", "2"],
-  ["Data9", "1", "Data11", "Data12"],
-  ["Data13", "1", "Data15", "Data16"],
-  ["Data17", "1", "Data19", "Data20"],
+  ["9", "1", "11", "12"],
+  ["13", "1", "15", "16"],
+  ["17", "1", "19", "20"],
 ];
 createTable(data1, {
   parent,
@@ -644,17 +644,17 @@ createTable(data1, {
 });
 separator();
 const data2 = [
-  ["Data1", "1", "Data3", "Data4"],
+  ["1", "2", "3", "4"],
   ["2", "1", "2", "2"],
-  ["Data9", "1", "Data11", "Data12"],
-  ["Data13", "1", "Data15", "Data16"],
-  ["Data17", "1", "Data19", "Data20"],
+  ["9", "1", "11", "12"],
+  ["13", "1", "15", "16"],
+  ["17", "1", "19", "20"],
 ];
 createTable(data2, {
   parent,
   hasHeader: true,
   hasFooter: true,
-  addRowNumbers: false,
+  addRowNumbers: true,
   sumRowValues: true,
   cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
   precision: 2,
@@ -664,34 +664,34 @@ createTable(data2, {
 separator();
 const data3 = [
   {
-    "Fisrt column": "Data1",
-    "Second column": "Data2",
-    "Third column": "Data3",
-    "Fourth column": "Data4",
+    "Fisrt column": "1",
+    "Second column": "2",
+    "Third column": "3",
+    "Fourth column": "4",
   },
   {
-    "Fisrt column": "Data5",
-    "Second column": "Data6",
-    "Third column": "Data7",
-    "Fourth column": "Data8",
+    "Fisrt column": "5",
+    "Second column": "6",
+    "Third column": "7",
+    "Fourth column": "8",
   },
   {
-    "Fisrt column": "Data9",
-    "Second column": "Data10",
-    "Third column": "Data11",
-    "Fourth column": "Data12",
+    "Fisrt column": "9",
+    "Second column": "10",
+    "Third column": "11",
+    "Fourth column": "12",
   },
   {
-    "Fisrt column": "Data13",
-    "Second column": "Data14",
-    "Third column": "Data15",
-    "Fourth column": "Data16",
+    "Fisrt column": "13",
+    "Second column": "14",
+    "Third column": "15",
+    "Fourth column": "16",
   },
   {
-    "Fisrt column": "Data17",
-    "Second column": "Data18",
-    "Third column": "Data19",
-    "Fourth column": "Data20",
+    "Fisrt column": "17",
+    "Second column": "18",
+    "Third column": "19",
+    "Fourth column": "20",
   },
 ];
 createTable(data3, {
