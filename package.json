@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/exphoenee/createDOMBlocks#readme",
   "dependencies": {
-    "domelemjs": "^1.1.10"
+    "domelemjs": "^1.1.10",
+    "interactjs": "^1.10.11"
   }
 }
