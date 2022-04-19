@@ -461,6 +461,12 @@ function createModal(content, params) {
   const modal = createDOMElem({
     tag: div,
     parent: params.parent,
+    style: {
+      position: "fixed",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%,-50%)",
+    },
     attrs: {
       class: `modal${params.class ? ` ${params.class}` : ""}`,
       id: params.id,
@@ -475,6 +481,7 @@ function createModal(content, params) {
   });
   const modalBtn = createDOMElem({
     tag: button,
+    style: { position: "absolute", top: "5px", right: "5px" },
     attrs: {
       class: `modal-btn`,
     },
