@@ -57,7 +57,7 @@ function createInputElem(elemType, params) {
       }),
   };
 }
-function createChildren(elemType, params) {
+function createInputChildren(elemType, params) {
   const inputElem = createInputElem(elemType, params);
 
   const children = params.labelText
@@ -85,7 +85,7 @@ function createInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: params.type ?? "text",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createTextInput(params) {
   const conf = {
@@ -93,7 +93,7 @@ function createTextInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "text",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createTelInput(params) {
   const conf = {
@@ -101,7 +101,7 @@ function createTelInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "tel",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createUrlInput(params) {
   const conf = {
@@ -109,7 +109,7 @@ function createUrlInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "url",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createSearchInput(params) {
   const conf = {
@@ -117,7 +117,7 @@ function createSearchInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "search",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createEmailInput(params) {
   const conf = {
@@ -125,7 +125,7 @@ function createEmailInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "email",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createPasswordInput(params) {
   const conf = {
@@ -133,7 +133,7 @@ function createPasswordInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "password",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createCheckbox(params) {
   createInput({ ...params, type: "checkbox" });
@@ -162,7 +162,7 @@ function createSelect(params) {
     type: select,
     labelfirst: params.labelfirst ?? true,
   };
-  createDOMElem(createInputContainer(conf, createChildren(select, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(select, conf)));
 }
 function createRadio(params) {
   const conf = {
@@ -179,7 +179,7 @@ function createRadio(params) {
           return {
             tag: div,
             attrs: { class: "radio-option" },
-            children: createChildren(input, {
+            children: createInputChildren(input, {
               labelText: option.text,
               type,
               labelfirst,
@@ -211,7 +211,9 @@ function createTextarea(params) {
     type: textarea,
     labelfirst: params.labelfirst ?? true,
   };
-  createDOMElem(createInputContainer(conf, createChildren(textarea, conf)));
+  createDOMElem(
+    createInputContainer(conf, createInputChildren(textarea, conf))
+  );
 }
 function createResetInput(params) {
   createDOMElem(
@@ -261,7 +263,7 @@ function createFileInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: params.type ?? "file",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createRangeInput(params) {
   const conf = {
@@ -269,7 +271,7 @@ function createRangeInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "range",
   };
-  createDOMElem(createInputContainer(conf, createChildren(input, conf)));
+  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
 }
 function createUnorderedList(data, params) {
   createDOMElem({
@@ -342,9 +344,18 @@ function createTable(data, params) {
     total: "Total",
     rowNr: "Row #",
   };
-  let headers = params.hasHeader ? data.shift() : [];
-  const rows = data;
-  let footers = Array(headers.length).fill(0);
+  let headers, rows, footers;
+
+  if (Array.isArray(data[0])) {
+    headers = params.hasHeader ? data.shift() : [];
+    rows = data;
+    footers = Array(headers.length).fill(0);
+  } else {
+    headers = Object.keys(data[0]);
+    rows = data.map((row) => Object.values(row));
+    footers = Array(headers.length).fill(0);
+    console.table(headers, rows, footers);
+  }
 
   if (params.hasFooter) {
     rows.forEach((row) =>
