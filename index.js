@@ -6,7 +6,7 @@ function createLabelElem(elemType, params) {
     attrs: {
       for: params.id,
       class: `${elemType}-label${
-        params.classes ? ` ${makeThatArray(params.classes)}` : ""
+        params.class ? ` ${makeThatArray(params.class)}` : ""
       }`,
     },
   };
@@ -33,7 +33,7 @@ function createInputElem(elemType, params) {
       placeholder: params.placeholder,
       name: params.name || params.id,
       class: `${params.type || elemType}-input${
-        params.classes ? ` ${makeThatArray(params.classes)}` : ""
+        params.class ? ` ${makeThatArray(params.class)}` : ""
       }`,
     },
     handleEvent: [
@@ -71,9 +71,7 @@ function createInputContainer(params, children) {
     tag: div,
     parent: params.parent,
     attrs: {
-      class: `${params.type}-input${
-        params.classes ? ` ${params.classes}` : ""
-      }`,
+      class: `${params.type}-input${params.class ? ` ${params.class}` : ""}`,
     },
     children,
   };
@@ -178,7 +176,7 @@ function createRadio(params) {
         .map((option, index) => {
           return {
             tag: div,
-            attrs: { class: "radio-option" },
+            attrs: { classes: "radio-option" },
             children: createInputChildren(input, {
               labelText: option.text,
               type,
@@ -457,4 +455,31 @@ function createTable(data, params) {
     },
     children: tableElem,
   });
+}
+function createModal(content, params) {
+  console.log(params.class ?? "modal");
+  const modal = createDOMElem({
+    tag: div,
+    parent: params.parent,
+    attrs: {
+      class: `modal${params.class ? ` ${params.class}` : ""}`,
+      id: params.id,
+    },
+    children: {
+      tag: div,
+      attrs: {
+        class: `modal-content`,
+      },
+      children: content,
+    },
+  });
+  const modalBtn = createDOMElem({
+    tag: button,
+    attrs: {
+      class: `modal-btn`,
+    },
+    text: "X",
+  });
+  modal.appendChild(modalBtn);
+  return modal;
 }
