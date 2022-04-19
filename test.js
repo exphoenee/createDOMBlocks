@@ -652,7 +652,7 @@ const data2 = [
 ];
 createTable(data2, {
   parent,
-  hasHeader: false,
+  hasHeader: true,
   hasFooter: true,
   addRowNumbers: false,
   sumRowValues: true,
