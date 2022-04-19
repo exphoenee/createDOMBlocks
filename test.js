@@ -625,11 +625,11 @@ createTitle({
 separator();
 const data1 = [
   ["Fisrt column", "Second column", "Third column", "Fourth column"],
-  ["1", "1", "3", "4"],
-  ["2", "1", "2", "2"],
-  ["9", "1", "11", "12"],
-  ["13", "1", "15", "16"],
-  ["17", "1", "19", "20"],
+  ["1", "2", "3", "4"],
+  ["5", "6", "7", "8"],
+  ["9", "10", "11", "12"],
+  ["13", "14", "15", "16"],
+  ["17", "18", "19", "20"],
 ];
 createTable(data1, {
   parent,
@@ -644,11 +644,12 @@ createTable(data1, {
 });
 separator();
 const data2 = [
+  ["Column 1", "Column 2", "Column 3", "Column 4"],
   ["1", "2", "3", "4"],
-  ["2", "1", "2", "2"],
-  ["9", "1", "11", "12"],
-  ["13", "1", "15", "16"],
-  ["17", "1", "19", "20"],
+  ["5", "6", "7", "8"],
+  ["9", "10", "11", "12"],
+  ["13", "14", "15", "16"],
+  ["17", "18", "19", "20"],
 ];
 createTable(data2, {
   parent,
@@ -696,9 +697,11 @@ const data3 = [
 ];
 createTable(data3, {
   parent,
-  hasHeader: false,
+  hasHeader: true,
+  showHeader: true,
   hasFooter: true,
-  addRowNumbers: false,
+  showFooter: true,
+  addRowNumbers: true,
   sumRowValues: true,
   cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
   precision: 2,
