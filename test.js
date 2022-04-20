@@ -722,12 +722,12 @@ createModal(
   { parent, id: "myModal" }
 );
 separator();
-
 createDOMElem(
   createButton({
     parent,
     text: "Click me",
     id: "myButton2",
+    click: (e) => e.preventDefault(),
     handleEvent: {
       event: "mouseover",
       cb: (e) => console.log(`Mouse over: ${e.target.id}`),
