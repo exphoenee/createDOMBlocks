@@ -456,7 +456,20 @@ function createTable(data, params) {
     children: tableElem,
   });
 }
-function createModal({ modalTitle, body }, params) {
+function createModal(
+  { modalTitle, body },
+  { okAction, cacnelAction, closeAction },
+  params
+) {
+  const closeModal = () => {
+    const thisModal = document.getElementById(`${params.id}-modal`);
+    thisModal.classList.toggle("hidden");
+    thisModal.style.opacity = "none";
+    thisModal.addEventListener("transitionend", () => {
+      thisModal.style.display = "none";
+    });
+    closeAction();
+  };
   const modal = createDOMElem({
     tag: div,
     attrs: {
@@ -471,8 +484,8 @@ function createModal({ modalTitle, body }, params) {
       left: "50%",
       transform: "translate(-50%,-50%)",
       background: "white",
-      opacity: "0.8",
       zIndex: "90",
+      transition: "opacity 0.3s ease-in-out",
     },
     children: {
       tag: div,
@@ -526,12 +539,7 @@ function createModal({ modalTitle, body }, params) {
               },
               handleEvent: {
                 event: "click",
-                cb: () => {
-                  const thisModal = document.getElementById(
-                    `${params.id}-modal`
-                  );
-                  thisModal.classList.toggle("hidden");
-                },
+                cb: closeModal,
               },
             },
           ],
@@ -560,6 +568,13 @@ function createModal({ modalTitle, body }, params) {
                 class: `modal-cancel-btn`,
                 cursor: "pointer",
               },
+              handleEvent: {
+                event: "click",
+                cb: () => {
+                  cacnelAction();
+                  closeModal();
+                },
+              },
               text: "Cancel",
               style: { display: "block", marginLeft: "auto" },
             },
@@ -569,6 +584,13 @@ function createModal({ modalTitle, body }, params) {
                 class: `modal-ok-btn`,
                 cursor: "pointer",
               },
+              handleEvent: {
+                event: "click",
+                cb: () => {
+                  okAction();
+                  closeModal();
+                },
+              },
               text: "Ok",
               style: { display: "block", marginLeft: "1rem" },
             },
@@ -577,5 +599,4 @@ function createModal({ modalTitle, body }, params) {
       ],
     },
   });
-  return modal;
 }
