@@ -709,5 +709,11 @@ createTable(data3, {
   id: "myUnsortedList",
 });
 separator();
-createModal({ tag: p, text: "This is a modal" }, { parent, id: "myModal" });
+createModal(
+  {
+    modalTitle: "This is a modal",
+    body: { tag: p, text: "This is a modal text" },
+  },
+  { parent, id: "myModal" }
+);
 separator();
