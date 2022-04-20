@@ -459,90 +459,107 @@ function createTable(data, params) {
 function createModal({ modalTitle, body }, params) {
   const modal = createDOMElem({
     tag: div,
-    parent: params.parent,
+    attrs: {
+      class: `modal-cover`,
+    },
     style: {
-      position: "fixed",
+      position: "absolute",
+      width: "100vw",
+      height: "100vh",
       top: "50%",
       left: "50%",
       transform: "translate(-50%,-50%)",
       background: "white",
-      padding: "1.5rem",
-      borderRadius: "1rem",
-      boxShadow: "0 0.5rem 1rem rgba(0,0,0,0.5)",
-      opacity: "0.95",
-      zIndex: "100",
+      backdropFilter: "blur(5px) opacity(20%)",
+      zIndex: "90",
     },
-    attrs: {
-      class: `modal${params.class ? ` ${params.class}` : ""}`,
-      id: params.id,
+    children: {
+      tag: div,
+      parent: params.parent,
+      style: {
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%,-50%)",
+        background: "white",
+        padding: "1.5rem",
+        borderRadius: "1rem",
+        boxShadow: "0 0.5rem 1rem rgba(0,0,0,0.5)",
+        opacity: "0.95",
+        zIndex: "100",
+      },
+      attrs: {
+        class: `modal${params.class ? ` ${params.class}` : ""}`,
+        id: params.id,
+      },
+      children: [
+        {
+          tag: div,
+          attrs: {
+            class: `modal-title-container`,
+          },
+          style: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "start",
+          },
+          children: [
+            {
+              tag: h1,
+              attrs: {
+                class: `modal-title`,
+              },
+              text: modalTitle,
+              style: { display: "block", margin: 0 },
+            },
+            {
+              tag: button,
+              attrs: {
+                class: `modal-close-btn`,
+              },
+              text: "X",
+              style: { display: "block", marginLeft: "50px" },
+            },
+          ],
+        },
+        {
+          tag: div,
+          attrs: {
+            class: `modal-body`,
+          },
+          children: body,
+        },
+        {
+          tag: div,
+          attrs: {
+            class: `modal-footer`,
+          },
+          style: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "start",
+          },
+          children: [
+            {
+              tag: button,
+              attrs: {
+                class: `modal-cancel-btn`,
+              },
+              text: "Cancel",
+              style: { display: "block", marginLeft: "auto" },
+            },
+            {
+              tag: button,
+              attrs: {
+                class: `modal-ok-btn`,
+              },
+              text: "Ok",
+              style: { display: "block", marginLeft: "1rem" },
+            },
+          ],
+        },
+      ],
     },
-    children: [
-      {
-        tag: div,
-        attrs: {
-          class: `modal-title-container`,
-        },
-        style: {
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "start",
-        },
-        children: [
-          {
-            tag: h1,
-            attrs: {
-              class: `modal-title`,
-            },
-            text: modalTitle,
-            style: { display: "block", margin: 0 },
-          },
-          {
-            tag: button,
-            attrs: {
-              class: `modal-close-btn`,
-            },
-            text: "X",
-            style: { display: "block", marginLeft: "50px" },
-          },
-        ],
-      },
-      {
-        tag: div,
-        attrs: {
-          class: `modal-body`,
-        },
-        children: body,
-      },
-      {
-        tag: div,
-        attrs: {
-          class: `modal-footer`,
-        },
-        style: {
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "start",
-        },
-        children: [
-          {
-            tag: button,
-            attrs: {
-              class: `modal-cancel-btn`,
-            },
-            text: "Cancel",
-            style: { display: "block", marginLeft: "auto" },
-          },
-          {
-            tag: button,
-            attrs: {
-              class: `modal-ok-btn`,
-            },
-            text: "Ok",
-            style: { display: "block", marginLeft: "1rem" },
-          },
-        ],
-      },
-    ],
   });
   return modal;
 }
