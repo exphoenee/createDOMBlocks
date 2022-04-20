@@ -1,6 +1,6 @@
 {
   "name": "createdomblocks",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Creating complex HTML blocks using JS.",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/exphoenee/createDOMBlocks#readme",
   "dependencies": {
-    "domelemjs": "^1.1.11",
+    "domelemjs": "^1.1.12",
     "interactjs": "^1.10.11"
   }
 }
