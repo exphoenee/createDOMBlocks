@@ -461,16 +461,17 @@ function createModal({ modalTitle, body }, params) {
     tag: div,
     attrs: {
       class: `modal-cover`,
+      id: `${params.id}-modal`,
     },
     style: {
-      position: "absolute",
+      position: "fixed",
       width: "100vw",
       height: "100vh",
       top: "50%",
       left: "50%",
       transform: "translate(-50%,-50%)",
       background: "white",
-      backdropFilter: "blur(5px) opacity(20%)",
+      opacity: "0.8",
       zIndex: "90",
     },
     children: {
@@ -518,7 +519,20 @@ function createModal({ modalTitle, body }, params) {
                 class: `modal-close-btn`,
               },
               text: "X",
-              style: { display: "block", marginLeft: "50px" },
+              style: {
+                display: "block",
+                marginLeft: "50px",
+                cursor: "pointer",
+              },
+              handleEvent: {
+                event: "click",
+                cb: () => {
+                  const thisModal = document.getElementById(
+                    `${params.id}-modal`
+                  );
+                  thisModal.classList.toggle("hidden");
+                },
+              },
             },
           ],
         },
@@ -544,6 +558,7 @@ function createModal({ modalTitle, body }, params) {
               tag: button,
               attrs: {
                 class: `modal-cancel-btn`,
+                cursor: "pointer",
               },
               text: "Cancel",
               style: { display: "block", marginLeft: "auto" },
@@ -552,6 +567,7 @@ function createModal({ modalTitle, body }, params) {
               tag: button,
               attrs: {
                 class: `modal-ok-btn`,
+                cursor: "pointer",
               },
               text: "Ok",
               style: { display: "block", marginLeft: "1rem" },
