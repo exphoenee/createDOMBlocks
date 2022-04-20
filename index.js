@@ -553,6 +553,10 @@ function createModal(
                 display: "block",
                 marginLeft: "50px",
                 cursor: "pointer",
+                fontWeight: 600,
+                background: "none",
+                border: "none",
+                outline: "none",
               },
               handleEvent: {
                 event: "click",
