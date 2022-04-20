@@ -722,3 +722,16 @@ createModal(
   { parent, id: "myModal" }
 );
 separator();
+
+createDOMElem(
+  createButton({
+    parent,
+    text: "Click me",
+    id: "myButton2",
+    handleEvent: {
+      event: "mouseover",
+      cb: (e) => console.log(`Mouse over: ${e.target.id}`),
+    },
+  })
+);
+separator();
