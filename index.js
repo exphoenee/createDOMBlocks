@@ -456,8 +456,7 @@ function createTable(data, params) {
     children: tableElem,
   });
 }
-function createModal(content, params) {
-  console.log(params.class ?? "modal");
+function createModal({ modalTitle, body }, params) {
   const modal = createDOMElem({
     tag: div,
     parent: params.parent,
@@ -466,27 +465,84 @@ function createModal(content, params) {
       top: "50%",
       left: "50%",
       transform: "translate(-50%,-50%)",
+      background: "white",
+      padding: "1.5rem",
+      borderRadius: "1rem",
+      boxShadow: "0 0.5rem 1rem rgba(0,0,0,0.5)",
+      opacity: "0.95",
+      zIndex: "100",
     },
     attrs: {
       class: `modal${params.class ? ` ${params.class}` : ""}`,
       id: params.id,
     },
-    children: {
-      tag: div,
-      attrs: {
-        class: `modal-content`,
+    children: [
+      {
+        tag: div,
+        attrs: {
+          class: `modal-title-container`,
+        },
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "start",
+        },
+        children: [
+          {
+            tag: h1,
+            attrs: {
+              class: `modal-title`,
+            },
+            text: modalTitle,
+            style: { display: "block", margin: 0 },
+          },
+          {
+            tag: button,
+            attrs: {
+              class: `modal-close-btn`,
+            },
+            text: "X",
+            style: { display: "block", marginLeft: "50px" },
+          },
+        ],
       },
-      children: content,
-    },
+      {
+        tag: div,
+        attrs: {
+          class: `modal-body`,
+        },
+        children: body,
+      },
+      {
+        tag: div,
+        attrs: {
+          class: `modal-footer`,
+        },
+        style: {
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "start",
+        },
+        children: [
+          {
+            tag: button,
+            attrs: {
+              class: `modal-cancel-btn`,
+            },
+            text: "Cancel",
+            style: { display: "block", marginLeft: "auto" },
+          },
+          {
+            tag: button,
+            attrs: {
+              class: `modal-ok-btn`,
+            },
+            text: "Ok",
+            style: { display: "block", marginLeft: "1rem" },
+          },
+        ],
+      },
+    ],
   });
-  const modalBtn = createDOMElem({
-    tag: button,
-    style: { position: "absolute", top: "5px", right: "5px" },
-    attrs: {
-      class: `modal-btn`,
-    },
-    text: "X",
-  });
-  modal.appendChild(modalBtn);
   return modal;
 }
