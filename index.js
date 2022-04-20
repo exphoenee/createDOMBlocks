@@ -39,7 +39,7 @@ function createInputElem(elemType, params) {
     handleEvent: [
       params.onChange && { event: "change", cb: params.onChange },
       params.click && { event: "click", cb: params.click },
-      ...(params.handleEvent && makeThatArray(params.handleEvent)),
+      ...(params.handleEvent ? makeThatArray(params.handleEvent) : []),
     ],
     children:
       params.options &&
@@ -455,6 +455,23 @@ function createTable(data, params) {
     },
     children: tableElem,
   });
+}
+function createButton(params) {
+  return {
+    parent: params.parent,
+    tag: button,
+    attrs: {
+      id: params.id ?? params.id,
+      class: `btn${params.class && ` ${params.class}`}`,
+    },
+    text: params.text ?? params.text,
+    style: params.style ?? params.style,
+    handleEvent: [
+      params.onChange && { event: "change", cb: params.onChange },
+      params.click && { event: "click", cb: params.click },
+      ...(params.handleEvent ? makeThatArray(params.handleEvent) : []),
+    ],
+  };
 }
 function createModal(
   { modalTitle, body },
