@@ -487,7 +487,7 @@ function createModal(
     });
     closeAction();
   };
-  const modal = createDOMElem({
+  return {
     tag: div,
     attrs: {
       class: `modal-cover`,
@@ -608,5 +608,10 @@ function createModal(
         },
       ],
     },
-  });
+  };
+}
+class domBlock {
+  constructor(recipe) {
+    this.block = createDOMElem(recipe);
+  }
 }
