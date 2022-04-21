@@ -543,26 +543,20 @@ function createModal(
               text: modalTitle,
               style: { display: "block", margin: 0 },
             },
-            {
-              tag: button,
-              attrs: {
-                class: `modal-close-btn`,
-              },
+            createButton({
+              class: `modal-close-btn`,
               text: "X",
               style: {
                 display: "block",
-                marginLeft: "50px",
+                marginLeft: "1.5rem",
                 cursor: "pointer",
                 fontWeight: 600,
                 background: "none",
                 border: "none",
                 outline: "none",
               },
-              handleEvent: {
-                event: "click",
-                cb: closeModal,
-              },
-            },
+              click: closeModal,
+            }),
           ],
         },
         {
@@ -583,38 +577,33 @@ function createModal(
             alignItems: "start",
           },
           children: [
-            {
-              tag: button,
-              attrs: {
-                class: `modal-cancel-btn`,
-                cursor: "pointer",
+            createButton({
+              class: `modal-cancel-btn`,
+              click: () => {
+                cacnelAction();
+                closeModal();
               },
-              handleEvent: {
-                event: "click",
-                cb: () => {
-                  cacnelAction();
-                  closeModal();
-                },
-              },
+
               text: "Cancel",
-              style: { display: "block", marginLeft: "auto" },
-            },
-            {
-              tag: button,
-              attrs: {
-                class: `modal-ok-btn`,
+              style: {
                 cursor: "pointer",
+                display: "block",
+                marginLeft: "auto",
               },
-              handleEvent: {
-                event: "click",
-                cb: () => {
-                  okAction();
-                  closeModal();
-                },
+            }),
+            createButton({
+              class: `modal-ok-btn`,
+              click: () => {
+                okAction();
+                closeModal();
               },
               text: "Ok",
-              style: { display: "block", marginLeft: "1rem" },
-            },
+              style: {
+                cursor: "pointer",
+                display: "block",
+                marginLeft: "0.5rem",
+              },
+            }),
           ],
         },
       ],
