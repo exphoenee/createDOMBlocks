@@ -446,7 +446,7 @@ function createTable(data, params) {
   tableElem.push(tableBody);
   if (params.showFooter) tableElem.push(tableFoot);
 
-  createDOMElem({
+  return {
     parent: params.parent,
     tag: table,
     attrs: {
@@ -454,7 +454,7 @@ function createTable(data, params) {
       id: params.id,
     },
     children: tableElem,
-  });
+  };
 }
 function createButton(params) {
   return {
