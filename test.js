@@ -631,17 +631,19 @@ const data1 = [
   ["13", "14", "15", "16"],
   ["17", "18", "19", "20"],
 ];
-createTable(data1, {
-  parent,
-  hasHeader: true,
-  hasFooter: true,
-  addRowNumbers: true,
-  sumRowValues: true,
-  cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
-  precision: 2,
-  class: "listOfNumbers",
-  id: "myUnsortedList",
-});
+new domBlock(
+  createTable(data1, {
+    parent,
+    hasHeader: true,
+    hasFooter: true,
+    addRowNumbers: true,
+    sumRowValues: true,
+    cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
+    precision: 2,
+    class: "listOfNumbers",
+    id: "myUnsortedList",
+  })
+);
 separator();
 const data2 = [
   ["Column 1", "Column 2", "Column 3", "Column 4"],
@@ -651,17 +653,21 @@ const data2 = [
   ["13", "14", "15", "16"],
   ["17", "18", "19", "20"],
 ];
-createTable(data2, {
-  parent,
-  hasHeader: true,
-  hasFooter: true,
-  addRowNumbers: true,
-  sumRowValues: true,
-  cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
-  precision: 2,
-  class: "listOfNumbers",
-  id: "myUnsortedList",
-});
+
+new domBlock(
+  createTable(data2, {
+    parent,
+    hasHeader: true,
+    hasFooter: true,
+    addRowNumbers: true,
+    sumRowValues: true,
+    cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
+    precision: 2,
+    class: "listOfNumbers",
+    id: "myUnsortedList",
+  })
+);
+
 separator();
 const data3 = [
   {
@@ -695,19 +701,21 @@ const data3 = [
     "Fourth column": "20",
   },
 ];
-createTable(data3, {
-  parent,
-  hasHeader: true,
-  showHeader: true,
-  hasFooter: true,
-  showFooter: true,
-  addRowNumbers: true,
-  sumRowValues: true,
-  cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
-  precision: 2,
-  class: "listOfNumbers",
-  id: "myUnsortedList",
-});
+new domBlock(
+  createTable(data3, {
+    parent,
+    hasHeader: true,
+    showHeader: true,
+    hasFooter: true,
+    showFooter: true,
+    addRowNumbers: true,
+    sumRowValues: true,
+    cellNames: { sum: "Összesen", total: "Összeg", rowNr: "Sor száma" },
+    precision: 2,
+    class: "listOfNumbers",
+    id: "myUnsortedList",
+  })
+);
 separator();
 createDOMElem(
   createButton({
