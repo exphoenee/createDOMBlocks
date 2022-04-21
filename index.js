@@ -91,7 +91,7 @@ function createTextInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "text",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createTelInput(params) {
   const conf = {
@@ -99,7 +99,7 @@ function createTelInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "tel",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createUrlInput(params) {
   const conf = {
@@ -107,7 +107,7 @@ function createUrlInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "url",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createSearchInput(params) {
   const conf = {
@@ -115,7 +115,7 @@ function createSearchInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "search",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createEmailInput(params) {
   const conf = {
@@ -123,7 +123,7 @@ function createEmailInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "email",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createPasswordInput(params) {
   const conf = {
@@ -131,28 +131,28 @@ function createPasswordInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "password",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createCheckbox(params) {
-  createInput({ ...params, type: "checkbox" });
+  return { ...params, type: "checkbox" };
 }
 function createNumberInput(params) {
-  createInput({ ...params, type: "number" });
+  return { ...params, type: "number" };
 }
 function createDatetimeInput(params) {
-  createInput({ ...params, type: "datetime-local" });
+  return { ...params, type: "datetime-local" };
 }
 function createMonthInput(params) {
-  createInput({ ...params, type: "month" });
+  return { ...params, type: "month" };
 }
 function createWeekInput(params) {
-  createInput({ ...params, type: "week" });
+  return { ...params, type: "week" };
 }
 function createDateInput(params) {
-  createInput({ ...params, type: "date" });
+  return { ...params, type: "date" };
 }
 function createTimeInput(params) {
-  createInput({ ...params, type: "time" });
+  return { ...params, type: "time" };
 }
 function createSelect(params) {
   const conf = {
@@ -160,7 +160,7 @@ function createSelect(params) {
     type: select,
     labelfirst: params.labelfirst ?? true,
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(select, conf)));
+  return createInputContainer(conf, createInputChildren(select, conf));
 }
 function createRadio(params) {
   const conf = {
@@ -169,38 +169,36 @@ function createRadio(params) {
     type: "radio",
   };
   const { value, options, type, labelfirst, name, id, classes } = conf;
-  createDOMElem(
-    createInputContainer(
-      conf,
-      options
-        .map((option, index) => {
-          return {
-            tag: div,
-            attrs: { classes: "radio-option" },
-            children: createInputChildren(input, {
-              labelText: option.text,
-              type,
-              labelfirst,
-              name: name || id,
-              id: `${id}-${option.value}`,
-              checked:
-                typeof value === "string"
-                  ? option.text === value
-                  : typeof value === "number"
-                  ? value === index + 1
-                  : false,
-              classes,
-              onChange: option.onChange && {
-                event: "change",
-                cb: option.onChange,
-              },
-              click: option.click && { event: "click", cb: option.click },
-              handleEvent: option.handleEvent && option.handleEvent,
-            }),
-          };
-        })
-        .flat()
-    )
+  return createInputContainer(
+    conf,
+    options
+      .map((option, index) => {
+        return {
+          tag: div,
+          attrs: { classes: "radio-option" },
+          children: createInputChildren(input, {
+            labelText: option.text,
+            type,
+            labelfirst,
+            name: name || id,
+            id: `${id}-${option.value}`,
+            checked:
+              typeof value === "string"
+                ? option.text === value
+                : typeof value === "number"
+                ? value === index + 1
+                : false,
+            classes,
+            onChange: option.onChange && {
+              event: "change",
+              cb: option.onChange,
+            },
+            click: option.click && { event: "click", cb: option.click },
+            handleEvent: option.handleEvent && option.handleEvent,
+          }),
+        };
+      })
+      .flat()
   );
 }
 function createTextarea(params) {
@@ -209,51 +207,41 @@ function createTextarea(params) {
     type: textarea,
     labelfirst: params.labelfirst ?? true,
   };
-  createDOMElem(
-    createInputContainer(conf, createInputChildren(textarea, conf))
-  );
+  return createInputContainer(conf, createInputChildren(textarea, conf));
 }
 function createResetInput(params) {
-  createDOMElem(
-    createInputElem(input, {
-      ...params,
-      parent: params.parent,
-      value: params.text,
-      type: "reset",
-    })
-  );
+  return createInputElem(input, {
+    ...params,
+    parent: params.parent,
+    value: params.text,
+    type: "reset",
+  });
 }
 function createButtonInput(params) {
-  createDOMElem(
-    createInputElem(input, {
-      ...params,
-      parent: params.parent,
-      value: params.text,
-      type: "button",
-    })
-  );
+  return createInputElem(input, {
+    ...params,
+    parent: params.parent,
+    value: params.text,
+    type: "button",
+  });
 }
 function createSubmitInput(params) {
-  createDOMElem(
-    createInputElem(input, {
-      ...params,
-      parent: params.parent,
-      value: params.text,
-      type: "submit",
-    })
-  );
+  return createInputElem(input, {
+    ...params,
+    parent: params.parent,
+    value: params.text,
+    type: "submit",
+  });
 }
 function createHiddenInput(params) {
-  createDOMElem(
-    createInputElem(input, {
-      ...params,
-      parent: params.parent,
-      type: "hidden",
-    })
-  );
+  return createInputElem(input, {
+    ...params,
+    parent: params.parent,
+    type: "hidden",
+  });
 }
 function createColorInput(params) {
-  createInput({ ...params, type: "color" });
+  return { ...params, type: "color" };
 }
 function createFileInput(params) {
   const conf = {
@@ -261,7 +249,7 @@ function createFileInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: params.type ?? "file",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createRangeInput(params) {
   const conf = {
@@ -269,10 +257,10 @@ function createRangeInput(params) {
     labelfirst: params.labelfirst ?? true,
     type: "range",
   };
-  createDOMElem(createInputContainer(conf, createInputChildren(input, conf)));
+  return createInputContainer(conf, createInputChildren(input, conf));
 }
 function createUnorderedList(data, params) {
-  createDOMElem({
+  return {
     parent: params.parent,
     tag: ul,
     attrs: {
@@ -286,10 +274,10 @@ function createUnorderedList(data, params) {
         attrs: { id: `${params.id}-${index}`, class: "list-elem" },
       };
     }),
-  });
+  };
 }
 function createOrderedList(data, params) {
-  createDOMElem({
+  return {
     parent: params.parent,
     tag: ol,
     attrs: {
@@ -304,16 +292,16 @@ function createOrderedList(data, params) {
         attrs: { id: `${params.id}-${index}`, class: "list-elem" },
       };
     }),
-  });
+  };
 }
 function newLine(parent) {
-  createDOMElem({
+  return {
     parent,
     tag: br,
-  });
+  };
 }
 function createParagraph(params) {
-  createDOMElem({
+  return {
     tag: p,
     text: params.text,
     parent: params.parent,
@@ -321,10 +309,10 @@ function createParagraph(params) {
       id: params.id,
       class: params.class && params.class,
     },
-  });
+  };
 }
 function createTitle(params, level = 1) {
-  createDOMElem({
+  return {
     tag: [h1, h2, h3, h4, h5, h6][
       Math.max(1, Math.min(6, Math.abs(level))) - 1
     ],
@@ -334,7 +322,7 @@ function createTitle(params, level = 1) {
       id: params.id,
       class: params.class && params.class,
     },
-  });
+  };
 }
 function createTable(data, params) {
   params = {
