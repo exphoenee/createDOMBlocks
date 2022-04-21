@@ -709,19 +709,6 @@ createTable(data3, {
   id: "myUnsortedList",
 });
 separator();
-createModal(
-  {
-    modalTitle: "This is a modal",
-    body: { tag: p, text: "This is a modal text" },
-  },
-  {
-    okAction: (e) => console.log(`Clicked: ok`),
-    cacnelAction: (e) => console.log(`Clicked: cancel`),
-    closeAction: (e) => console.log(`Clicked: close`),
-  },
-  { parent, id: "myModal" }
-);
-separator();
 createDOMElem(
   createButton({
     parent,
@@ -734,4 +721,21 @@ createDOMElem(
     },
   })
 );
+separator();
+
+new domBlock(
+  createModal(
+    {
+      modalTitle: "This is a modal",
+      body: { tag: p, text: "This is a modal text" },
+    },
+    {
+      okAction: (e) => console.log(`Clicked: ok`),
+      cacnelAction: (e) => console.log(`Clicked: cancel`),
+      closeAction: (e) => console.log(`Clicked: close`),
+    },
+    { parent, id: "myModal" }
+  )
+);
+
 separator();
