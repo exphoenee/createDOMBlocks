@@ -598,6 +598,14 @@ function createModal(
     },
   };
 }
+function asyncImage() {
+  return {
+    tag: img,
+    attrs: {
+      class: `async-image`,
+    },
+  };
+}
 class domBlock {
   constructor(recipe) {
     this.block = createDOMElem(recipe);
