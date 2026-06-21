@@ -24,3 +24,5 @@ export { createCustomMonthPicker } from "./createCustomMonthPicker";
 export { createCustomDateTimePicker } from "./createCustomDateTimePicker";
 export { createCustomDateRangePicker } from "./createCustomDateRangePicker";
 export { createDragAndDropFileInput } from "./createDragAndDropFileInput";
+export { createDrawer, openDrawer, closeDrawer } from "./createDrawer";
+export type { DrawerMenuItem, DrawerParams } from "./createDrawer";

@@ -19,24 +19,24 @@ function copyCssPlugin() {
   };
 }
 
-/** @type {import('webpack').Configuration} */
 export default {
   mode: "development",
   devtool: "source-map",
   entry: {
     index: "./src/index.ts",
-    "test/forms": "./test/pages/forms.ts",
-    "test/buttons": "./test/pages/buttons.ts",
-    "test/selection": "./test/pages/selection.ts",
-    "test/tables": "./test/pages/tables.ts",
-    "test/lists": "./test/pages/lists.ts",
-    "test/navigation": "./test/pages/navigation.ts",
-    "test/content": "./test/pages/content.ts",
-    "test/feedback": "./test/pages/feedback.ts",
-    "test/interactive": "./test/pages/interactive.ts",
-    "test/modal": "./test/pages/modal.ts",
-    "test/avatars": "./test/pages/avatars.ts",
-    "test/customInputs": "./test/pages/customInputs.ts",
+    "documentation/examples/forms": "./documentation/examples/forms.ts",
+    "documentation/examples/buttons": "./documentation/examples/buttons.ts",
+    "documentation/examples/selection": "./documentation/examples/selection.ts",
+    "documentation/examples/tables": "./documentation/examples/tables.ts",
+    "documentation/examples/lists": "./documentation/examples/lists.ts",
+    "documentation/examples/navigation": "./documentation/examples/navigation.ts",
+    "documentation/examples/content": "./documentation/examples/content.ts",
+    "documentation/examples/feedback": "./documentation/examples/feedback.ts",
+    "documentation/examples/interactive": "./documentation/examples/interactive.ts",
+    "documentation/examples/modal": "./documentation/examples/modal.ts",
+    "documentation/examples/avatars": "./documentation/examples/avatars.ts",
+    "documentation/examples/customInputs": "./documentation/examples/customInputs.ts",
+    "documentation/examples/index": "./documentation/examples/index.ts",
   },
   output: {
     path: path.resolve(__dirname, "dist"),

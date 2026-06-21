@@ -383,7 +383,7 @@ export interface LinkParams {
 }
 
 export interface CodeBlockParams {
-  parent: HTMLElement | string;
+  parent?: HTMLElement | string;
   id?: string;
   class?: string;
   code: string;

@@ -63,6 +63,9 @@ export {
   createCustomDateTimePicker,
   createCustomDateRangePicker,
   createDragAndDropFileInput,
+  createDrawer,
+  openDrawer,
+  closeDrawer,
 } from "./components";
 
 export type {
@@ -132,3 +135,8 @@ export type {
   CustomDateRangePickerParams,
   DragAndDropFileInputParams,
 } from "./types";
+
+export type {
+  DrawerMenuItem,
+  DrawerParams,
+} from "./components";

@@ -1,13 +1,20 @@
 import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
 import type { CodeBlockParams } from "../types";
+import { highlightCode } from "./highlighter";
 
 export function createCodeBlock(config: CodeBlockParams): HTMLElement {
   const children: CreateDOMElemOptions[] = [];
 
   if (config.language) {
-    children.push({ tag: "div", text: config.language, attrs: { class: "code-language" } });
+    children.push({
+      tag: "div",
+      text: config.language.toUpperCase(),
+      attrs: { class: "code-language" },
+    });
   }
+
+  const highlighted = highlightCode(config.code, config.language);
 
   children.push({
     tag: "pre",
@@ -15,14 +22,23 @@ export function createCodeBlock(config: CodeBlockParams): HTMLElement {
     children: [
       {
         tag: "code",
-        text: config.code,
+        content: highlighted,
         attrs: { class: `code-content${config.language ? ` language-${config.language}` : ""}` },
       },
     ],
   });
 
-  const rootAttrs: Record<string, string> = { class: `code-block${config.class ? ` ${config.class}` : ""}` };
+  const rootAttrs: Record<string, string> = {
+    class: `code-block${config.class ? ` ${config.class}` : ""}`,
+  };
   if (config.id) rootAttrs.id = config.id;
 
-  return createDOMElem({ tag: "div", parent: config.parent, attrs: rootAttrs, children });
+  const opts: CreateDOMElemOptions = {
+    tag: "div",
+    attrs: rootAttrs,
+    children,
+  };
+  if (config.parent) opts.parent = config.parent;
+
+  return createDOMElem(opts);
 }
