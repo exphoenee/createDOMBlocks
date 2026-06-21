@@ -1445,18 +1445,29 @@ body.drawer-transition {
 
 /* ===== Landing Page ===== */
 .landing-hero {
-  text-align: center;
   padding: 3rem 1.5rem;
   background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
   border-radius: 1rem;
   margin-bottom: 2rem;
 }
 
+.landing-hero-inner {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .landing-logo {
-  width: 120px;
-  height: 120px;
-  margin: 0 auto 1rem;
+  width: 140px;
+  height: 140px;
+  flex-shrink: 0;
   object-fit: contain;
+}
+
+.landing-hero-text {
+  text-align: left;
 }
 
 .landing-hero h1 {
