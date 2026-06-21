@@ -2,7 +2,7 @@
 import { createCard, createGrid, createContainer, createParagraph, createTitle, createBlockquote, createCodeBlock, createImage, createLink, createDivider } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
-initDocPage();
+const done = initDocPage();
 
 const sections: DocSection[] = [
   {

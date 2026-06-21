@@ -5,6 +5,7 @@ import { createHeader } from "./createHeader";
 import { createFooter } from "./createFooter";
 import { getDrawerMenuItems } from "./menuItems";
 import { highlightCode } from "../../src/components/highlighter";
+import { createPageLoading } from "./createPageLoading";
 
 export interface DocSection {
   title: string;
@@ -34,11 +35,13 @@ function createCodeBlockHTML(code: string, lang?: string): CreateDOMElemOptions 
   };
 }
 
-export function initDocPage(): void {
+export function initDocPage(): () => void {
+  const done = createPageLoading();
   const items = getDrawerMenuItems();
   createDrawer({ items, title: "createDOMBlocks", defaultState: "open", hasOverlay: false, mode: "push" });
   createHeader({ onMenuClick: () => openDrawer() });
   createFooter();
+  return done;
 }
 
 export function addFooter(): HTMLElement {

@@ -2,7 +2,7 @@ import { initDocPage } from "../page-components/index";
 import { createCard, createCodeBlock } from "../../src/index";
 import { createDOMElem } from "domelemjs";
 
-initDocPage();
+const done = initDocPage();
 
 const app = document.getElementById("app")!;
 
@@ -97,4 +97,5 @@ createCard({
   },
 });
 
+done();
 

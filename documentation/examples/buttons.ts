@@ -2,7 +2,7 @@
 import { createButtonInput, createSubmitInput, createResetInput, createButton } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
-initDocPage();
+const done = initDocPage();
 
 const sections: DocSection[] = [
   {

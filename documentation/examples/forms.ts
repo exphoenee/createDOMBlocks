@@ -1,8 +1,8 @@
-﻿import { initDocPage, renderSections } from "../page-components/index";
+import { initDocPage, renderSections } from "../page-components/index";
 import { createTextInput, createTelInput, createUrlInput, createSearchInput, createEmailInput, createPasswordInput, createNumberInput, createDateInput, createDatetimeInput, createTimeInput, createMonthInput, createWeekInput, createCheckbox, createColorInput, createFileInput, createRangeInput, createForm } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
-initDocPage();
+const done = initDocPage();
 
 const sections: DocSection[] = [
   {
@@ -135,3 +135,4 @@ const sections: DocSection[] = [
 ];
 
 renderSections(sections);
+done();

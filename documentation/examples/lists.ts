@@ -2,7 +2,7 @@
 import { createUnorderedList, createOrderedList } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
-initDocPage();
+const done = initDocPage();
 
 const sections: DocSection[] = [
   {
