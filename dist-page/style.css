@@ -1452,6 +1452,13 @@ body.drawer-transition {
   margin-bottom: 2rem;
 }
 
+.landing-logo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1rem;
+  object-fit: contain;
+}
+
 .landing-hero h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
@@ -1485,4 +1492,31 @@ body.drawer-transition {
   margin: 0;
   color: var(--text-light);
   font-size: 0.875rem;
+}
+
+/* ===== Page Loading ===== */
+.page-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+
+.page-loading.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-loading-spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }

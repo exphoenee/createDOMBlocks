@@ -140,6 +140,39 @@ function createHeader(params = {}) {
 
 /***/ },
 
+/***/ "./documentation/page-components/createPageLoading.ts"
+/*!************************************************************!*\
+  !*** ./documentation/page-components/createPageLoading.ts ***!
+  \************************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createPageLoading: () => (/* binding */ createPageLoading)
+/* harmony export */ });
+/* harmony import */ var domelemjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! domelemjs */ "./node_modules/domelemjs/dist/index.js");
+
+function createPageLoading() {
+    const overlay = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+        tag: "div",
+        attrs: { class: "page-loading" },
+        children: [
+            {
+                tag: "div",
+                attrs: { class: "page-loading-spinner" },
+            },
+        ],
+    });
+    document.body.appendChild(overlay);
+    return () => {
+        overlay.classList.add("fade-out");
+        overlay.addEventListener("transitionend", () => overlay.remove());
+    };
+}
+
+
+/***/ },
+
 /***/ "./documentation/page-components/index.ts"
 /*!************************************************!*\
   !*** ./documentation/page-components/index.ts ***!
@@ -153,6 +186,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   createDrawer: () => (/* reexport safe */ _src_components_createDrawer__WEBPACK_IMPORTED_MODULE_0__.createDrawer),
 /* harmony export */   createFooter: () => (/* reexport safe */ _createFooter__WEBPACK_IMPORTED_MODULE_2__.createFooter),
 /* harmony export */   createHeader: () => (/* reexport safe */ _createHeader__WEBPACK_IMPORTED_MODULE_1__.createHeader),
+/* harmony export */   createPageLoading: () => (/* reexport safe */ _createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading),
 /* harmony export */   getDrawerMenuItems: () => (/* reexport safe */ _menuItems__WEBPACK_IMPORTED_MODULE_3__.getDrawerMenuItems),
 /* harmony export */   initDocPage: () => (/* reexport safe */ _initPage__WEBPACK_IMPORTED_MODULE_4__.initDocPage),
 /* harmony export */   openDrawer: () => (/* reexport safe */ _src_components_createDrawer__WEBPACK_IMPORTED_MODULE_0__.openDrawer),
@@ -163,6 +197,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
 /* harmony import */ var _initPage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./initPage */ "./documentation/page-components/initPage.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+
 
 
 
@@ -190,6 +226,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
 /* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+
 
 
 
@@ -216,10 +254,12 @@ function createCodeBlockHTML(code, lang) {
     };
 }
 function initDocPage() {
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_components_createDrawer__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({ items, title: "createDOMBlocks", defaultState: "open", hasOverlay: false, mode: "push" });
     (0,_createHeader__WEBPACK_IMPORTED_MODULE_2__.createHeader)({ onMenuClick: () => (0,_src_components_createDrawer__WEBPACK_IMPORTED_MODULE_1__.openDrawer)() });
     (0,_createFooter__WEBPACK_IMPORTED_MODULE_3__.createFooter)();
+    return done;
 }
 function addFooter() {
     return (0,_createFooter__WEBPACK_IMPORTED_MODULE_3__.createFooter)();
@@ -4025,7 +4065,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../src/index */ "./src/index.ts");
 
 
-(0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
+const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     {
         title: "createSelect",
@@ -4061,6 +4101,7 @@ const sections = [
     },
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);
+done();
 
 })();
 
