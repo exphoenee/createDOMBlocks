@@ -53,6 +53,7 @@ function buildMenuItem(item: DrawerMenuItem): CreateDOMElemOptions {
 }
 
 let currentMode: "overlay" | "push" = "overlay";
+let initialOpenDone = false;
 
 export function createDrawer(params: DrawerParams): HTMLElement {
   const id = params.id || "sidebar-drawer";
@@ -118,16 +119,23 @@ export function createDrawer(params: DrawerParams): HTMLElement {
 export function openDrawer(id: string = "sidebar-drawer"): void {
   const overlay = document.getElementById(`${id}-overlay`);
   const sidebar = document.getElementById(`${id}-sidebar`);
+  if (initialOpenDone) {
+    document.body.classList.add("drawer-transition");
+  }
   if (overlay) overlay.classList.add("open");
   if (sidebar) sidebar.classList.add("open");
   if (currentMode === "push") {
     document.body.classList.add("drawer-push-open");
   }
+  initialOpenDone = true;
 }
 
 export function closeDrawer(id: string = "sidebar-drawer"): void {
   const overlay = document.getElementById(`${id}-overlay`);
   const sidebar = document.getElementById(`${id}-sidebar`);
+  if (initialOpenDone) {
+    document.body.classList.add("drawer-transition");
+  }
   if (overlay) overlay.classList.remove("open");
   if (sidebar) sidebar.classList.remove("open");
   document.body.classList.remove("drawer-push-open");

@@ -72,7 +72,7 @@ const documentationConfig = {
     "examples/index": "./documentation/examples/index.ts",
   },
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path: path.resolve(__dirname, "dist-page"),
     filename: "[name].js",
   },
   resolve: {
@@ -85,7 +85,17 @@ const documentationConfig = {
     rules: [
       {
         test: /\.ts$/,
-        use: "ts-loader",
+        use: {
+          loader: "ts-loader",
+          options: {
+            compilerOptions: {
+              declaration: false,
+              declarationMap: false,
+              sourceMap: false,
+              rootDir: ".",
+            },
+          },
+        },
         exclude: /node_modules/,
       },
     ],

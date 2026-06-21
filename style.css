@@ -1263,8 +1263,11 @@ form {
 }
 
 body.drawer-push-open {
-  transition: margin-left 0.3s ease;
   margin-left: 280px;
+}
+
+body.drawer-transition {
+  transition: margin-left 0.3s ease;
 }
 
 .drawer-header {

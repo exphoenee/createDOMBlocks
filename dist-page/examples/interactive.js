@@ -1794,6 +1794,7 @@ function buildMenuItem(item) {
     };
 }
 let currentMode = "overlay";
+let initialOpenDone = false;
 function createDrawer(params) {
     const id = params.id || "sidebar-drawer";
     const defaultState = params.defaultState || "closed";
@@ -1852,6 +1853,9 @@ function createDrawer(params) {
 function openDrawer(id = "sidebar-drawer") {
     const overlay = document.getElementById(`${id}-overlay`);
     const sidebar = document.getElementById(`${id}-sidebar`);
+    if (initialOpenDone) {
+        document.body.classList.add("drawer-transition");
+    }
     if (overlay)
         overlay.classList.add("open");
     if (sidebar)
@@ -1859,10 +1863,14 @@ function openDrawer(id = "sidebar-drawer") {
     if (currentMode === "push") {
         document.body.classList.add("drawer-push-open");
     }
+    initialOpenDone = true;
 }
 function closeDrawer(id = "sidebar-drawer") {
     const overlay = document.getElementById(`${id}-overlay`);
     const sidebar = document.getElementById(`${id}-sidebar`);
+    if (initialOpenDone) {
+        document.body.classList.add("drawer-transition");
+    }
     if (overlay)
         overlay.classList.remove("open");
     if (sidebar)

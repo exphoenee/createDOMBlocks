@@ -21,7 +21,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "webpack && copy style.css dist\\style.css",
+    "build": "webpack",
     "build:page": "webpack && node scripts/build-page.mjs",
     "dev": "webpack serve --open",
     "typecheck": "tsc --noEmit",
