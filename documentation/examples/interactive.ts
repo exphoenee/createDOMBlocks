@@ -1,4 +1,4 @@
-﻿import { initDocPage, renderSections } from "../page-components/index";
+import { initDocPage, renderSections } from "../page-components/index";
 import { createAccordion, createTooltip } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
@@ -32,3 +32,4 @@ const sections: DocSection[] = [
 import { createDOMElem } from "domelemjs";
 
 renderSections(sections);
+done();

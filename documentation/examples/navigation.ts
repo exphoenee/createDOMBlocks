@@ -1,4 +1,4 @@
-﻿import { initDocPage, renderSections } from "../page-components/index";
+import { initDocPage, renderSections } from "../page-components/index";
 import { createNav, createBreadcrumb, createTabs } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
@@ -42,3 +42,4 @@ const sections: DocSection[] = [
 ];
 
 renderSections(sections);
+done();

@@ -1,4 +1,4 @@
-﻿import { initDocPage, renderSections } from "../page-components/index";
+import { initDocPage, renderSections } from "../page-components/index";
 import { createCard, createGrid, createContainer, createParagraph, createTitle, createBlockquote, createCodeBlock, createImage, createLink, createDivider } from "../../src/index";
 import type { DocSection } from "../page-components/index";
 
@@ -71,3 +71,4 @@ const sections: DocSection[] = [
 ];
 
 renderSections(sections);
+done();
