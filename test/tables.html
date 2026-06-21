@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Táblázatok</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { padding: 2rem; max-width: 900px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    h1 { margin-bottom: 1.5rem; }
+    .comp { margin-bottom: 2.5rem; }
+    .comp h2 { margin-bottom: 0.5rem; }
+    .comp p { color: #6b7280; margin-bottom: 0.75rem; }
+    .comp pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin-bottom: 1rem; }
+    .comp .result { padding: 1rem; border: 2px dashed #e5e7eb; border-radius: 0.5rem; }
+    .comp .result-label { font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
+    a.back { display: inline-block; margin-bottom: 1rem; color: #3b82f6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Vissza</a>
+  <h1>T&aacute;bl&aacute;zatok</h1>
+
+  <div class="comp">
+    <h2>createTable (t&ouml;mb)</h2>
+    <p>T&aacute;bl&aacute;zat t&ouml;mb&ouml;l &eacute;p&iacute;tve, fejl&eacute;ccel, sor sz&aacute;mokkal &eacute;s &ouml;sszeg oszloppal.</p>
+    <pre><code>createTable([
+  ["Nev", "Kor", "Varos"],
+  ["Anna", 25, "Budapest"],
+  ["Bela", 32, "Debrecen"],
+  ["Csaba", 18, "Szeged"],
+], {
+  parent: "#app",
+  id: "table1",
+  hasHeader: true,
+  addRowNumbers: true,
+  sumRowValues: true,
+  cellNames: { sum: "Osszes", total: "Osszeg", rowNr: "#" },
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-table1"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createTable (objektum)</h2>
+    <p>T&aacute;bl&aacute;zat objektum t&ouml;mb&ouml;l, automatikus fejl&eacute;ccel &eacute;s l&aacute;bl&eacute;c &ouml;sszeggel.</p>
+    <pre><code>createTable([
+  { Termek: "Laptop", Ar: 299000, Keszlet: 15 },
+  { Termek: "Monitor", Ar: 149000, Keszlet: 23 },
+  { Termek: "Billentyu", Ar: 24900, Keszlet: 50 },
+], {
+  parent: "#app",
+  id: "table2",
+  hasHeader: true,
+  hasFooter: true,
+  addRowNumbers: true,
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-table2"></div>
+  </div>
+
+  <script src="../dist/test/tables.js"></script>
+</body>
+</html>

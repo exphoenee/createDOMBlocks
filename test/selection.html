@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Select / Radio / CustomSelect</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { padding: 2rem; max-width: 900px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    h1 { margin-bottom: 1.5rem; }
+    .comp { margin-bottom: 2.5rem; }
+    .comp h2 { margin-bottom: 0.5rem; }
+    .comp p { color: #6b7280; margin-bottom: 0.75rem; }
+    .comp pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin-bottom: 1rem; }
+    .comp .result { padding: 1rem; border: 2px dashed #e5e7eb; border-radius: 0.5rem; }
+    .comp .result-label { font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
+    a.back { display: inline-block; margin-bottom: 1rem; color: #3b82f6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Vissza</a>
+  <h1>Select, Radio, CustomSelect</h1>
+
+  <div class="comp">
+    <h2>createSelect</h2>
+    <p>Leg&ouml;rd&uuml;l&#x0151; men&uuml; opci&oacute;kkal.</p>
+    <pre><code>createSelect({
+  parent: "#app",
+  id: "selectInput",
+  labelText: "Valassz:",
+  value: 2,
+  options: [
+    { text: "Els&#x00F3;", value: 1 },
+    { text: "Masodik", value: 2 },
+    { text: "Harmadik", value: 3 },
+  ],
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-select"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createRadio</h2>
+    <p>Radio gomb csoport opci&oacute;kkal.</p>
+    <pre><code>createRadio({
+  parent: "#app",
+  id: "radioInput",
+  labelText: "Radio:",
+  value: 2,
+  options: [
+    { text: "Els&#x00F3;", value: 1 },
+    { text: "Masodik", value: 2 },
+    { text: "Harmadik", value: 3 },
+  ],
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-radio"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createCustomSelect</h2>
+    <p>Custom leg&ouml;rd&uuml;l&#x0151; egy&eacute;ni st&iacute;lussal, k&uuml;l&ouml;n click handlerrel v&aacute;ltoztat&aacute;sn&aacute;l.</p>
+    <pre><code>createCustomSelect({
+  parent: "#app",
+  id: "customSelect",
+  labelText: "Custom select:",
+  placeholder: "Valassz opciot...",
+  options: [
+    { text: "Budapest", value: "bp" },
+    { text: "Debrecen", value: "dc" },
+    { text: "Szeged", value: "sz" },
+  ],
+  onChange: (val) => console.log("Custom select:", val),
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-custom"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createTextarea</h2>
+    <p>Sz&ouml;vegdoboz sorokkal &eacute;s oszlopokkal.</p>
+    <pre><code>createTextarea({
+  parent: "#app",
+  id: "textarea",
+  labelText: "Szovegmezo:",
+  value: "Szoveg...",
+  rows: 5,
+  cols: 40,
+  placeholder: "Ide irj...",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-textarea"></div>
+  </div>
+
+  <script src="../dist/test/selection.js"></script>
+</body>
+</html>

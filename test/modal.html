@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modal</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { padding: 2rem; max-width: 900px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    h1 { margin-bottom: 1.5rem; }
+    .comp { margin-bottom: 2.5rem; }
+    .comp h2 { margin-bottom: 0.5rem; }
+    .comp p { color: #6b7280; margin-bottom: 0.75rem; }
+    .comp pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin-bottom: 1rem; }
+    .comp .result { padding: 1rem; border: 2px dashed #e5e7eb; border-radius: 0.5rem; }
+    .comp .result-label { font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
+    a.back { display: inline-block; margin-bottom: 1rem; color: #3b82f6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Vissza</a>
+  <h1>Modal</h1>
+
+  <div class="comp">
+    <h2>createModal</h2>
+    <p>Mod&aacute;l dial&oacute;gus ablak, ami port&aacute;lk&eacute;nt a body v&eacute;g&eacute;re ker&uuml;l. Anim&aacute;ci&oacute;val ny&iacute;lik &eacute;s z&aacute;r&oacute;dik.</p>
+    <pre><code>const modal = createModal(
+  { modalTitle: "Pelda Modal", body: { tag: "p", text: "Ez egy modal tartalma." } },
+  { okAction: () => console.log("OK"), cancelAction: () => console.log("Megse") },
+  { id: "demoModal" }
+);
+
+createButton({
+  parent: "#app",
+  text: "Modal megnyitasa",
+  click: () => modal.__openModal(),
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-modal"></div>
+  </div>
+
+  <script src="../dist/test/modal.js"></script>
+</body>
+</html>

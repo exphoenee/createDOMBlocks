@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gombok</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { padding: 2rem; max-width: 900px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    h1 { margin-bottom: 1.5rem; }
+    .comp { margin-bottom: 2.5rem; }
+    .comp h2 { margin-bottom: 0.5rem; }
+    .comp p { color: #6b7280; margin-bottom: 0.75rem; }
+    .comp pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin-bottom: 1rem; }
+    .comp .result { padding: 1rem; border: 2px dashed #e5e7eb; border-radius: 0.5rem; }
+    .comp .result-label { font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
+    a.back { display: inline-block; margin-bottom: 1rem; color: #3b82f6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Vissza</a>
+  <h1>Gombok</h1>
+
+  <div class="comp">
+    <h2>createButtonInput</h2>
+    <p>Input gomb a submit/reset mellett.</p>
+    <pre><code>createButtonInput({
+  parent: "#app",
+  id: "btnInput",
+  text: "Button input",
+  click: () => console.log("clicked"),
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-btn-input"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createSubmitInput</h2>
+    <p>Submit gomb, form-ok k&uuml;ld&eacute;s&eacute;hez.</p>
+    <pre><code>createSubmitInput({
+  parent: "#app",
+  id: "submitInput",
+  text: "Kuldes",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-submit"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createResetInput</h2>
+    <p>Reset gomb, form vissza&aacute;ll&iacute;t&aacute;shoz.</p>
+    <pre><code>createResetInput({
+  parent: "#app",
+  id: "resetInput",
+  text: "Visszaallitas",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-reset"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createButton</h2>
+    <p>&Aacute;ltal&aacute;nos button elem sz&ouml;veggel, esem&eacute;nykezel&#x0151;vel &eacute;s st&iacute;lussal.</p>
+    <pre><code>createButton({
+  parent: "#app",
+  id: "btn1",
+  text: "Gomb",
+  click: () => console.log("clicked"),
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-btn"></div>
+  </div>
+
+  <script src="../dist/test/buttons.js"></script>
+</body>
+</html>

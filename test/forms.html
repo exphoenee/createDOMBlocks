@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Form Inputok</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    body { padding: 2rem; max-width: 900px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    h1 { margin-bottom: 1.5rem; }
+    .comp { margin-bottom: 2.5rem; }
+    .comp h2 { margin-bottom: 0.5rem; }
+    .comp p { color: #6b7280; margin-bottom: 0.75rem; }
+    .comp pre { background: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.8125rem; line-height: 1.6; margin-bottom: 1rem; }
+    .comp .result { padding: 1rem; border: 2px dashed #e5e7eb; border-radius: 0.5rem; }
+    .comp .result-label { font-size: 0.75rem; text-transform: uppercase; color: #9ca3af; margin-bottom: 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
+    a.back { display: inline-block; margin-bottom: 1rem; color: #3b82f6; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <a class="back" href="index.html">&larr; Vissza</a>
+  <h1>Form Inputok</h1>
+
+  <div class="comp">
+    <h2>createTextInput</h2>
+    <p>Sz&ouml;veg input l&eacute;trehoz&aacute;sa c&iacute;mk&eacute;vel, placeholder-rel &eacute;s &eacute;rt&eacute;kkel.</p>
+    <pre><code>createTextInput({
+  parent: "#app",
+  id: "myInput",
+  labelText: "Nev:",
+  value: "valami",
+  placeholder: "Ide irj...",
+  name: "szoveg",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-text"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createTelInput</h2>
+    <p>Telefonsz&aacute;m input l&eacute;trehoz&aacute;sa.</p>
+    <pre><code>createTelInput({
+  parent: "#app",
+  id: "telInput",
+  labelText: "Telefon:",
+  value: "+36301234567",
+  placeholder: "+36...",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-tel"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createUrlInput</h2>
+    <p>URL input l&eacute;trehoz&aacute;sa.</p>
+    <pre><code>createUrlInput({
+  parent: "#app",
+  id: "urlInput",
+  labelText: "URL:",
+  value: "https://example.com",
+  placeholder: "https://...",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-url"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createSearchInput</h2>
+    <p>Keres&eacute;si mez&#x0151;k l&eacute;trehoz&aacute;sa.</p>
+    <pre><code>createSearchInput({
+  parent: "#app",
+  id: "searchInput",
+  labelText: "Kereses:",
+  placeholder: "Keress...",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-search"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createEmailInput</h2>
+    <p>E-mail input automatikus valid&aacute;ci&oacute;val.</p>
+    <pre><code>createEmailInput({
+  parent: "#app",
+  id: "emailInput",
+  labelText: "Email:",
+  value: "test@example.com",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-email"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createPasswordInput</h2>
+    <p>Jelsz&oacute; input, a sz&ouml;veg nem l&aacute;tszik.</p>
+    <pre><code>createPasswordInput({
+  parent: "#app",
+  id: "passInput",
+  labelText: "Jelszo:",
+  placeholder: "****",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-pass"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createNumberInput</h2>
+    <p>Sz&aacute;m input min/max/step param&eacute;terrel.</p>
+    <pre><code>createNumberInput({
+  parent: "#app",
+  id: "numInput",
+  labelText: "Szam:",
+  value: "42",
+  min: 0,
+  max: 100,
+  step: 5,
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-num"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createDateInput</h2>
+    <p>D&aacute;tum kiv&aacute;laszt&oacute;.</p>
+    <pre><code>createDateInput({
+  parent: "#app",
+  id: "dateInput",
+  labelText: "Datum:",
+  value: "2024-01-15",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-date"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createDatetimeInput</h2>
+    <p>D&aacute;tum &eacute;s id&#x0151; kiv&aacute;laszt&oacute; egyszerre.</p>
+    <pre><code>createDatetimeInput({
+  parent: "#app",
+  id: "datetimeInput",
+  labelText: "Datum-Ido:",
+  value: "2024-01-15T14:30",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-datetime"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createTimeInput</h2>
+    <p>Id&#x0151; kiv&aacute;laszt&oacute;.</p>
+    <pre><code>createTimeInput({
+  parent: "#app",
+  id: "timeInput",
+  labelText: "Ido:",
+  value: "14:30",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-time"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createMonthInput</h2>
+    <p>H&oacute;nap kiv&aacute;laszt&oacute;.</p>
+    <pre><code>createMonthInput({
+  parent: "#app",
+  id: "monthInput",
+  labelText: "Honap:",
+  value: "2024-01",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-month"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createWeekInput</h2>
+    <p>H&eacute;t kiv&aacute;laszt&oacute;.</p>
+    <pre><code>createWeekInput({
+  parent: "#app",
+  id: "weekInput",
+  labelText: "Het:",
+  value: "2024-W03",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-week"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createCheckbox</h2>
+    <p>Jel&ouml;l&#x0151; n&eacute;gyzet &eacute;rt&eacute;kn&eacute;lk&uuml;li boolean &eacute;rt&eacute;kkel.</p>
+    <pre><code>createCheckbox({
+  parent: "#app",
+  id: "checkbox",
+  labelText: "Elfogadom a felteteleket",
+  checked: true,
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-cb"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createColorInput</h2>
+    <p>Sz&iacute;n kiv&aacute;laszt&oacute; sz&iacute;n k&oacute;ddal.</p>
+    <pre><code>createColorInput({
+  parent: "#app",
+  id: "colorInput",
+  labelText: "Szin:",
+  value: "#3b82f6",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-color"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createFileInput</h2>
+    <p>F&aacute;jl kiv&aacute;laszt&oacute;.</p>
+    <pre><code>createFileInput({
+  parent: "#app",
+  id: "fileInput",
+  labelText: "Fajl:",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-file"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createRangeInput</h2>
+    <p>Cs&uacute;ska min/max/step param&eacute;terrel.</p>
+    <pre><code>createRangeInput({
+  parent: "#app",
+  id: "rangeInput",
+  labelText: "Csuszka:",
+  min: 0,
+  max: 100,
+  value: "50",
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-range"></div>
+  </div>
+
+  <div class="comp">
+    <h2>createForm</h2>
+    <p>&Aacute;ltal&aacute;ns form l&eacute;trehoz&aacute;sa t&ouml;mb&ouml;be szedett input konfigur&aacute;ci&oacute;kkal. Minden input t&iacute;pust t&aacute;mogat.</p>
+    <pre><code>createForm({
+  parent: "#app",
+  id: "myForm",
+  inputs: [
+    { type: "text", id: "name", labelText: "Nev:", placeholder: "Teljes nev" },
+    { type: "email", id: "email", labelText: "Email:" },
+    { type: "select", id: "role", labelText: "Szerep:",
+      options: [{ text: "Admin", value: "admin" }, { text: "User", value: "user" }] },
+    { type: "textarea", id: "msg", labelText: "Uzenet:", rows: 3 },
+    { type: "checkbox", id: "accept", labelText: "Elfogadom" },
+    { type: "submit", id: "submit", value: "Kuldes" },
+  ],
+  onSubmit: () => console.log("Form submitted!"),
+});</code></pre>
+    <div class="result-label">Eredm&eacute;ny:</div>
+    <div class="result" id="app-form"></div>
+  </div>
+
+  <script src="../dist/test/forms.js"></script>
+</body>
+</html>
