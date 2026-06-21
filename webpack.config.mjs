@@ -19,24 +19,11 @@ function copyCssPlugin() {
   };
 }
 
-export default {
+const libraryConfig = {
   mode: "development",
   devtool: "source-map",
   entry: {
     index: "./src/index.ts",
-    "documentation/examples/forms": "./documentation/examples/forms.ts",
-    "documentation/examples/buttons": "./documentation/examples/buttons.ts",
-    "documentation/examples/selection": "./documentation/examples/selection.ts",
-    "documentation/examples/tables": "./documentation/examples/tables.ts",
-    "documentation/examples/lists": "./documentation/examples/lists.ts",
-    "documentation/examples/navigation": "./documentation/examples/navigation.ts",
-    "documentation/examples/content": "./documentation/examples/content.ts",
-    "documentation/examples/feedback": "./documentation/examples/feedback.ts",
-    "documentation/examples/interactive": "./documentation/examples/interactive.ts",
-    "documentation/examples/modal": "./documentation/examples/modal.ts",
-    "documentation/examples/avatars": "./documentation/examples/avatars.ts",
-    "documentation/examples/customInputs": "./documentation/examples/customInputs.ts",
-    "documentation/examples/index": "./documentation/examples/index.ts",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -64,3 +51,45 @@ export default {
   },
   plugins: [copyCssPlugin()],
 };
+
+const documentationConfig = {
+  mode: "development",
+  devtool: "source-map",
+  name: "documentation",
+  entry: {
+    "examples/forms": "./documentation/examples/forms.ts",
+    "examples/buttons": "./documentation/examples/buttons.ts",
+    "examples/selection": "./documentation/examples/selection.ts",
+    "examples/tables": "./documentation/examples/tables.ts",
+    "examples/lists": "./documentation/examples/lists.ts",
+    "examples/navigation": "./documentation/examples/navigation.ts",
+    "examples/content": "./documentation/examples/content.ts",
+    "examples/feedback": "./documentation/examples/feedback.ts",
+    "examples/interactive": "./documentation/examples/interactive.ts",
+    "examples/modal": "./documentation/examples/modal.ts",
+    "examples/avatars": "./documentation/examples/avatars.ts",
+    "examples/customInputs": "./documentation/examples/customInputs.ts",
+    "examples/index": "./documentation/examples/index.ts",
+  },
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].js",
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
+    alias: {
+      "domelemjs": path.resolve(__dirname, "node_modules/domelemjs/dist/index.js"),
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+    ],
+  },
+};
+
+export default [libraryConfig, documentationConfig];
