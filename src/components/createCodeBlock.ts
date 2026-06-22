@@ -3,18 +3,18 @@ import type { CreateDOMElemOptions } from "domelemjs";
 import type { CodeBlockParams } from "../types";
 import { highlightCode } from "./highlighter";
 
-export function createCodeBlock(config: CodeBlockParams): HTMLElement {
+export function createCodeBlock(params: CodeBlockParams): HTMLElement {
   const children: CreateDOMElemOptions[] = [];
 
-  if (config.language) {
+  if (params.language) {
     children.push({
       tag: "div",
-      text: config.language.toUpperCase(),
+      text: params.language.toUpperCase(),
       attrs: { class: "code-language" },
     });
   }
 
-  const highlighted = highlightCode(config.code, config.language);
+  const highlighted = highlightCode(params.code, params.language);
 
   children.push({
     tag: "pre",
@@ -23,22 +23,22 @@ export function createCodeBlock(config: CodeBlockParams): HTMLElement {
       {
         tag: "code",
         content: highlighted,
-        attrs: { class: `code-content${config.language ? ` language-${config.language}` : ""}` },
+        attrs: { class: `code-content${params.language ? ` language-${params.language}` : ""}` },
       },
     ],
   });
 
   const rootAttrs: Record<string, string> = {
-    class: `code-block${config.class ? ` ${config.class}` : ""}`,
+    class: `code-block${params.class ? ` ${params.class}` : ""}`,
   };
-  if (config.id) rootAttrs.id = config.id;
+  if (params.id) rootAttrs.id = params.id;
 
   const opts: CreateDOMElemOptions = {
     tag: "div",
     attrs: rootAttrs,
     children,
   };
-  if (config.parent) opts.parent = config.parent;
+  if (params.parent) opts.parent = params.parent;
 
   return createDOMElem(opts);
 }

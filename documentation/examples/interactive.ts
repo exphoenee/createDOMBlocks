@@ -1,35 +1,67 @@
 import { initDocPage, renderSections } from "../page-components/index";
 import { createAccordion, createTooltip } from "../../src/index";
+import { createDOMElem } from "domelemjs";
 import type { DocSection } from "../page-components/index";
 
 const done = initDocPage();
 
 const sections: DocSection[] = [
   {
-    title: "createAccordion",
-    description: "Összecsukható szekciók címekkel és tartalommal.",
-    code: `createAccordion({\n  parent: "#app",\n  id: "accordion1",\n  items: [\n    { id: "acc1", title: "Első", content: { tag: "p", text: "Tartalom 1" }, open: true },\n    { id: "acc2", title: "Második", content: { tag: "p", text: "Tartalom 2" } },\n    { id: "acc3", title: "Harmadik", content: { tag: "p", text: "Tartalom 3" } },\n  ],\n});`,
+    title: "createAccordion \u2014 t\xf6bb nyitva (multiple: true)",
+    description:
+      "\xd6sszecsukhat\xf3 szekci\xf3k. A <code>multiple: true</code> opci\xf3val egyszerre t\xf6bb szekci\xf3 is nyitva lehet.",
+    code: `createAccordion({\n  parent: "#app",\n  id: "accMultiple",\n  multiple: true,\n  items: [\n    { id: "am1", title: "Els\u0151", content: { tag: "p", text: "Tartalom" }, open: true },\n    { id: "am2", title: "M\xe1sodik", content: { tag: "p", text: "Tartalom" } },\n    { id: "am3", title: "Harmadik", content: { tag: "p", text: "Tartalom" } },\n  ],\n});`,
     codeLang: "typescript",
-    render: (c) => createAccordion({ parent: c, id: "a1", items: [
-      { id: "a1", title: "Első", content: { tag: "p", text: "Első szekció tartalma." }, open: true },
-      { id: "a2", title: "Második", content: { tag: "p", text: "Második szekció tartalma." } },
-      { id: "a3", title: "Harmadik", content: { tag: "p", text: "Harmadik szekció tartalma." } },
-    ]}),
+    render: (c) =>
+      createAccordion({
+        parent: c,
+        id: "accMultiple",
+        multiple: true,
+        items: [
+          { id: "am1", title: "Els\u0151 szekci\xf3", content: { tag: "p", text: "Ez az els\u0151 szekci\xf3 tartalma. T\xf6bb is nyitva lehet egyszerre." }, open: true },
+          { id: "am2", title: "M\xe1sodik szekci\xf3", content: { tag: "p", text: "Ez a m\xe1sodik szekci\xf3 tartalma." } },
+          { id: "am3", title: "Harmadik szekci\xf3", content: { tag: "p", text: "Ez a harmadik szekci\xf3 tartalma." } },
+        ],
+      }),
+  },
+  {
+    title: "createAccordion \u2014 csak egy nyitva (multiple: false)",
+    description:
+      "Amikor a <code>multiple</code> false (alap\xe9rtelmezett), egy \xfaj szekci\xf3 kinyit\xe1sa automatikusan bez\xe1rja a t\xf6bbit.",
+    code: `createAccordion({\n  parent: "#app",\n  id: "accSingle",\n  items: [\n    { id: "as1", title: "Els\u0151", content: { tag: "p", text: "Tartalom" }, open: true },\n    { id: "as2", title: "M\xe1sodik", content: { tag: "p", text: "Tartalom" } },\n    { id: "as3", title: "Harmadik", content: { tag: "p", text: "Tartalom" } },\n  ],\n});`,
+    codeLang: "typescript",
+    render: (c) =>
+      createAccordion({
+        parent: c,
+        id: "accSingle",
+        items: [
+          { id: "as1", title: "Els\u0151 szekci\xf3", content: { tag: "p", text: "Csak egy szekci\xf3 lehet nyitva egyszerre." }, open: true },
+          { id: "as2", title: "M\xe1sodik szekci\xf3", content: { tag: "p", text: "Ha r\xe1kattintasz, az els\u0151 bez\xe1r\xf3dik." } },
+          { id: "as3", title: "Harmadik szekci\xf3", content: { tag: "p", text: "\xc9s ford\xedtva is \xedgy műk\xf6dik." } },
+        ],
+      }),
   },
   {
     title: "createTooltip",
-    description: "Buborék sógó pozíciónalással.",
-    code: `createTooltip({ parent: "#app", text: "Felső tooltip!", position: "top" });\ncreateTooltip({ parent: "#app", text: "Alsó tooltip", position: "bottom" });`,
+    description: "Bubor\xe9k tooltip k\xfcl\xf6nb\xf6z\u0151 poz\xedci\xf3kkal. Vidd az egeret az elemek f\xf6l\xe9!",
+    code: `createTooltip({ parent: "#app", id: "tt1", text: "Ez egy tooltip!", position: "top" });\ncreateTooltip({ parent: "#app", id: "tt2", text: "Als\xf3 tooltip", position: "bottom" });\ncreateTooltip({ parent: "#app", id: "tt3", text: "Bal tooltip", position: "left" });\ncreateTooltip({ parent: "#app", id: "tt4", text: "Jobb tooltip", position: "right" });`,
     codeLang: "typescript",
     render: (c) => {
-      createTooltip({ parent: c, text: "Felső tooltip!", position: "top" });
-      createDOMElem({ tag: "span", parent: c, text: "    " });
-      createTooltip({ parent: c, text: "Alsó tooltip", position: "bottom" });
+      createDOMElem({
+        tag: "p",
+        text: "Vidd az egeret a gombok f\xf6l\xe9 a tooltip megjelen\xedt\xe9s\xe9hez:",
+        style: { marginBottom: "1rem", color: "var(--text-light)", fontSize: "0.875rem" },
+      });
+      createTooltip({ parent: c, id: "int-tt1", text: "Ez egy tooltip!", position: "top" });
+      createDOMElem({ tag: "br", parent: c });
+      createTooltip({ parent: c, id: "int-tt2", text: "Als\xf3 tooltip", position: "bottom" });
+      createDOMElem({ tag: "br", parent: c });
+      createTooltip({ parent: c, id: "int-tt3", text: "Bal tooltip", position: "left" });
+      createDOMElem({ tag: "br", parent: c });
+      createTooltip({ parent: c, id: "int-tt4", text: "Jobb tooltip", position: "right" });
     },
   },
 ];
-
-import { createDOMElem } from "domelemjs";
 
 renderSections(sections);
 done();

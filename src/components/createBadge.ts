@@ -1,9 +1,9 @@
 import { createDOMElem } from "domelemjs";
 import type { BadgeParams } from "../types";
 
-export function createBadge(config: BadgeParams): HTMLElement {
-  const rootAttrs: Record<string, string> = { class: `badge badge-${config.type || "neutral"}${config.class ? ` ${config.class}` : ""}` };
-  if (config.id) rootAttrs.id = config.id;
+export function createBadge(params: BadgeParams): HTMLElement {
+  const rootAttrs: Record<string, string> = { class: `badge badge-${params.type || "neutral"}${params.class ? ` ${params.class}` : ""}` };
+  if (params.id) rootAttrs.id = params.id;
 
-  return createDOMElem({ tag: "span", parent: config.parent, attrs: rootAttrs, text: config.text });
+  return createDOMElem({ tag: "span", parent: params.parent, attrs: rootAttrs, text: params.text });
 }

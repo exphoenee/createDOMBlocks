@@ -1,5 +1,5 @@
 import { createDOMElem } from "domelemjs";
-import type { TableParams } from "./types";
+import type { TableParams } from "../types";
 
 export function createTable(
   data: Record<string, string | number>[] | (string | number)[][],
@@ -58,7 +58,7 @@ export function createTable(
     return val;
   });
 
-  const tableChildren = [];
+  const tableChildren: ReturnType<typeof createDOMElem>[] = [];
   if (p.showHeader) {
     tableChildren.push(createDOMElem({
       tag: "thead",

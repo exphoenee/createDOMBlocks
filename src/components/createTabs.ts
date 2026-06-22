@@ -2,10 +2,10 @@ import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
 import type { TabsParams, TabItem } from "../types";
 
-export function createTabs(config: TabsParams): HTMLElement {
-  const activeId = config.activeTab || config.tabs[0]?.id;
+export function createTabs(params: TabsParams): HTMLElement {
+  const activeId = params.activeTab || params.tabs[0]?.id;
 
-  const tabButtons: CreateDOMElemOptions[] = config.tabs.map((tab: TabItem) => ({
+  const tabButtons: CreateDOMElemOptions[] = params.tabs.map((tab: TabItem) => ({
     tag: "button",
     text: tab.label,
     attrs: {
@@ -28,7 +28,7 @@ export function createTabs(config: TabsParams): HTMLElement {
     },
   }));
 
-  const tabPanels: CreateDOMElemOptions[] = config.tabs.map((tab: TabItem) => {
+  const tabPanels: CreateDOMElemOptions[] = params.tabs.map((tab: TabItem) => {
     const content = Array.isArray(tab.content) ? tab.content : [tab.content];
     return {
       tag: "div",
@@ -40,12 +40,12 @@ export function createTabs(config: TabsParams): HTMLElement {
     };
   });
 
-  const rootAttrs: Record<string, string> = { class: `tabs${config.class ? ` ${config.class}` : ""}` };
-  if (config.id) rootAttrs.id = config.id;
+  const rootAttrs: Record<string, string> = { class: `tabs${params.class ? ` ${params.class}` : ""}` };
+  if (params.id) rootAttrs.id = params.id;
 
   return createDOMElem({
     tag: "div",
-    parent: config.parent,
+    parent: params.parent,
     attrs: rootAttrs,
     children: [
       { tag: "div", attrs: { class: "tab-buttons" }, children: tabButtons },

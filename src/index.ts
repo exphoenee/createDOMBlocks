@@ -1,5 +1,3 @@
-export { DOMBlock } from "./domBlock";
-
 export { createTextInput } from "./inputs/createTextInput";
 export { createTelInput } from "./inputs/createTelInput";
 export { createUrlInput } from "./inputs/createUrlInput";
@@ -26,17 +24,19 @@ export { createResetInput } from "./buttons/createResetInput";
 export { createSelect } from "./selection/createSelect";
 export { createRadio } from "./selection/createRadio";
 
-export { createTextarea } from "./createTextarea";
-export { createForm } from "./createForm";
-export { createParagraph } from "./createParagraph";
-export { createTitle } from "./createTitle";
-export { createUnorderedList, createOrderedList } from "./createLists";
-export { createTable } from "./createTable";
-export { createModal } from "./createModal";
-export { newLine } from "./newLine";
-export { asyncImage } from "./asyncImage";
-
 export {
+  createTextarea,
+  createForm,
+  createModal,
+  openModal,
+  closeModal,
+  createParagraph,
+  createTitle,
+  createUnorderedList,
+  createOrderedList,
+  createTable,
+  newLine,
+  asyncImage,
   createCard,
   createContainer,
   createGrid,
@@ -66,6 +66,8 @@ export {
   createDrawer,
   openDrawer,
   closeDrawer,
+  createMenu,
+  createCarousel,
 } from "./components";
 
 export type {
@@ -137,6 +139,13 @@ export type {
 } from "./types";
 
 export type {
+  CarouselSlide,
+  CarouselParams,
+} from "./types";
+
+export type {
   DrawerMenuItem,
   DrawerParams,
-} from "./components";
+  MenuItem,
+  MenuParams,
+} from "./types";

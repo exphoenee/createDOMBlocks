@@ -35,7 +35,7 @@ const sections: DocSection[] = [
     description: "Szövegdoboz sorokkal és oszlopokkal.",
     code: `createTextarea({\n  parent: "#app",\n  id: "textarea",\n  labelText: "Szöveg:",\n  value: "Szöveg...",\n  rows: 5, cols: 40,\n});`,
     codeLang: "typescript",
-    render: (c) => createTextarea({ parent: c, id: "s4", labelText: "", value: "Szöveg...", rows: 5, cols: 40 }),
+    render: (c) => createTextarea({ parent: c, id: "s4", labelText: "Szöveg:", value: "Szöveg...", rows: 5, cols: 40 }),
   },
 ];
 

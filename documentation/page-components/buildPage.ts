@@ -1,6 +1,8 @@
 ﻿import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
-import { createDrawer, openDrawer, createHeader, createFooter } from "./createDrawer";
+import { createDrawer, openDrawer, createMenu } from "../../src/index";
+import { createHeader } from "./createHeader";
+import { createFooter } from "./createFooter";
 import { getDrawerMenuItems } from "./menuItems";
 
 export interface PageSection {
@@ -17,7 +19,12 @@ export function buildPage(config: {
 }): void {
   const containerId = config.containerId || "app";
 
-  createDrawer({ items: getDrawerMenuItems(), title: "createDOMBlocks" });
+  const items = getDrawerMenuItems();
+  createDrawer({
+    id: "sidebar-drawer",
+    title: "createDOMBlocks",
+    children: [createMenu({ id: "sidebar-drawer", items })],
+  });
   createHeader({ onMenuClick: () => openDrawer() });
 
   const main = createDOMElem({

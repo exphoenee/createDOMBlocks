@@ -1,19 +1,19 @@
 import { createDOMElem } from "domelemjs";
 import type { LinkParams } from "../types";
 
-export function createLink(config: LinkParams): HTMLElement {
+export function createLink(params: LinkParams): HTMLElement {
   const rootAttrs: Record<string, string> = {
-    class: `link${config.class ? ` ${config.class}` : ""}`,
-    href: config.href,
+    class: `link${params.class ? ` ${params.class}` : ""}`,
+    href: params.href,
   };
-  if (config.id) rootAttrs.id = config.id;
-  if (config.target) rootAttrs.target = config.target;
+  if (params.id) rootAttrs.id = params.id;
+  if (params.target) rootAttrs.target = params.target;
 
   return createDOMElem({
     tag: "a",
-    parent: config.parent,
-    text: config.text,
+    parent: params.parent,
+    text: params.text,
     attrs: rootAttrs,
-    handleEvent: config.click ? { event: "click", cb: config.click } : undefined,
+    handleEvent: params.click ? { event: "click", cb: params.click } : undefined,
   });
 }

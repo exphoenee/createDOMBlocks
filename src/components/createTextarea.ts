@@ -1,5 +1,5 @@
 import { createDOMElem } from "domelemjs";
-import type { TextareaParams } from "./types";
+import type { TextareaParams } from "../types";
 
 export function createTextarea(params: TextareaParams): HTMLElement {
   const events: { event: string; cb: (e: Event) => void }[] = [];
@@ -23,7 +23,7 @@ export function createTextarea(params: TextareaParams): HTMLElement {
     handleEvent: events.length > 0 ? events : undefined,
   });
 
-  const containerAttrs: Record<string, string> = { class: `textarea-input${params.class ? ` ${params.class}` : ""}` };
+  const containerAttrs: Record<string, string> = { class: `textarea-wrapper${params.class ? ` ${params.class}` : ""}` };
 
   return createDOMElem({
     tag: "div",

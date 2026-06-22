@@ -4,7 +4,6 @@ import { toArray } from "../utils";
 
 export function createButton(params: ButtonParams): HTMLElement {
   const handleEvent: { event: string; cb: (e: Event) => void }[] = [];
-  if (params.onChange) handleEvent.push({ event: "change", cb: params.onChange });
   if (params.click) handleEvent.push({ event: "click", cb: params.click });
   if (params.handleEvent) handleEvent.push(...toArray(params.handleEvent));
 

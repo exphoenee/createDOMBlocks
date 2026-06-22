@@ -2,19 +2,19 @@ import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
 import type { CardParams } from "../types";
 
-export function createCard(config: CardParams): HTMLElement {
+export function createCard(params: CardParams): HTMLElement {
   const children: (CreateDOMElemOptions | HTMLElement)[] = [];
 
-  if (config.title) {
+  if (params.title) {
     children.push({
       tag: "div",
       attrs: { class: "card-header" },
-      children: [{ tag: "h3", text: config.title }],
+      children: [{ tag: "h3", text: params.title }],
     });
   }
 
-  if (config.body) {
-    const bodyItems = Array.isArray(config.body) ? config.body : [config.body];
+  if (params.body) {
+    const bodyItems = Array.isArray(params.body) ? params.body : [params.body];
     children.push({
       tag: "div",
       attrs: { class: "card-body" },
@@ -22,8 +22,8 @@ export function createCard(config: CardParams): HTMLElement {
     });
   }
 
-  if (config.footer) {
-    const footerItems = Array.isArray(config.footer) ? config.footer : [config.footer];
+  if (params.footer) {
+    const footerItems = Array.isArray(params.footer) ? params.footer : [params.footer];
     children.push({
       tag: "div",
       attrs: { class: "card-footer" },
@@ -31,12 +31,12 @@ export function createCard(config: CardParams): HTMLElement {
     });
   }
 
-  const rootAttrs: Record<string, string> = { class: `card${config.class ? ` ${config.class}` : ""}` };
-  if (config.id) rootAttrs.id = config.id;
+  const rootAttrs: Record<string, string> = { class: `card${params.class ? ` ${params.class}` : ""}` };
+  if (params.id) rootAttrs.id = params.id;
 
   return createDOMElem({
     tag: "div",
-    parent: config.parent,
+    parent: params.parent,
     attrs: rootAttrs,
     children,
   });

@@ -141,12 +141,11 @@ export interface TextareaParams extends BaseInputParams {
 }
 
 export interface ButtonParams {
-  parent?: HTMLElement | string;
-  id?: string;
+  parent: HTMLElement | string;
+  id: string;
   class?: string;
   text?: string;
   style?: CreateDOMElemOptions["style"];
-  onChange?: (e: Event) => void;
   click?: (e: Event) => void;
   handleEvent?: EventHandler | EventHandler[];
 }
@@ -159,20 +158,20 @@ export interface ButtonInputParams extends BaseInputParams {
 export interface ParagraphParams {
   parent: HTMLElement | string;
   text?: string;
-  id?: string;
+  id: string;
   class?: string;
 }
 
 export interface TitleParams {
   parent: HTMLElement | string;
   text?: string;
-  id?: string;
+  id: string;
   class?: string;
 }
 
 export interface ListParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   start?: number;
 }
@@ -185,7 +184,7 @@ export interface TableCellNames {
 
 export interface TableParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   hasHeader?: boolean;
   hasFooter?: boolean;
@@ -237,7 +236,7 @@ export interface FormInputConfig {
 
 export interface FormConfig {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   action?: string;
   method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -247,7 +246,7 @@ export interface FormConfig {
 
 export interface CardParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   title?: string;
   body?: CreateDOMElemOptions | CreateDOMElemOptions[];
@@ -256,14 +255,14 @@ export interface CardParams {
 
 export interface ContainerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   children?: (CreateDOMElemOptions | HTMLElement)[];
 }
 
 export interface GridParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   columns?: number;
   gap?: string;
@@ -279,7 +278,7 @@ export interface NavItem {
 
 export interface NavParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   items: NavItem[];
 }
@@ -292,7 +291,7 @@ export interface BreadcrumbItem {
 
 export interface BreadcrumbParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   items: BreadcrumbItem[];
   separator?: string;
@@ -306,7 +305,7 @@ export interface TabItem {
 
 export interface TabsParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   tabs: TabItem[];
   activeTab?: string;
@@ -314,7 +313,7 @@ export interface TabsParams {
 
 export interface AlertParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   type?: "success" | "error" | "warning" | "info";
   title?: string;
@@ -324,8 +323,8 @@ export interface AlertParams {
 }
 
 export interface ToastParams {
-  parent?: HTMLElement | string;
-  id?: string;
+  parent: HTMLElement | string;
+  id: string;
   class?: string;
   type?: "success" | "error" | "warning" | "info";
   message: string;
@@ -335,7 +334,7 @@ export interface ToastParams {
 
 export interface BadgeParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   text?: string;
   type?: "success" | "error" | "warning" | "info" | "neutral";
@@ -343,7 +342,7 @@ export interface BadgeParams {
 
 export interface SpinnerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   size?: "sm" | "md" | "lg";
   color?: string;
@@ -351,7 +350,7 @@ export interface SpinnerParams {
 
 export interface ProgressBarParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   value: number;
   max?: number;
@@ -362,7 +361,7 @@ export interface ProgressBarParams {
 
 export interface ImageParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   src: string;
   alt?: string;
@@ -374,7 +373,7 @@ export interface ImageParams {
 
 export interface LinkParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   text: string;
   href: string;
@@ -383,8 +382,8 @@ export interface LinkParams {
 }
 
 export interface CodeBlockParams {
-  parent?: HTMLElement | string;
-  id?: string;
+  parent: HTMLElement | string;
+  id: string;
   class?: string;
   code: string;
   language?: string;
@@ -392,7 +391,7 @@ export interface CodeBlockParams {
 
 export interface BlockquoteParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   text: string;
   author?: string;
@@ -400,7 +399,7 @@ export interface BlockquoteParams {
 
 export interface DividerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
 }
 
@@ -413,7 +412,7 @@ export interface AccordionItem {
 
 export interface AccordionParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   items: AccordionItem[];
   multiple?: boolean;
@@ -421,7 +420,7 @@ export interface AccordionParams {
 
 export interface TooltipParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   text: string;
   position?: "top" | "bottom" | "left" | "right";
@@ -430,7 +429,7 @@ export interface TooltipParams {
 
 export interface AvatarParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   src?: string;
   name?: string;
@@ -438,9 +437,21 @@ export interface AvatarParams {
   shape?: "circle" | "square";
 }
 
+export interface CustomSelectParams {
+  parent: HTMLElement | string;
+  id: string;
+  class?: string;
+  name?: string;
+  value?: string | number;
+  labelText?: string;
+  placeholder?: string;
+  options: SelectOption[];
+  onChange?: (value: string | number) => void;
+}
+
 export interface CustomDatePickerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   value?: string;
   min?: string;
@@ -452,7 +463,7 @@ export interface CustomDatePickerParams {
 
 export interface CustomWeekPickerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   value?: string;
   min?: string;
@@ -464,7 +475,7 @@ export interface CustomWeekPickerParams {
 
 export interface CustomMonthPickerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   value?: string;
   min?: string;
@@ -476,7 +487,7 @@ export interface CustomMonthPickerParams {
 
 export interface CustomDateTimePickerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   value?: string;
   min?: string;
@@ -488,7 +499,7 @@ export interface CustomDateTimePickerParams {
 
 export interface CustomDateRangePickerParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   startValue?: string;
   endValue?: string;
@@ -501,7 +512,7 @@ export interface CustomDateRangePickerParams {
 
 export interface DragAndDropFileInputParams {
   parent: HTMLElement | string;
-  id?: string;
+  id: string;
   class?: string;
   accept?: string[];
   multiple?: boolean;
@@ -509,4 +520,47 @@ export interface DragAndDropFileInputParams {
   labelText?: string;
   dropText?: string;
   onFiles?: (files: File[]) => void;
+}
+
+export interface DrawerMenuItem {
+  label: string;
+  href?: string;
+  children?: DrawerMenuItem[];
+}
+
+/** Alias for backward compatibility – use MenuItem instead */
+export type MenuItem = DrawerMenuItem;
+
+export interface MenuParams {
+  id: string;
+  items: MenuItem[];
+}
+
+export interface DrawerParams {
+  id: string;
+  title?: string;
+  children?: (CreateDOMElemOptions | HTMLElement)[];
+  items?: DrawerMenuItem[];
+  defaultState?: "open" | "closed";
+  hasOverlay?: boolean;
+  mode?: "overlay" | "push";
+}
+
+export interface CarouselSlide {
+  id?: string;
+  class?: string;
+  icon?: string;
+  title?: string;
+  description?: string;
+  cta?: { text: string; href?: string; click?: (e: Event) => void };
+  content?: CreateDOMElemOptions | CreateDOMElemOptions[];
+}
+
+export interface CarouselParams {
+  parent: HTMLElement | string;
+  id: string;
+  class?: string;
+  slides: CarouselSlide[];
+  showArrows?: boolean;
+  showDots?: boolean;
 }

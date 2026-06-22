@@ -9,20 +9,24 @@ export function createRadio(params: RadioParams): HTMLElement {
         ? params.value === index + 1
         : false;
 
+    const children = [
+      createDOMElem({
+        tag: "input",
+        attrs: { type: "radio", id: `${params.id}-${option.value}`, name: params.name || params.id, value: option.value, checked },
+      }),
+      createDOMElem({
+        tag: "label",
+        text: option.text,
+        attrs: { for: `${params.id}-${option.value}` },
+      }),
+    ];
+
+    if (params.labelfirst === true) children.reverse();
+
     return createDOMElem({
       tag: "div",
       attrs: { class: "radio-option" },
-      children: [
-        createDOMElem({
-          tag: "input",
-          attrs: { type: "radio", id: `${params.id}-${option.value}`, name: params.name || params.id, value: option.value, checked },
-        }),
-        createDOMElem({
-          tag: "label",
-          text: option.text,
-          attrs: { for: `${params.id}-${option.value}` },
-        }),
-      ],
+      children,
     });
   });
 

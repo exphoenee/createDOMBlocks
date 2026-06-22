@@ -12,7 +12,7 @@ const sections: DocSection[] = [
     codeLang: "typescript",
     render: (c) => createTable([
       ["Név", "Kor", "Város"], ["Anna", 25, "Budapest"], ["Béla", 32, "Debrecen"], ["Csaba", 18, "Szeged"],
-    ], { parent: c, hasHeader: true, addRowNumbers: true, sumRowValues: true }),
+    ], { parent: c, id: "tbl-array", hasHeader: true, addRowNumbers: true, sumRowValues: true }),
   },
   {
     title: "createTable (objektum)",
@@ -23,7 +23,7 @@ const sections: DocSection[] = [
       { Termék: "Laptop", Ár: 299000, Készlet: 15 },
       { Termék: "Monitor", Ár: 149000, Készlet: 23 },
       { Termék: "Billentyű", Ár: 24900, Készlet: 50 },
-    ], { parent: c, hasHeader: true, hasFooter: true, addRowNumbers: true }),
+    ], { parent: c, id: "tbl-object", hasHeader: true, hasFooter: true, addRowNumbers: true }),
   },
 ];
 

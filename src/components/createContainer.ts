@@ -1,9 +1,9 @@
 import { createDOMElem } from "domelemjs";
 import type { ContainerParams } from "../types";
 
-export function createContainer(config: ContainerParams): HTMLElement {
-  const rootAttrs: Record<string, string> = { class: `container${config.class ? ` ${config.class}` : ""}` };
-  if (config.id) rootAttrs.id = config.id;
+export function createContainer(params: ContainerParams): HTMLElement {
+  const rootAttrs: Record<string, string> = { class: `container${params.class ? ` ${params.class}` : ""}` };
+  if (params.id) rootAttrs.id = params.id;
 
-  return createDOMElem({ tag: "div", parent: config.parent, attrs: rootAttrs, children: config.children });
+  return createDOMElem({ tag: "div", parent: params.parent, attrs: rootAttrs, children: params.children });
 }

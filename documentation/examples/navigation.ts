@@ -31,7 +31,7 @@ const sections: DocSection[] = [
   {
     title: "createTabs",
     description: "Lapozható tabok külön tartalommal.",
-    code: `createTabs({\n  parent: "#app",\n  id: "tabs1",\n  tabs: [\n    { id: "tab1", label: "Beállítások",\n      content: { tag: "p", text: "Tartalom 1" } },\n    { id: "tab2", label: "Profil",\n      content: { tag: "p", text: "Tartalom 2" } },\n  ],\n});`,
+    code: `createTabs({\n  parent: "#app",\n  id: "tabs1",\n  tabs: [\n    { id: "tab1", label: "Beállítások",\n      content: { tag: "p", text: "Beállítások tartalma" } },\n    { id: "tab2", label: "Profil",\n      content: { tag: "p", text: "Profil tartalma" } },\n    { id: "tab3", label: "Értesítések",\n      content: { tag: "p", text: "Értesítések tartalma" } },\n  ],\n});`,
     codeLang: "typescript",
     render: (c) => createTabs({ parent: c, id: "n3", tabs: [
       { id: "t1", label: "Beállítások", content: { tag: "p", text: "Beállítások tartalma" } },

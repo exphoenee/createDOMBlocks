@@ -1,6 +1,6 @@
 import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
-import { createDrawer, openDrawer } from "../../src/components/createDrawer";
+import { createDrawer, openDrawer, createMenu } from "../../src/index";
 import { createHeader } from "./createHeader";
 import { createFooter } from "./createFooter";
 import { getDrawerMenuItems } from "./menuItems";
@@ -38,7 +38,14 @@ function createCodeBlockHTML(code: string, lang?: string): CreateDOMElemOptions 
 export function initDocPage(): () => void {
   const done = createPageLoading();
   const items = getDrawerMenuItems();
-  createDrawer({ items, title: "createDOMBlocks", defaultState: "open", hasOverlay: false, mode: "push" });
+  createDrawer({
+    id: "sidebar-drawer",
+    title: "createDOMBlocks",
+    children: [createMenu({ id: "sidebar-drawer", items })],
+    defaultState: "open",
+    hasOverlay: false,
+    mode: "push",
+  });
   createHeader({ onMenuClick: () => openDrawer() });
   createFooter();
   return done;

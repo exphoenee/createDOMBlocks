@@ -1,0 +1,289 @@
+.demo4-page {
+  background: #f9fafb;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr 300px;
+}
+
+.demo4-left-sidebar {
+  background: #fff;
+  border-right: 1px solid #e5e7eb;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo4-brand {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.demo4-compose-btn {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 2rem;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+}
+
+.demo4-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.demo4-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.5rem;
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.15s;
+}
+
+.demo4-nav-item:hover {
+  background: #f3f4f6;
+}
+
+.demo4-nav-item.active {
+  background: #eff6ff;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.demo4-nav-badge {
+  margin-left: auto;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+}
+
+.demo4-feed {
+  padding: 1.5rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.demo4-feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.demo4-feed-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.demo4-feed-tab {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.demo4-feed-tab.active {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+.demo4-post {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.demo4-post-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.demo4-post-author {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.demo4-post-handle {
+  color: #9ca3af;
+  font-size: 0.8rem;
+}
+
+.demo4-post-time {
+  color: #9ca3af;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.demo4-post-content {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+}
+
+.demo4-post-image {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.demo4-post-image img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+.demo4-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f3f4f6;
+}
+
+.demo4-post-action {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #6b7280;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.demo4-post-action:hover {
+  color: #2563eb;
+}
+
+.demo4-post-action.liked {
+  color: #ef4444;
+}
+
+.demo4-right-sidebar {
+  background: #fff;
+  border-left: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.demo4-search {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  background: #f3f4f6;
+  outline: none;
+  margin-bottom: 1.5rem;
+}
+
+.demo4-search:focus {
+  border-color: #2563eb;
+  background: #fff;
+}
+
+.demo4-trending {
+  margin-bottom: 1.5rem;
+}
+
+.demo4-trending h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.demo4-trending-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.demo4-trending-category {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.demo4-trending-topic {
+  font-weight: 600;
+  font-size: 0.875rem;
+  margin: 0.125rem 0;
+}
+
+.demo4-trending-count {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.demo4-suggested {
+  margin-bottom: 1.5rem;
+}
+
+.demo4-suggested h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.demo4-suggested-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0;
+}
+
+.demo4-suggested-info {
+  flex: 1;
+}
+
+.demo4-suggested-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.demo4-suggested-handle {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.demo4-follow-btn {
+  padding: 0.375rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 2rem;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.demo4-follow-btn:hover {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}

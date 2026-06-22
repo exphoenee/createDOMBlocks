@@ -1,5 +1,5 @@
 import { createDOMElem } from "domelemjs";
-import type { ParagraphParams } from "./types";
+import type { ParagraphParams } from "../types";
 
 export function createParagraph(params: ParagraphParams): HTMLElement {
   const attrs: Record<string, string> = {};

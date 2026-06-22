@@ -4,13 +4,15 @@
 
 A TypeScript library for creating complex HTML blocks and form elements using JavaScript. Built on top of [DOMelemJS](https://github.com/exphoenee/DOMelemJS).
 
+**50+ components** – form inputs, buttons, navigation, content blocks, custom pickers, drawers, modals, carousels, and more.
+
 ## Features
 
-- Create form inputs with labels and event handlers
-- Build tables from arrays or objects with automatic footer calculations
-- Generate modals with customizable actions
-- Create ordered/unordered lists
-- Type-safe with full TypeScript support
+- 50+ UI components – inputs, buttons, tables, modals, navigation, alerts, and more
+- Framework-agnostic – works with any JS framework or vanilla JS
+- Type-safe – full TypeScript support with IntelliSense
+- Tree-shakable – import only what you need
+- Portal support – drawers and modals render to `document.body` automatically
 
 ## Installation
 
@@ -31,268 +33,248 @@ This exposes a global `CreateDOMBlocks` object with all exported functions.
 
 ## Quick Start
 
-### With npm
-
 ```typescript
-import { createTextInput, createButton, createTable } from "createdomblocks";
+import { createTextInput, createButton, createCard } from "createdomblocks";
 import "createdomblocks/style.css";
-```
-
-### CDN (unpkg)
-
-```html
-<script src="https://unpkg.com/createdomblocks"></script>
-```
-
-This exposes a global `createDOMBlocks` object with all exported functions.
-
-## Quick Start
-
-### With npm
-
-```typescript
-import { createTextInput, createButton, createTable } from "createdomblocks";
 
 const parent = document.getElementById("app");
 
-// Create a text input
 createTextInput({
   parent,
-  id: "myInput",
+  id: "name",
   labelText: "Name:",
   placeholder: "Enter your name",
 });
 
-// Create a button
 createButton({
   parent,
   id: "submitBtn",
   text: "Submit",
   click: () => console.log("Clicked!"),
 });
-```
 
-### With CDN
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My App</title>
-    <link rel="stylesheet" href="https://unpkg.com/createdomblocks/dist/style.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script src="https://unpkg.com/createdomblocks/dist/index.js"></script>
-    <script>
-      const { createTextInput, createButton } = CreateDOMBlocks;
-      const parent = document.getElementById("app");
-
-      createTextInput({
-        parent,
-        id: "myInput",
-        labelText: "Name:",
-        placeholder: "Enter your name",
-      });
-
-      createButton({
-        parent,
-        id: "submitBtn",
-        text: "Submit",
-        click: () => console.log("Clicked!"),
-      });
-    </script>
-  </body>
-</html>
+createCard({
+  parent,
+  id: "infoCard",
+  title: "Welcome",
+  body: { tag: "p", text: "Hello from createDOMBlocks!" },
+});
 ```
 
 ## API
 
 ### Form Inputs
 
-#### `createTextInput(params)`
-Creates a text input with optional label.
-
-#### `createTelInput(params)`
-Creates a telephone input.
-
-#### `createUrlInput(params)`
-Creates a URL input.
-
-#### `createSearchInput(params)`
-Creates a search input.
-
-#### `createEmailInput(params)`
-Creates an email input.
-
-#### `createPasswordInput(params)`
-Creates a password input.
-
-#### `createNumberInput(params)`
-Creates a number input.
-
-#### `createDateInput(params)`
-Creates a date input.
-
-#### `createDatetimeInput(params)`
-Creates a datetime-local input.
-
-#### `createTimeInput(params)`
-Creates a time input.
-
-#### `createMonthInput(params)`
-Creates a month input.
-
-#### `createWeekInput(params)`
-Creates a week input.
-
-#### `createCheckbox(params)`
-Creates a checkbox input.
-
-#### `createColorInput(params)`
-Creates a color input.
-
-#### `createFileInput(params)`
-Creates a file input.
-
-#### `createRangeInput(params)`
-Creates a range input with min/max/step.
-
-#### `createHiddenInput(params)`
-Creates a hidden input.
+| Function | Description |
+|----------|-------------|
+| `createTextInput(params)` | Text input with label |
+| `createTelInput(params)` | Telephone input |
+| `createUrlInput(params)` | URL input |
+| `createSearchInput(params)` | Search input |
+| `createEmailInput(params)` | Email input |
+| `createPasswordInput(params)` | Password input |
+| `createNumberInput(params)` | Number input |
+| `createDateInput(params)` | Date input |
+| `createDatetimeInput(params)` | Datetime-local input |
+| `createTimeInput(params)` | Time input |
+| `createMonthInput(params)` | Month input |
+| `createWeekInput(params)` | Week input |
+| `createCheckbox(params)` | Checkbox input |
+| `createColorInput(params)` | Color input |
+| `createFileInput(params)` | File input |
+| `createRangeInput(params)` | Range slider (min/max/step) |
+| `createHiddenInput(params)` | Hidden input |
 
 ### Buttons
 
-#### `createButtonInput(params)`
-Creates an input button.
-
-#### `createSubmitInput(params)`
-Creates a submit button.
-
-#### `createResetInput(params)`
-Creates a reset button.
-
-#### `createButton(params)`
-Creates a button element.
+| Function | Description |
+|----------|-------------|
+| `createButton(params)` | `<button>` element with click handler |
+| `createButtonInput(params)` | `<input type="button">` |
+| `createSubmitInput(params)` | `<input type="submit">` |
+| `createResetInput(params)` | `<input type="reset">` |
 
 ### Selection
 
-#### `createSelect(params)`
-Creates a select dropdown with options.
+| Function | Description |
+|----------|-------------|
+| `createSelect(params)` | Native `<select>` dropdown |
+| `createRadio(params)` | Radio button group |
+| `createCustomSelect(params)` | Styled custom dropdown |
 
-#### `createRadio(params)`
-Creates a radio button group.
+### Custom Pickers
 
-### Other Elements
+| Function | Description |
+|----------|-------------|
+| `createCustomDatePicker(params)` | Interactive date picker |
+| `createCustomDateTimePicker(params)` | Date + time picker |
+| `createCustomDateRangePicker(params)` | Date range picker |
+| `createCustomMonthPicker(params)` | Month picker |
+| `createCustomWeekPicker(params)` | Week picker |
 
-#### `createTextarea(params)`
-Creates a textarea.
+### Layout & Containers
 
-#### `createParagraph(params)`
-Creates a paragraph element.
+| Function | Description |
+|----------|-------------|
+| `createCard(params)` | Card with header / body / footer |
+| `createContainer(params)` | Max-width wrapper container |
+| `createGrid(params)` | CSS grid with configurable columns |
+| `createDivider(params)` | Horizontal rule `<hr>` |
 
-#### `createTitle(params, level)`
-Creates a heading (h1-h6).
+### Navigation
 
-#### `createUnorderedList(data, params)`
-Creates a ul list.
+| Function | Description |
+|----------|-------------|
+| `createNav(params)` | Navigation bar with items and dropdowns |
+| `createBreadcrumb(params)` | Breadcrumb trail |
+| `createTabs(params)` | Tabbed interface |
+| `createMenu(params)` | Menu list (used inside drawers) |
+| `createDrawer(params)` | Side panel (portal – renders to body) |
+| `openDrawer(id)` | Open a drawer by ID |
+| `closeDrawer(id)` | Close a drawer by ID |
 
-#### `createOrderedList(data, params)`
-Creates an ol list.
+### Feedback
 
-#### `createTable(data, params)`
-Creates a table with headers, rows, and optional footer calculations.
+| Function | Description |
+|----------|-------------|
+| `createAlert(params)` | Alert box (success/error/warning/info) |
+| `createToast(params)` | Auto-dismissing notification |
+| `createBadge(params)` | Status badge / pill |
+| `createSpinner(params)` | Loading spinner (sm/md/lg) |
+| `createProgressBar(params)` | Progress bar with percentage |
 
-#### `createModal(content, actions, params)`
-Creates a modal dialog.
+### Content
 
-#### `newLine(parent)`
-Creates a line break.
+| Function | Description |
+|----------|-------------|
+| `createParagraph(params)` | `<p>` element |
+| `createTitle(params, level)` | Heading (h1–h6) |
+| `createImage(params)` | Figure with image + optional caption |
+| `createLink(params)` | Styled `<a>` link |
+| `createCodeBlock(params)` | Code block with syntax highlighting |
+| `createBlockquote(params)` | Blockquote with optional author |
+| `createAccordion(params)` | Collapsible accordion sections |
+| `createTooltip(params)` | Tooltip (hover or click trigger) |
+| `createAvatar(params)` | User avatar (image or initials) |
+| `createList(data, params)` | Unordered or ordered list |
+| `newLine(parent)` | Line break `<br>` |
+| `asyncImage(params)` | Lazy-loaded image |
+
+### Data Display
+
+| Function | Description |
+|----------|-------------|
+| `createTable(data, params)` | Table with header/footer/sum/row numbers |
+
+### Overlays (Portal)
+
+| Function | Description |
+|----------|-------------|
+| `createModal(content, actions, params)` | Modal dialog (portal – renders to body) |
+| `openModal(id)` | Open a modal by ID |
+| `closeModal(id)` | Close a modal by ID |
+
+### Forms
+
+| Function | Description |
+|----------|-------------|
+| `createForm(params)` | Form element with input configs |
+
+### Interactive
+
+| Function | Description |
+|----------|-------------|
+| `createCarousel(params)` | 3D carousel with navigation and touch |
+| `createDragAndDropFileInput(params)` | Drag & drop file uploader |
 
 ### Common Parameters
 
-All input functions accept these parameters:
+All components accept a `params` object. Common fields:
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `parent` | `HTMLElement \| string` | Parent element or CSS selector |
-| `id` | `string` | Element ID |
-| `class` | `string` | CSS class name |
-| `labelText` | `string` | Label text (for inputs) |
-| `labelfirst` | `boolean` | Label before input (default: true) |
-| `value` | `string \| number` | Initial value |
-| `name` | `string` | Input name attribute |
-| `placeholder` | `string` | Placeholder text |
-| `onChange` | `(e: Event) => void` | Change event handler |
-| `click` | `(e: Event) => void` | Click event handler |
-| `handleEvent` | `EventHandler[]` | Additional event handlers |
+| `parent` | `HTMLElement \| string` | Parent element or CSS selector (required) |
+| `id` | `string` | Element ID (required) |
+| `class` | `string` | Additional CSS class |
+| `handleEvent` | `EventHandler \| EventHandler[]` | Event handlers |
+
+Input components additionally support:
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `labelText` | `string` | – | Label text |
+| `labelfirst` | `boolean` | `true` | Label before input |
+| `value` | `string \| number` | – | Initial value |
+| `name` | `string` | – | Input name attribute |
+| `placeholder` | `string` | – | Placeholder text |
+| `onChange` | `(e: Event) => void` | – | Change handler |
+| `click` | `(e: Event) => void` | – | Click handler |
+
+---
 
 ### Table Options
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `hasHeader` | `boolean` | First row is header |
-| `hasFooter` | `boolean` | Show footer row |
-| `addRowNumbers` | `boolean` | Add row numbers |
-| `sumRowValues` | `boolean` | Add sum column |
-| `cellNames` | `object` | Custom header names |
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `hasHeader` | `boolean` | `true` | First row is header |
+| `showFooter` | `boolean` | `true` | Show footer row |
+| `addRowNumbers` | `boolean` | `false` | Add row number column |
+| `sumRowValues` | `boolean` | `false` | Add sum column |
+| `cellNames` | `object` | – | Custom header names |
+
+---
+
+### Drawer / Modal (Portal)
+
+`createDrawer` and `createModal` are **portal components** – they automatically render their HTML to `document.body`. They do **not** accept a `parent` parameter.
+
+```typescript
+// Drawer with menu
+createDrawer({
+  id: "sidebar",
+  title: "Menu",
+  children: [createMenu({ id: "nav", items: menuItems })],
+  mode: "push",
+  defaultState: "closed",
+});
+openDrawer("sidebar");
+
+// Modal
+createModal(
+  { modalTitle: "Confirm", body: { tag: "p", text: "Are you sure?" } },
+  { okAction: () => console.log("OK"), cancelAction: () => console.log("Cancelled") },
+  { id: "confirmModal" }
+);
+openModal("confirmModal");
+```
+
+---
 
 ## Example
 
 ```typescript
 import {
-  createTextInput,
-  createSelect,
-  createButton,
-  createTable,
-  createModal
+  createTextInput, createSelect, createButton,
+  createTable, createCard, createToast
 } from "createdomblocks";
 
 const parent = document.getElementById("app");
 
-// Form with multiple inputs
-createTextInput({
+createCard({
   parent,
-  id: "username",
-  labelText: "Username:",
-  placeholder: "Enter username",
-});
-
-createSelect({
-  parent,
-  id: "role",
-  labelText: "Role:",
-  options: [
-    { text: "Admin", value: "admin" },
-    { text: "User", value: "user" },
+  id: "formCard",
+  title: "User Form",
+  body: [
+    createTextInput({ parent, id: "name", labelText: "Name:", placeholder: "Enter name" }),
+    createSelect({ parent, id: "role", labelText: "Role:", options: [
+      { text: "Admin", value: "admin" },
+      { text: "User", value: "user" },
+    ]}),
+    createButton({ parent, id: "saveBtn", text: "Save", click: () => {
+      createToast({ parent: document.body, message: "Saved!", type: "success" });
+    }}),
   ],
 });
-
-// Data table
-const data = [
-  ["Name", "Age", "City"],
-  ["Alice", "30", "New York"],
-  ["Bob", "25", "London"],
-];
-
-createTable(data, {
-  parent,
-  id: "userTable",
-  hasHeader: true,
-});
-
-// Modal dialog
-createModal(
-  { modalTitle: "Confirm", body: { tag: "p", text: "Are you sure?" } },
-  {
-    okAction: () => console.log("Confirmed"),
-    cancelAction: () => console.log("Cancelled"),
-    closeAction: () => console.log("Closed"),
-  },
-  { parent, id: "confirmModal" }
-);
 ```
 
 ## License

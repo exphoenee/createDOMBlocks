@@ -1,14 +1,18 @@
 # createDOMBlocks
 
+[English README](README.md)
+
 TypeScript könyvtár komplex HTML blokkok és űrlapelemek létrehozásához JavaScript segítségével. A [DOMelemJS](https://github.com/exphoenee/DOMelemJS) könyvtárra épül.
+
+**50+ komponens** – form inputok, gombok, navigáció, tartalom blokkok, egyedi pickerek, drawer, modal, carousel, és még sok más.
 
 ## Jellemzők
 
-- Űrlap inputok létrehozása címkékkel és eseménykezelőkkel
-- Táblázatok építése tömbökből vagy objektumokból automatikus lábléc számítással
-- Modál dialógus generálása testreszabott műveletekkel
-- Rendezett/rendezetlen listák létrehozása
-- Típusbiztonság teljes TypeScript támogatással
+- 50+ UI komponens – inputok, gombok, táblázatok, modálok, navigáció, alert-ek, stb.
+- Framework-független – működik React, Vue, Angular vagy vanilla JS projektben
+- Típusbiztonság – teljes TypeScript támogatás IntelliSense-szel
+- Tree-shakable – csak azt importáld, amire szükséged van
+- Portal támogatás – drawer és modal komponensek automatikusan a `document.body`-hoz fűződnek
 
 ## Telepítés
 
@@ -29,315 +33,249 @@ Ez egy globális `CreateDOMBlocks` objektumot hoz létre az összes exportált f
 
 ## Gyors elkezdés
 
-### npm használatával
-
 ```typescript
-import { createTextInput, createButton, createTable } from "createdomblocks";
+import { createTextInput, createButton, createCard } from "createdomblocks";
 import "createdomblocks/style.css";
 
 const parent = document.getElementById("app");
 
-// Szöveg input létrehozása
 createTextInput({
   parent,
-  id: "myInput",
+  id: "name",
   labelText: "Név:",
   placeholder: "Adja meg a nevet",
 });
 
-// Gomb létrehozása
 createButton({
   parent,
   id: "submitBtn",
   text: "Küldés",
   click: () => console.log("Kattintás!"),
 });
-```
 
-### CDN használatával
-
-```html
-<!DOCTYPE html>
-<html lang="hu">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Alkalmazásom</title>
-    <link rel="stylesheet" href="https://unpkg.com/createdomblocks/dist/style.css" />
-  </head>
-  <body>
-    <div id="app"></div>
-    <script src="https://unpkg.com/createdomblocks/dist/index.js"></script>
-    <script>
-      const { createTextInput, createButton } = CreateDOMBlocks;
-      const parent = document.getElementById("app");
-
-      createTextInput({
-        parent,
-        id: "myInput",
-        labelText: "Név:",
-        placeholder: "Adja meg a nevet",
-      });
-
-      createButton({
-        parent,
-        id: "submitBtn",
-        text: "Küldés",
-        click: () => console.log("Kattintás!"),
-      });
-    </script>
-  </body>
-</html>
+createCard({
+  parent,
+  id: "infoCard",
+  title: "Üdvözlünk",
+  body: { tag: "p", text: "Helló a createDOMBlocks-tól!" },
+});
 ```
 
 ## API
 
-### Űrlap Inputok
+### Form Inputok
 
-#### `createTextInput(params)`
-Szöveg input létrehozása opcionális címkével.
-
-#### `createTelInput(params)`
-Telefon input létrehozása.
-
-#### `createUrlInput(params)`
-URL input létrehozása.
-
-#### `createSearchInput(params)`
-Keresési input létrehozása.
-
-#### `createEmailInput(params)`
-E-mail input létrehozása.
-
-#### `createPasswordInput(params)`
-Jelszó input létrehozása.
-
-#### `createNumberInput(params)`
-Szám input létrehozása.
-
-#### `createDateInput(params)`
-Dátum input létrehozása.
-
-#### `createDatetimeInput(params)`
-Dátum-idő input létrehozása.
-
-#### `createTimeInput(params)`
-Idő input létrehozása.
-
-#### `createMonthInput(params)`
-Hónap input létrehozása.
-
-#### `createWeekInput(params)`
-Hét input létrehozása.
-
-#### `createCheckbox(params)`
-Jelölőnégyzet létrehozása.
-
-#### `createColorInput(params)`
-Szín kiválasztó létrehozása.
-
-#### `createFileInput(params)`
-Fájl kiválasztó létrehozása.
-
-#### `createRangeInput(params)`
-Csúszka létrehozása min/max/step paraméterrel.
-
-#### `createHiddenInput(params)`
-Rejtett input létrehozása.
+| Függvény | Leírás |
+|----------|--------|
+| `createTextInput(params)` | Szöveg input címkével |
+| `createTelInput(params)` | Telefon input |
+| `createUrlInput(params)` | URL input |
+| `createSearchInput(params)` | Kereső input |
+| `createEmailInput(params)` | E-mail input |
+| `createPasswordInput(params)` | Jelszó input |
+| `createNumberInput(params)` | Szám input |
+| `createDateInput(params)` | Dátum input |
+| `createDatetimeInput(params)` | Dátum-idő input |
+| `createTimeInput(params)` | Idő input |
+| `createMonthInput(params)` | Hónap input |
+| `createWeekInput(params)` | Hét input |
+| `createCheckbox(params)` | Jelölőnégyzet |
+| `createColorInput(params)` | Színválasztó |
+| `createFileInput(params)` | Fájl választó |
+| `createRangeInput(params)` | Csúszka (min/max/step) |
+| `createHiddenInput(params)` | Rejtett input |
 
 ### Gombok
 
-#### `createButtonInput(params)`
-Input gomb létrehozása.
-
-#### `createSubmitInput(params)`
-Küldés gomb létrehozása.
-
-#### `createResetInput(params)`
-Visszaállítás gomb létrehozása.
-
-#### `createButton(params)`
-Gomb elem létrehozása.
+| Függvény | Leírás |
+|----------|--------|
+| `createButton(params)` | `<button>` elem click handlerrel |
+| `createButtonInput(params)` | `<input type="button">` |
+| `createSubmitInput(params)` | `<input type="submit">` |
+| `createResetInput(params)` | `<input type="reset">` |
 
 ### Kiválasztás
 
-#### `createSelect(params)`
-Legördülő menü létrehozása opciókkal.
+| Függvény | Leírás |
+|----------|--------|
+| `createSelect(params)` | Natív `<select>` legördülő |
+| `createRadio(params)` | Radio gomb csoport |
+| `createCustomSelect(params)` | Stílusos egyedi legördülő |
 
-#### `createRadio(params)`
-Radio gomb csoport létrehozása.
+### Egyedi Pickerek
 
-#### `createCustomSelect(params)`
-Egyedi legördülő menü létrehozása saját stílussal.
+| Függvény | Leírás |
+|----------|--------|
+| `createCustomDatePicker(params)` | Interaktív dátum választó |
+| `createCustomDateTimePicker(params)` | Dátum + idő választó |
+| `createCustomDateRangePicker(params)` | Dátum tartomány választó |
+| `createCustomMonthPicker(params)` | Hónap választó |
+| `createCustomWeekPicker(params)` | Hét választó |
 
-#### `createTextarea(params)`
-Szövegdoboz létrehozása.
+### Layout & Konténerek
 
-### Egyéb Elemek
+| Függvény | Leírás |
+|----------|--------|
+| `createCard(params)` | Kártya fejléccel / testtel / lábléccel |
+| `createContainer(params)` | Max-width wrapper konténer |
+| `createGrid(params)` | CSS rács oszlopokkal |
+| `createDivider(params)` | Vízszintes elválasztó `<hr>` |
 
-#### `createParagraph(params)`
-Bekezdés létrehozása.
+### Navigáció
 
-#### `createTitle(params, level)`
-Címsor létrehozása (h1-h6).
+| Függvény | Leírás |
+|----------|--------|
+| `createNav(params)` | Navigációs sáv almenükkel |
+| `createBreadcrumb(params)` | Morzsa menü |
+| `createTabs(params)` | Lapozahtató tabok |
+| `createMenu(params)` | Menü lista (drawer-ben használható) |
+| `createDrawer(params)` | Oldalsó panel (portal – body-hoz fűződik) |
+| `openDrawer(id)` | Drawer megnyitása ID alapján |
+| `closeDrawer(id)` | Drawer bezárása ID alapján |
 
-#### `createUnorderedList(data, params)`
-Rendezetlen lista létrehozása (ul).
+### Visszajelzés
 
-#### `createOrderedList(data, params)`
-Rendezett lista létrehozása (ol).
+| Függvény | Leírás |
+|----------|--------|
+| `createAlert(params)` | Figyelmeztetés (success/error/warning/info) |
+| `createToast(params)` | Automatikusan eltűnő értesítés |
+| `createBadge(params)` | Állapot jelző / pilula |
+| `createSpinner(params)` | Töltés indikátor (sm/md/lg) |
+| `createProgressBar(params)` | Folyamatjelző százalékkal |
 
-#### `createTable(data, params)`
-Táblázat létrehozása fejléccel, sorokkal és opcionális lábléc számítással.
+### Tartalom
 
-#### `createModal(content, actions, params)`
-Modál dialógus létrehozása.
+| Függvény | Leírás |
+|----------|--------|
+| `createParagraph(params)` | `<p>` bekezdés |
+| `createTitle(params, level)` | Címsor (h1–h6) |
+| `createImage(params)` | Ábra képpel + opcionális felirattal |
+| `createLink(params)` | Stilizált `<a>` link |
+| `createCodeBlock(params)` | Kódblokk szintaxis kiemeléssel |
+| `createBlockquote(params)` | Idézet szerzővel |
+| `createAccordion(params)` | Összecsukható akkordeon szekciók |
+| `createTooltip(params)` | Buborék súgó (hover vagy click) |
+| `createAvatar(params)` | Felhasználói avatar (kép vagy monogram) |
+| `createUnorderedList(data, params)` | Rendezetlen lista |
+| `createOrderedList(data, params)` | Rendezett lista |
+| `newLine(parent)` | Sortörés `<br>` |
+| `asyncImage(params)` | Lusta betöltésű kép |
 
-#### `newLine(parent)`
-Sortörés létrehozása.
+### Adat Megjelenítés
 
-#### `createForm(config)`
-Űrlap létrehozása tömbbe szedett input konfigurációkkal.
+| Függvény | Leírás |
+|----------|--------|
+| `createTable(data, params)` | Táblázat fejléccel/lábléccel/összegzéssel |
 
-#### `createCard(params)`
-Kártya komponens címmel, testtel és lábléccel.
+### Átfedő Elemek (Portal)
 
-#### `createGrid(params)`
-Rács elrendezés oszlopokkal.
+| Függvény | Leírás |
+|----------|--------|
+| `createModal(content, actions, params)` | Modál dialógus (portal – body-hoz fűződik) |
+| `openModal(id)` | Modál megnyitása ID alapján |
+| `closeModal(id)` | Modál bezárása ID alapján |
 
-#### `createContainer(params)`
-Általános container wrapper.
+### Űrlapok
 
-#### `createNav(params)`
-Navigációs sáv menüpontokkal.
+| Függvény | Leírás |
+|----------|--------|
+| `createForm(params)` | Űrlap elem input konfigurációkkal |
 
-#### `createBreadcrumb(params)`
-Morzsa menü.
+### Interaktív
 
-#### `createTabs(params)`
-Lapozahtató tabok.
-
-#### `createAlert(params)`
-Figyelmeztető üzenet (success/error/warning/info).
-
-#### `createToast(params)`
-Ideiglenes értesítés.
-
-#### `createBadge(params)`
-Állapot jelző.
-
-#### `createSpinner(params)`
-Töltés indikátor.
-
-#### `createProgressBar(params)`
-Folyamatjelző.
-
-#### `createImage(params)`
-Kép captionnel.
-
-#### `createLink(params)`
-Stilizált hivatkozás.
-
-#### `createCodeBlock(params)`
-Kódblokk nyelv megadásával.
-
-#### `createBlockquote(params)`
-Idézet szerzővel.
-
-#### `createDivider(params)`
-Vízszintes vonal.
-
-#### `createAccordion(params)`
-Összecsukható szekciók.
-
-#### `createTooltip(params)`
-Buborék súgó.
-
-#### `createAvatar(params)`
-Felhasználó avatar.
+| Függvény | Leírás |
+|----------|--------|
+| `createCarousel(params)` | 3D carousel navigációval és érintés támogatással |
+| `createDragAndDropFileInput(params)` | Drag & drop fájl feltöltő |
 
 ### Általános Paraméterek
 
-Az összes input függvény a következő paramétereket fogadja:
+Minden komponens egy `params` objektumot vár. Közös mezők:
 
 | Paraméter | Típus | Leírás |
 |-----------|-------|--------|
-| `parent` | `HTMLElement \| string` | Szülő elem vagy CSS selector |
-| `id` | `string` | Elem ID |
-| `class` | `string` | CSS osztálynév |
-| `labelText` | `string` | Címke szövege (inputoknál) |
-| `labelfirst` | `boolean` | Címke az input előtt (alapértelmezett: true) |
-| `value` | `string \| number` | Kezdeti érték |
-| `name` | `string` | Input name attribútum |
-| `placeholder` | `string` | Helyettesítő szöveg |
-| `onChange` | `(e: Event) => void` | Változás eseménykezelő |
-| `click` | `(e: Event) => void` | Kattintás eseménykezelő |
-| `handleEvent` | `EventHandler[]` | További eseménykezelők |
+| `parent` | `HTMLElement \| string` | Szülő elem vagy CSS selector (kötelező) |
+| `id` | `string` | Elem ID (kötelező) |
+| `class` | `string` | CSS osztály |
+| `handleEvent` | `EventHandler \| EventHandler[]` | Eseménykezelők |
+
+Input komponensek emellett támogatják:
+
+| Paraméter | Típus | Alapértelmezett | Leírás |
+|-----------|-------|-----------------|--------|
+| `labelText` | `string` | – | Címke szövege |
+| `labelfirst` | `boolean` | `true` | Címke az input előtt |
+| `value` | `string \| number` | – | Kezdeti érték |
+| `name` | `string` | – | Input name attribútum |
+| `placeholder` | `string` | – | Helyettesítő szöveg |
+| `onChange` | `(e: Event) => void` | – | Változás eseménykezelő |
+| `click` | `(e: Event) => void` | – | Kattintás eseménykezelő |
+
+---
 
 ### Táblázat Opciók
 
-| Paraméter | Típus | Leírás |
-|-----------|-------|--------|
-| `hasHeader` | `boolean` | Első sor fejléc |
-| `hasFooter` | `boolean` | Lábléc sor megjelenítése |
-| `addRowNumbers` | `boolean` | Sor számok hozzáadása |
-| `sumRowValues` | `boolean` | Összeg oszlop hozzáadása |
-| `cellNames` | `object` | Egyéni fejléc nevek |
+| Paraméter | Típus | Alapértelmezett | Leírás |
+|-----------|-------|-----------------|--------|
+| `hasHeader` | `boolean` | `true` | Első sor fejléc |
+| `showFooter` | `boolean` | `true` | Lábléc sor megjelenítése |
+| `addRowNumbers` | `boolean` | `false` | Sorszám oszlop hozzáadása |
+| `sumRowValues` | `boolean` | `false` | Összeg oszlop hozzáadása |
+| `cellNames` | `object` | – | Egyéni fejléc nevek |
+
+---
+
+### Drawer / Modal (Portal)
+
+A `createDrawer` és `createModal` **portal komponensek** – automatikusan a `document.body`-hoz fűzik magukat. **Nem fogadnak el `parent` paramétert.**
+
+```typescript
+// Drawer menüvel
+createDrawer({
+  id: "sidebar",
+  title: "Menü",
+  children: [createMenu({ id: "nav", items: menuItems })],
+  mode: "push",
+  defaultState: "closed",
+});
+openDrawer("sidebar");
+
+// Modal
+createModal(
+  { modalTitle: "Megerősítés", body: { tag: "p", text: "Biztos benne?" } },
+  { okAction: () => console.log("OK"), cancelAction: () => console.log("Mégse") },
+  { id: "confirmModal" }
+);
+openModal("confirmModal");
+```
+
+---
 
 ## Példa
 
 ```typescript
 import {
-  createTextInput,
-  createSelect,
-  createButton,
-  createTable,
-  createModal
+  createTextInput, createSelect, createButton,
+  createTable, createCard, createToast
 } from "createdomblocks";
 
 const parent = document.getElementById("app");
 
-// Form több inputtal
-createTextInput({
+createCard({
   parent,
-  id: "username",
-  labelText: "Felhasználónév:",
-  placeholder: "Adja meg a felhasználónevet",
-});
-
-createSelect({
-  parent,
-  id: "role",
-  labelText: "Szerep:",
-  options: [
-    { text: "Admin", value: "admin" },
-    { text: "Felhasználó", value: "user" },
+  id: "formCard",
+  title: "Felhasználói űrlap",
+  body: [
+    createTextInput({ parent, id: "name", labelText: "Név:", placeholder: "Add meg a nevet" }),
+    createSelect({ parent, id: "role", labelText: "Szerep:", options: [
+      { text: "Admin", value: "admin" },
+      { text: "Felhasználó", value: "user" },
+    ]}),
+    createButton({ parent, id: "saveBtn", text: "Mentés", click: () => {
+      createToast({ parent: document.body, message: "Elmentve!", type: "success" });
+    }}),
   ],
 });
-
-// Adat táblázat
-const data = [
-  ["Név", "Kor", "Város"],
-  ["Anna", "30", "Budapest"],
-  ["Béla", "25", "Debrecen"],
-];
-
-createTable(data, {
-  parent,
-  id: "userTable",
-  hasHeader: true,
-});
-
-// Modál dialógus
-createModal(
-  { modalTitle: "Megerősítés", body: { tag: "p", text: "Biztos benne?" } },
-  {
-    okAction: () => console.log("Megerősítve"),
-    cancelAction: () => console.log("Megsegitve"),
-    closeAction: () => console.log("Bezárva"),
-  },
-  { parent, id: "confirmModal" }
-);
 ```
 
 ## Licenc

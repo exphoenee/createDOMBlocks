@@ -43,19 +43,19 @@ function buildNavItem(item: NavItem): CreateDOMElemOptions {
   };
 }
 
-export function createNav(config: NavParams): HTMLElement {
-  const navAttrs: Record<string, string> = { class: `nav${config.class ? ` ${config.class}` : ""}` };
-  if (config.id) navAttrs.id = config.id;
+export function createNav(params: NavParams): HTMLElement {
+  const navAttrs: Record<string, string> = { class: `nav${params.class ? ` ${params.class}` : ""}` };
+  if (params.id) navAttrs.id = params.id;
 
   return createDOMElem({
     tag: "nav",
-    parent: config.parent,
+    parent: params.parent,
     attrs: navAttrs,
     children: [
       {
         tag: "ul",
         attrs: { class: "nav-list" },
-        children: config.items.map((item: NavItem) => buildNavItem(item)),
+        children: params.items.map((item: NavItem) => buildNavItem(item)),
       },
     ],
   });

@@ -1,35 +1,34 @@
 import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
-import type { ModalContent, ModalActions, ModalParams } from "./types";
-import { createButton } from "./buttons/createButton";
+import type { ModalContent, ModalActions, ModalParams } from "../types";
+import { createButton } from "../buttons/createButton";
+
+export function openModal(id: string): void {
+  const portal = document.getElementById(`${id}-portal`);
+  if (portal) {
+    document.body.appendChild(portal);
+    portal.style.display = "flex";
+    portal.style.opacity = "1";
+    portal.classList.remove("hidden");
+  }
+}
+
+export function closeModal(id: string): void {
+  const portal = document.getElementById(`${id}-portal`);
+  if (portal) {
+    portal.classList.add("hidden");
+    portal.style.opacity = "0";
+    portal.addEventListener("transitionend", () => {
+      portal.style.display = "none";
+    }, { once: true });
+  }
+}
 
 export function createModal(
   content: ModalContent,
   actions: ModalActions,
   params: ModalParams
 ): HTMLElement {
-  const closeModal = () => {
-    const portal = document.getElementById(`${params.id}-portal`);
-    if (portal) {
-      portal.classList.add("hidden");
-      portal.style.opacity = "0";
-      portal.addEventListener("transitionend", () => {
-        portal.style.display = "none";
-      }, { once: true });
-    }
-    actions.closeAction?.();
-  };
-
-  const openModal = () => {
-    const portal = document.getElementById(`${params.id}-portal`);
-    if (portal) {
-      document.body.appendChild(portal);
-      portal.style.display = "flex";
-      portal.style.opacity = "1";
-      portal.classList.remove("hidden");
-    }
-  };
-
   const bodyChildren = Array.isArray(content.body) ? content.body : [content.body];
 
   const modal = createDOMElem({
@@ -81,10 +80,15 @@ export function createModal(
               style: { margin: 0, fontSize: "1.25rem" },
             },
             createButton({
+              id: `${params.id}-close-btn`,
               class: "modal-close-btn",
+              parent: document.body,
               text: "\u00D7",
               style: { fontSize: "1.5rem", cursor: "pointer", background: "none", border: "none", padding: "0.25rem", lineHeight: 1 },
-              click: closeModal,
+              click: () => {
+                closeModal(params.id);
+                actions.closeAction?.();
+              },
             }),
           ],
         },
@@ -99,13 +103,17 @@ export function createModal(
           style: { display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" },
           children: [
             createButton({
+              id: `${params.id}-cancel-btn`,
+              parent: document.body,
               class: "modal-cancel-btn",
-              click: () => { actions.cancelAction?.(); closeModal(); },
+              click: () => { actions.cancelAction?.(); closeModal(params.id); },
               text: "Mégse",
             }),
             createButton({
+              id: `${params.id}-ok-btn`,
+              parent: document.body,
               class: "modal-ok-btn",
-              click: () => { actions.okAction?.(); closeModal(); },
+              click: () => { actions.okAction?.(); closeModal(params.id); },
               text: "OK",
             }),
           ],
@@ -115,9 +123,6 @@ export function createModal(
   });
 
   document.body.appendChild(modal);
-
-  (modal as any).__openModal = openModal;
-  (modal as any).__closeModal = closeModal;
 
   return modal;
 }

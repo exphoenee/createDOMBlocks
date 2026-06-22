@@ -1,5 +1,5 @@
 import { createDOMElem } from "domelemjs";
-import type { ListParams } from "./types";
+import type { ListParams } from "../types";
 
 export function createUnorderedList(data: string[], params: ListParams): HTMLElement {
   const attrs: Record<string, string> = {

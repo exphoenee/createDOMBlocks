@@ -68,6 +68,17 @@ for (const file of readdirSync(docDir)) {
   }
 }
 
+mkdirp(path.join(DIST_PAGE, "demos"));
+
+const demosDir = path.resolve(PROJECT_ROOT, "documentation", "demos");
+if (existsSync(demosDir)) {
+  for (const file of readdirSync(demosDir)) {
+    if (file.endsWith(".css")) {
+      copyFileSync(path.join(demosDir, file), path.join(DIST_PAGE, "demos", file));
+    }
+  }
+}
+
 copyFileSync(path.resolve(PROJECT_ROOT, "style.css"), path.join(DIST_PAGE, "style.css"));
 
 const assetsDir = path.resolve(PROJECT_ROOT, "assets");

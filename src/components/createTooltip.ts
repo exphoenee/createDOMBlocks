@@ -1,20 +1,30 @@
 import { createDOMElem } from "domelemjs";
 import type { TooltipParams } from "../types";
 
-export function createTooltip(config: TooltipParams): HTMLElement {
+export function createTooltip(params: TooltipParams): HTMLElement {
   const rootAttrs: Record<string, string> = {
-    class: `tooltip-wrapper${config.class ? ` ${config.class}` : ""}`,
-    "data-tooltip": config.text,
-    "data-tooltip-position": config.position || "top",
+    class: `tooltip-wrapper${params.class ? ` ${params.class}` : ""}`,
+    "data-tooltip": params.text,
+    "data-tooltip-position": params.position || "top",
   };
-  if (config.id) rootAttrs.id = config.id;
+  if (params.id) rootAttrs.id = params.id;
 
   return createDOMElem({
     tag: "div",
-    parent: config.parent,
+    parent: params.parent,
     attrs: rootAttrs,
-    children: [{ tag: "span", attrs: { class: "tooltip-content" }, text: config.text }],
-    handleEvent: config.trigger === "click"
+    children: [
+      {
+        tag: "span",
+        attrs: { class: "tooltip-trigger" },
+        children: [
+          { tag: "span", text: "\u24D8", attrs: { class: "tooltip-icon" } },
+          { tag: "span", text: "Info", attrs: { class: "tooltip-trigger-text" } },
+        ],
+      },
+      { tag: "span", attrs: { class: "tooltip-content" }, text: params.text },
+    ],
+    handleEvent: params.trigger === "click"
       ? { event: "click", cb: (e: Event) => { (e.currentTarget as HTMLElement).classList.toggle("tooltip-active"); } }
       : undefined,
   });

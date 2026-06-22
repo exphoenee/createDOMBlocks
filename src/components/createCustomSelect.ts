@@ -1,36 +1,24 @@
 import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
-import type { SelectOption } from "../types";
+import type { CustomSelectParams, SelectOption } from "../types";
 
-export interface CustomSelectParams {
-  parent: HTMLElement | string;
-  id: string;
-  class?: string;
-  name?: string;
-  value?: string | number;
-  labelText?: string;
-  placeholder?: string;
-  options: SelectOption[];
-  onChange?: (value: string | number) => void;
-}
-
-export function createCustomSelect(config: CustomSelectParams): HTMLElement {
-  let selectedValue: string | number | undefined = config.value;
+export function createCustomSelect(params: CustomSelectParams): HTMLElement {
+  let selectedValue: string | number | undefined = params.value;
   let isOpen = false;
 
   const rootAttrs: Record<string, string> = {
-    class: `custom-select${config.class ? ` ${config.class}` : ""}`,
+    class: `custom-select${params.class ? ` ${params.class}` : ""}`,
     "data-value": selectedValue != null ? String(selectedValue) : "",
   };
-  if (config.id) rootAttrs.id = config.id;
+  if (params.id) rootAttrs.id = params.id;
 
-  const displayLabel = config.options.find((o) => o.value === selectedValue)?.text || config.placeholder || "";
+  const displayLabel = params.options.find((o) => o.value === selectedValue)?.text || params.placeholder || "";
 
   const selectedAttrs: Record<string, string> = { class: "custom-select-trigger" };
 
   const optionsListAttrs: Record<string, string> = { class: "custom-select-options" };
 
-  const optionElements: CreateDOMElemOptions[] = config.options.map((opt: SelectOption) => {
+  const optionElements: CreateDOMElemOptions[] = params.options.map((opt: SelectOption) => {
     const optAttrs: Record<string, string> = {
       class: `custom-select-option${opt.value === selectedValue ? " selected" : ""}`,
       "data-value": String(opt.value),
@@ -50,7 +38,7 @@ export function createCustomSelect(config: CustomSelectParams): HTMLElement {
           root.querySelectorAll(".custom-select-option").forEach((el) => {
             el.classList.remove("selected");
           });
-          (optionElements.find((_, i) => config.options[i].value === opt.value)?.attrs as Record<string, string>)?.class?.includes("selected");
+          (optionElements.find((_, i) => params.options[i].value === opt.value)?.attrs as Record<string, string>)?.class?.includes("selected");
 
           const allOpts = root.querySelectorAll(".custom-select-option");
           allOpts.forEach((el) => {
@@ -65,7 +53,7 @@ export function createCustomSelect(config: CustomSelectParams): HTMLElement {
           root.classList.remove("open");
           optionsList.style.display = "none";
 
-          config.onChange?.(opt.value);
+          params.onChange?.(opt.value);
         },
       },
     };
@@ -86,11 +74,11 @@ export function createCustomSelect(config: CustomSelectParams): HTMLElement {
 
   const root = createDOMElem({
     tag: "div",
-    parent: config.parent,
+    parent: params.parent,
     attrs: rootAttrs,
     children: [
-      ...(config.labelText
-        ? [{ tag: "label", text: config.labelText, attrs: { class: "custom-select-label", for: config.id } } as CreateDOMElemOptions]
+      ...(params.labelText
+        ? [{ tag: "label", text: params.labelText, attrs: { class: "custom-select-label", for: params.id } } as CreateDOMElemOptions]
         : []),
       {
         tag: "div",

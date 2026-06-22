@@ -54,14 +54,14 @@ function buildAccordionItem(item: AccordionItem, multiple: boolean): CreateDOMEl
   };
 }
 
-export function createAccordion(config: AccordionParams): HTMLElement {
-  const rootAttrs: Record<string, string> = { class: `accordion${config.class ? ` ${config.class}` : ""}` };
-  if (config.id) rootAttrs.id = config.id;
+export function createAccordion(params: AccordionParams): HTMLElement {
+  const rootAttrs: Record<string, string> = { class: `accordion${params.class ? ` ${params.class}` : ""}` };
+  if (params.id) rootAttrs.id = params.id;
 
   return createDOMElem({
     tag: "div",
-    parent: config.parent,
+    parent: params.parent,
     attrs: rootAttrs,
-    children: config.items.map((item: AccordionItem) => buildAccordionItem(item, config.multiple || false)),
+    children: params.items.map((item: AccordionItem) => buildAccordionItem(item, params.multiple || false)),
   });
 }

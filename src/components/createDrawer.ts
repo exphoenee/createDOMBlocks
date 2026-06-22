@@ -1,65 +1,13 @@
 import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
-
-export interface DrawerMenuItem {
-  label: string;
-  href?: string;
-  children?: DrawerMenuItem[];
-}
-
-export interface DrawerParams {
-  id?: string;
-  title?: string;
-  items: DrawerMenuItem[];
-  defaultState?: "open" | "closed";
-  hasOverlay?: boolean;
-  mode?: "overlay" | "push";
-}
-
-function buildMenuItem(item: DrawerMenuItem): CreateDOMElemOptions {
-  const children: CreateDOMElemOptions[] = [];
-
-  if (item.href) {
-    children.push({
-      tag: "a",
-      text: item.label,
-      attrs: { href: item.href, class: "drawer-link" },
-    });
-  } else {
-    children.push({
-      tag: "span",
-      text: item.label,
-      attrs: { class: "drawer-link drawer-link-header" },
-    });
-  }
-
-  if (item.children && item.children.length > 0) {
-    children.push({
-      tag: "div",
-      attrs: { class: "drawer-submenu" },
-      children: item.children.map((child) => ({
-        tag: "div",
-        attrs: { class: "drawer-subitem" },
-        children: [buildMenuItem(child)],
-      })),
-    });
-  }
-
-  return {
-    tag: "div",
-    attrs: { class: "drawer-item" },
-    children,
-  };
-}
-
-let currentMode: "overlay" | "push" = "overlay";
-let initialOpenDone = false;
+import type { DrawerParams } from "../types";
+import { createMenu } from "./createMenu";
 
 export function createDrawer(params: DrawerParams): HTMLElement {
-  const id = params.id || "sidebar-drawer";
+  const id = params.id;
   const defaultState = params.defaultState || "closed";
   const hasOverlay = params.hasOverlay ?? false;
-  currentMode = params.mode || "overlay";
+  const mode = params.mode || "overlay";
 
   let overlay: HTMLElement | null = null;
 
@@ -74,9 +22,20 @@ export function createDrawer(params: DrawerParams): HTMLElement {
     });
   }
 
+  // Backward compatibility: if items is provided (without children), wrap in createMenu
+  const drawerChildren: (CreateDOMElemOptions | HTMLElement)[] = params.children
+    ? params.children
+    : params.items
+      ? [createMenu({ id, items: params.items })]
+      : [];
+
   const sidebar = createDOMElem({
     tag: "div",
-    attrs: { class: `drawer-sidebar${currentMode === "push" ? " drawer-push" : ""}`, id: `${id}-sidebar` },
+    attrs: {
+      class: `drawer-sidebar${mode === "push" ? " drawer-push" : ""}`,
+      id: `${id}-sidebar`,
+      "data-drawer-mode": mode,
+    },
     children: [
       {
         tag: "div",
@@ -98,11 +57,7 @@ export function createDrawer(params: DrawerParams): HTMLElement {
           },
         ],
       },
-      {
-        tag: "nav",
-        attrs: { class: "drawer-nav" },
-        children: params.items.map((item) => buildMenuItem(item)),
-      },
+      ...drawerChildren,
     ],
   });
 
@@ -117,26 +72,39 @@ export function createDrawer(params: DrawerParams): HTMLElement {
 }
 
 export function openDrawer(id: string = "sidebar-drawer"): void {
-  const overlay = document.getElementById(`${id}-overlay`);
-  const sidebar = document.getElementById(`${id}-sidebar`);
-  if (initialOpenDone) {
+  const sidebar = document.getElementById(`${id}-sidebar`) as HTMLElement | null;
+  if (!sidebar) return;
+
+  const mode = sidebar.dataset.drawerMode || "overlay";
+  const openedBefore = sidebar.dataset.drawerOpenedBefore === "true";
+
+  if (openedBefore) {
     document.body.classList.add("drawer-transition");
+  } else {
+    sidebar.dataset.drawerOpenedBefore = "true";
   }
+
+  const overlay = document.getElementById(`${id}-overlay`);
   if (overlay) overlay.classList.add("open");
-  if (sidebar) sidebar.classList.add("open");
-  if (currentMode === "push") {
+  sidebar.classList.add("open");
+
+  if (mode === "push") {
     document.body.classList.add("drawer-push-open");
   }
-  initialOpenDone = true;
 }
 
 export function closeDrawer(id: string = "sidebar-drawer"): void {
-  const overlay = document.getElementById(`${id}-overlay`);
-  const sidebar = document.getElementById(`${id}-sidebar`);
-  if (initialOpenDone) {
+  const sidebar = document.getElementById(`${id}-sidebar`) as HTMLElement | null;
+  if (!sidebar) return;
+
+  const openedBefore = sidebar.dataset.drawerOpenedBefore === "true";
+
+  if (openedBefore) {
     document.body.classList.add("drawer-transition");
   }
+
+  const overlay = document.getElementById(`${id}-overlay`);
   if (overlay) overlay.classList.remove("open");
-  if (sidebar) sidebar.classList.remove("open");
+  sidebar.classList.remove("open");
   document.body.classList.remove("drawer-push-open");
 }

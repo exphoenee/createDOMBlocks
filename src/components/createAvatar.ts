@@ -2,16 +2,16 @@ import { createDOMElem } from "domelemjs";
 import type { CreateDOMElemOptions } from "domelemjs";
 import type { AvatarParams } from "../types";
 
-export function createAvatar(config: AvatarParams): HTMLElement {
+export function createAvatar(params: AvatarParams): HTMLElement {
   const children: CreateDOMElemOptions[] = [];
 
-  if (config.src) {
+  if (params.src) {
     children.push({
       tag: "img",
-      attrs: { src: config.src, alt: config.name || "Avatar", class: "avatar-image" },
+      attrs: { src: params.src, alt: params.name || "Avatar", class: "avatar-image" },
     });
-  } else if (config.name) {
-    const initials = config.name
+  } else if (params.name) {
+    const initials = params.name
       .split(" ")
       .map((n: string) => n[0])
       .join("")
@@ -21,9 +21,9 @@ export function createAvatar(config: AvatarParams): HTMLElement {
   }
 
   const rootAttrs: Record<string, string> = {
-    class: `avatar avatar-${config.size || "md"} avatar-${config.shape || "circle"}${config.class ? ` ${config.class}` : ""}`,
+    class: `avatar avatar-${params.size || "md"} avatar-${params.shape || "circle"}${params.class ? ` ${params.class}` : ""}`,
   };
-  if (config.id) rootAttrs.id = config.id;
+  if (params.id) rootAttrs.id = params.id;
 
-  return createDOMElem({ tag: "div", parent: config.parent, attrs: rootAttrs, children });
+  return createDOMElem({ tag: "div", parent: params.parent, attrs: rootAttrs, children });
 }
