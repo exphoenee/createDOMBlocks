@@ -94,13 +94,14 @@ createCard({
 | `createSubmitInput(params)` | `<input type="submit">` |
 | `createResetInput(params)` | `<input type="reset">` |
 
-### Kiválasztás
+### Kiválasztás & Textarea
 
 | Függvény | Leírás |
 |----------|--------|
 | `createSelect(params)` | Natív `<select>` legördülő |
 | `createRadio(params)` | Radio gomb csoport |
 | `createCustomSelect(params)` | Stílusos egyedi legördülő |
+| `createTextarea(params)` | Szövegterület input elem |
 
 ### Egyedi Pickerek
 

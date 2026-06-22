@@ -94,13 +94,14 @@ createCard({
 | `createSubmitInput(params)` | `<input type="submit">` |
 | `createResetInput(params)` | `<input type="reset">` |
 
-### Selection
+### Selection & Textarea
 
 | Function | Description |
 |----------|-------------|
 | `createSelect(params)` | Native `<select>` dropdown |
 | `createRadio(params)` | Radio button group |
 | `createCustomSelect(params)` | Styled custom dropdown |
+| `createTextarea(params)` | Textarea input element |
 
 ### Custom Pickers
 
@@ -156,7 +157,8 @@ createCard({
 | `createAccordion(params)` | Collapsible accordion sections |
 | `createTooltip(params)` | Tooltip (hover or click trigger) |
 | `createAvatar(params)` | User avatar (image or initials) |
-| `createList(data, params)` | Unordered or ordered list |
+| `createUnorderedList(data, params)` | Unordered (bulleted) list |
+| `createOrderedList(data, params)` | Ordered (numbered) list |
 | `newLine(parent)` | Line break `<br>` |
 | `asyncImage(params)` | Lazy-loaded image |
 

@@ -1,296 +1,186 @@
-import { createBadge, createTable, createAvatar, createDivider, createAlert, createProgressBar, createCard } from "../../src/index";
 import { createDOMElem } from "domelemjs";
+import type { CreateDOMElemOptions } from "domelemjs";
+import { section, div, heading, para, button, stars, avatar, stepper, img, ASSET } from "./_shared";
 
 const app = document.getElementById("app")!;
-
-const page = createDOMElem({ tag: "div", attrs: { class: "demo3-page" } });
+const page = createDOMElem(div("demo3-page"));
 app.appendChild(page);
 
-const sidebar = createDOMElem({
-  tag: "div",
-  attrs: { class: "demo3-sidebar" },
-  parent: page,
-  children: [
-    createDOMElem({ tag: "div", text: "📊 Dashboard", attrs: { class: "demo3-sidebar-brand" } }),
-    createDOMElem({
-      tag: "a",
-      text: "← Vissza",
-      attrs: { class: "demo3-sidebar-link", href: "index.html", style: { marginBottom: "1rem", display: "inline-block" } },
-    }),
-    createDOMElem({
-      tag: "nav",
-      attrs: { class: "demo3-sidebar-nav" },
-      children: [
-        ...[
-          { icon: "📋", label: "Áttekintés", active: true },
-          { icon: "📈", label: "Analitika" },
-          { icon: "👥", label: "Felhasználók" },
-          { icon: "🛒", label: "Rendelések" },
-          { icon: "📦", label: "Termékek" },
-          { icon: "💬", label: "Üzenetek" },
-          { icon: "⚙️", label: "Beállítások" },
-        ].map((item) =>
-          createDOMElem({
-            tag: "a",
-            text: `${item.icon}  ${item.label}`,
-            attrs: { class: `demo3-sidebar-link${item.active ? " active" : ""}`, href: "#" },
-          })
-        ),
-      ],
-    }),
-  ],
-});
+function buildBreadcrumb(): CreateDOMElemOptions {
+  return div("demo3-breadcrumb", [
+    { tag: "span", text: "F\u0151oldal", attrs: { class: "demo3-bc-link" } },
+    { tag: "span", text: " \u203a " },
+    { tag: "span", text: "Cip\u0151k", attrs: { class: "demo3-bc-link" } },
+    { tag: "span", text: " \u203a " },
+    { tag: "span", text: "Fut\u00f3cip\u0151" },
+  ]);
+}
 
-const main = createDOMElem({
-  tag: "div",
-  attrs: { class: "demo3-main" },
-  parent: page,
-});
+function buildProduct(): CreateDOMElemOptions {
+  const images = ["demo3-img1.jpg", "demo3-img2.jpg", "demo3-img3.jpg", "demo3-img4.jpg"];
 
-const topbar = createDOMElem({
-  tag: "div",
-  attrs: { class: "demo3-topbar" },
-  parent: main,
-  children: [
-    createDOMElem({ tag: "h1", text: "Áttekintés" }),
-    createDOMElem({
-      tag: "div",
-      attrs: { class: "demo3-topbar-actions" },
-      children: [
-        createDOMElem({ tag: "button", text: "+ Új rendelés", attrs: { class: "btn", id: "dash-new" } }),
-        createDOMElem({
-          tag: "div",
-          style: { display: "flex", alignItems: "center", gap: "0.5rem" },
-          children: [
-            createDOMElem({ tag: "div", attrs: { class: "demo3-avatar-wrapper" }, children: [
-              createDOMElem({ tag: "div", text: "VB", attrs: { style: { width: "28px", height: "28px", borderRadius: "50%", background: "#3b82f6", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontWeight: "600" } } }),
-            ]}),
-            createDOMElem({ tag: "span", text: "Viktor", style: { fontSize: "0.875rem" } }),
-          ],
-        }),
-      ],
-    }),
-  ],
-});
+  const thumbs = images.map((file, i) =>
+    ({
+      tag: "img",
+      attrs: { src: `${ASSET}${file}`, alt: `Ultra Futócipő Pro – nézet ${i + 1}`, loading: "lazy", class: `demo3-gallery-thumb${i === 0 ? " demo3-gallery-thumb--active" : ""}` },
+      handleEvent: {
+        event: "click",
+        cb: () => {
+          document.querySelectorAll(".demo3-gallery-thumb").forEach((t) => t.classList.remove("demo3-gallery-thumb--active"));
+          const allThumbs = document.querySelectorAll(".demo3-gallery-thumb");
+          if (allThumbs[i]) allThumbs[i].classList.add("demo3-gallery-thumb--active");
+          const main = document.querySelector(".demo3-gallery-main-img") as HTMLImageElement | null;
+          if (main) main.src = `${ASSET}${file}`;
+        },
+      },
+    } as CreateDOMElemOptions)
+  );
 
-createDOMElem({
-  tag: "div",
-  attrs: { class: "demo3-stats" },
-  parent: main,
-  children: [
-    ...[
-      { label: "Bevétel", value: "2.4M Ft", change: "+12.5%", positive: true },
-      { label: "Rendelések", value: "1,234", change: "+8.2%", positive: true },
-      { label: "Felhasználók", value: "5,678", change: "+3.1%", positive: true },
-      { label: "Visszamutató", value: "4.2%", change: "-0.8%", positive: false },
-    ].map((s) =>
-      createDOMElem({
-        tag: "div",
-        attrs: { class: "demo3-stat-card" },
-        children: [
-          createDOMElem({ tag: "div", text: s.label, attrs: { class: "demo3-stat-label" } }),
-          createDOMElem({ tag: "div", text: s.value, attrs: { class: "demo3-stat-value" } }),
-          createDOMElem({ tag: "div", text: s.change, attrs: { class: `demo3-stat-change ${s.positive ? "positive" : "negative"}` } }),
-        ],
-      })
-    ),
-  ],
-});
+  const swatchColors = ["#1a1a2e", "#3b82f6", "#ef4444"];
+  const swatches = swatchColors.map((c, i) =>
+    ({
+      tag: "div",
+      attrs: { class: `demo3-swatch${i === 0 ? " demo3-swatch--active" : ""}` },
+      style: { background: c },
+      handleEvent: {
+        event: "click",
+        cb: () => {
+          document.querySelectorAll(".demo3-swatch").forEach((s) => s.classList.remove("demo3-swatch--active"));
+          const allSwatches = document.querySelectorAll(".demo3-swatch");
+          if (allSwatches[i]) allSwatches[i].classList.add("demo3-swatch--active");
+        },
+      },
+    } as CreateDOMElemOptions)
+  );
 
-createDOMElem({
-  tag: "div",
-  attrs: { class: "demo3-charts" },
-  parent: main,
-  children: [
-    createDOMElem({
+  const sizes = ["40", "41", "42"];
+  const sizeButtons = sizes.map((s, i) =>
+    ({
       tag: "div",
-      attrs: { class: "demo3-chart-card" },
-      children: [
-        createDOMElem({ tag: "div", text: "Havi bevétel", attrs: { class: "demo3-chart-title" } }),
-        createDOMElem({
-          tag: "div",
-          attrs: { class: "demo3-bar-chart" },
-          children: [
-            ...[40, 65, 45, 80, 55, 90, 70, 95, 60, 85, 75, 100].map((h, i) =>
-              createDOMElem({
-                tag: "div",
-                attrs: { class: "demo3-bar", style: { height: `${h}%`, background: h > 80 ? "#3b82f6" : "#93c5fd" } },
-              })
-            ),
-          ],
-        }),
-        createDOMElem({
-          tag: "div",
-          style: { display: "flex", justifyContent: "space-between", marginTop: "0.5rem" },
-          parent: undefined,
-          children: [
-            ...["Jan", "Feb", "Már", "Ápr", "Máj", "Jún", "Júl", "Aug", "Szep", "Okt", "Nov", "Dec"].map((m) =>
-              createDOMElem({ tag: "div", text: m, style: { fontSize: "0.7rem", color: "#94a3b8", flex: "1", textAlign: "center" } })
-            ),
-          ],
-        }),
-      ],
-    }),
-    createDOMElem({
-      tag: "div",
-      attrs: { class: "demo3-chart-card" },
-      children: [
-        createDOMElem({ tag: "div", text: "Rendelések forrása", attrs: { class: "demo3-chart-title" } }),
-        createDOMElem({
-          tag: "div",
-          attrs: { class: "demo3-donut" },
-          children: [
-            createDOMElem({
-              tag: "div",
-              attrs: { class: "demo3-donut-circle", style: { background: "conic-gradient(#3b82f6 0% 45%, #22c55e 45% 70%, #f59e0b 70% 85%, #94a3b8 85% 100%)" } },
-              children: [
-                createDOMElem({
-                  tag: "div",
-                  style: { position: "absolute", inset: "25px", background: "#fff", borderRadius: "50%" },
-                }),
-              ],
-            }),
-            createDOMElem({
-              tag: "div",
-              attrs: { class: "demo3-donut-legend" },
-              children: [
-                ...[
-                  { color: "#3b82f6", label: "Web (45%)" },
-                  { color: "#22c55e", label: "Mobil (25%)" },
-                  { color: "#f59e0b", label: "API (15%)" },
-                  { color: "#94a3b8", label: "Egyéb (15%)" },
-                ].map((l) =>
-                  createDOMElem({
-                    tag: "div",
-                    attrs: { class: "demo3-legend-item" },
-                    children: [
-                      createDOMElem({ tag: "div", attrs: { class: "demo3-legend-dot", style: { background: l.color } } }),
-                      createDOMElem({ tag: "span", text: l.label }),
-                    ],
-                  })
-                ),
-              ],
-            }),
-          ],
-        }),
-      ],
-    }),
-  ],
-});
+      text: s,
+      attrs: { class: `demo3-size${i === 0 ? " demo3-size--active" : ""}` },
+      handleEvent: {
+        event: "click",
+        cb: () => {
+          document.querySelectorAll(".demo3-size").forEach((sz) => sz.classList.remove("demo3-size--active"));
+          const allSizes = document.querySelectorAll(".demo3-size");
+          if (allSizes[i]) allSizes[i].classList.add("demo3-size--active");
+        },
+      },
+    } as CreateDOMElemOptions)
+  );
 
-createDOMElem({
-  tag: "div",
-  attrs: { class: "demo3-bottom" },
-  parent: main,
-  children: [
-    createDOMElem({
+  return section("demo3-product", [
+    div("demo3-gallery", [
+      div("demo3-gallery-main", [
+        { tag: "img", attrs: { src: `${ASSET}${images[0]}`, alt: "Ultra Futócipő Pro", class: "demo3-gallery-main-img" } },
+      ]),
+      div("demo3-gallery-thumbs", thumbs),
+    ]),
+    div("demo3-info", [
+      heading(1, "Ultra Fut\u00f3cip\u0151 Pro"),
+      div("demo3-rating", [
+        stars(4),
+        para("(128 \u00e9rt\u00e9kel\u00e9s)", "demo3-rating-count"),
+      ]),
+      para("24 990 Ft", "demo3-price"),
+      para("Sz\u00edn", "demo3-label"),
+      div("demo3-swatches", swatches),
+      para("M\u00e9ret", "demo3-label"),
+      div("demo3-sizes", sizeButtons),
+      para("Mennyis\u00e9g", "demo3-label"),
+      stepper(1),
+      button("Kos\u00e1rba", "demo-btn demo3-add-cart"),
+    ]),
+  ]);
+}
+
+function buildTabs(): CreateDOMElemOptions {
+  const labels = ["Le\u00edr\u00e1s", "Param\u00e9terek", "\u00c9rt\u00e9kel\u00e9sek"];
+
+  const panelContents: CreateDOMElemOptions[][] = [
+    [
+      para("Az Ultra Futt\u00f3cip\u00f3 Pro a legfejletteb technol\u00f3gi\u00e1val k\u00e9sz\u00fclt fut\u00f3cip\u0151, amely kiv\u00e1l\u00f3 teljes\u00edtm\u00e9nyt ny\u00fajt minden terepen."),
+      para("A l\u00e9g\u00e1teres mesh fels\u0151r\u00e9s\u00e9s az EVA hab talp k\u00f6nny\u0171s\u00e9get \u00e9s k\u00f6nnyed\u00e9t biztos\u00edt minden l\u00e9p\u00e9sn\u00e9l. Ide\u00e1lis hossz\u00fa t\u00e1v\u00f3 futasokhoz \u00e9s maratoni versenyekhez."),
+    ],
+    [
+      div("demo3-param", [para("T\u00f6meg", "demo3-param-label"), para("280g", "demo3-param-value")]),
+      div("demo3-param", [para("Anyag", "demo3-param-label"), para("Mesh", "demo3-param-value")]),
+      div("demo3-param", [para("Talp", "demo3-param-label"), para("EVA hab", "demo3-param-value")]),
+      div("demo3-param", [para("Sz\u00edn", "demo3-param-label"), para("T\u00f6bbf\u00e9le", "demo3-param-value")]),
+    ],
+    [
+      ...([
+        { name: "Kov\u00e1cs B\u00e9la", initials: "KB", rating: 5, date: "2024.03.15.", text: "Fantasztikus cip\u0151! A t\u00e1mogat\u00e1s kiv\u00e1l\u00f3, k\u00f6nny\u0171 \u00e9s k\u00e9nyelmes." },
+        { name: "Nagy Eszter", initials: "NE", rating: 4, date: "2024.03.10.", text: "J\u00f3 min\u0151s\u00e9g, de egy kicsit sz\u0171knek \u00e9rzem a l\u00e1bujj r\u00e9szt." },
+        { name: "Szab\u00f3 P\u00e9ter", initials: "SP", rating: 4, date: "2024.02.28.", text: "Sz\u00e9p design \u00e9s j\u00f3 tapad\u00e1s. Aj\u00e1nlom fut\u00f3knak." },
+      ]).map((r) =>
+        div("demo3-review", [
+          avatar(r.initials),
+          div("demo3-review-body", [
+            div("demo3-review-header", [
+              para(r.name, "demo3-review-name"),
+              para(r.date, "demo3-review-date"),
+            ]),
+            stars(r.rating, 5, "demo3-stars demo3-stars--sm"),
+            para(r.text, "demo3-review-text"),
+          ]),
+        ])
+      ),
+    ],
+  ];
+
+  const tabItems: CreateDOMElemOptions[] = [];
+  labels.forEach((label, i) => {
+    tabItems.push({
       tag: "div",
-      attrs: { class: "demo3-table-card" },
-      children: [
-        createDOMElem({
-          tag: "div",
-          attrs: { class: "demo3-table-header" },
-          children: [
-            createDOMElem({ tag: "h3", text: "Legutóbbi rendelések" }),
-            createDOMElem({ tag: "a", text: "Összes megtekintése", attrs: { href: "#", style: { fontSize: "0.8rem", color: "#3b82f6", textDecoration: "none" } } }),
-          ],
-        }),
-        createDOMElem({
-          tag: "table",
-          attrs: { class: "demo3-mini-table" },
-          children: [
-            createDOMElem({
-              tag: "thead",
-              children: [
-                createDOMElem({
-                  tag: "tr",
-                  children: [
-                    createDOMElem({ tag: "th", text: "Ügyfél" }),
-                    createDOMElem({ tag: "th", text: "Termék" }),
-                    createDOMElem({ tag: "th", text: "Összeg" }),
-                    createDOMElem({ tag: "th", text: "Státusz" }),
-                  ],
-                }),
-              ],
-            }),
-            createDOMElem({
-              tag: "tbody",
-              children: [
-                ...[
-                  { customer: "Kovács Anna", product: "Pro csomag", amount: "49,900 Ft", status: "Teljesítve", type: "success" },
-                  { customer: "Nagy Béla", product: "Vállalati", amount: "199,000 Ft", status: "Folyamatban", type: "info" },
-                  { customer: "Szabó Eszter", product: "Alap csomag", amount: "9,900 Ft", status: "Teljesítve", type: "success" },
-                  { customer: "Tóth Gábor", product: "Pro csomag", amount: "49,900 Ft", status: "Visszaküldve", type: "error" },
-                ].map((r) =>
-                  createDOMElem({
-                    tag: "tr",
-                    children: [
-                      createDOMElem({ tag: "td", text: r.customer }),
-                      createDOMElem({ tag: "td", text: r.product }),
-                      createDOMElem({ tag: "td", text: r.amount }),
-                      createDOMElem({
-                        tag: "td",
-                        children: [
-                          createDOMElem({
-                            tag: "span",
-                            text: r.status,
-                            attrs: {
-                              style: {
-                                display: "inline-block",
-                                padding: "0.125rem 0.5rem",
-                                borderRadius: "1rem",
-                                fontSize: "0.75rem",
-                                fontWeight: "600",
-                                background: r.type === "success" ? "#dcfce7" : r.type === "info" ? "#dbeafe" : "#fee2e2",
-                                color: r.type === "success" ? "#166534" : r.type === "info" ? "#1e40af" : "#991b1b",
-                              },
-                            },
-                          }),
-                        ],
-                      }),
-                    ],
-                  })
-                ),
-              ],
-            }),
-          ],
-        }),
-      ],
-    }),
-    createDOMElem({
-      tag: "div",
-      attrs: { class: "demo3-activity-card" },
-      children: [
-        createDOMElem({ tag: "h3", text: "Legutóbbi tevékenység", style: { fontSize: "0.9rem", fontWeight: "600", marginBottom: "1rem" } }),
-        createDOMElem({
-          tag: "div",
-          attrs: { class: "demo3-activity-list" },
-          children: [
-            ...[
-              { color: "#22c55e", text: "Új rendelés érkezett: #1234", time: "2 perce" },
-              { color: "#3b82f6", text: "Kovács Anna fizetést teljesített", time: "15 perce" },
-              { color: "#f59e0b", text: "Új regisztráció: Szabó Péter", time: "1 órája" },
-              { color: "#22c55e", text: "Rendelés kiszállítva: #1230", time: "2 órája" },
-              { color: "#ef4444", text: "Fizetés sikertelen: #1228", time: "3 órája" },
-            ].map((a) =>
-              createDOMElem({
-                tag: "div",
-                attrs: { class: "demo3-activity-item" },
-                children: [
-                  createDOMElem({ tag: "div", attrs: { class: "demo3-activity-dot", style: { background: a.color } } }),
-                  createDOMElem({
-                    tag: "div",
-                    children: [
-                      createDOMElem({ tag: "div", text: a.text, attrs: { class: "demo3-activity-text" } }),
-                      createDOMElem({ tag: "div", text: a.time, attrs: { class: "demo3-activity-time" } }),
-                    ],
-                  }),
-                ],
-              })
-            ),
-          ],
-        }),
-      ],
-    }),
-  ],
-});
+      text: label,
+      attrs: { class: `demo3-tab${i === 0 ? " demo3-tab--active" : ""}` },
+      handleEvent: {
+        event: "click",
+        cb: () => {
+          document.querySelectorAll(".demo3-tab").forEach((t) => t.classList.remove("demo3-tab--active"));
+          const allTabs = document.querySelectorAll(".demo3-tab");
+          if (allTabs[i]) allTabs[i].classList.add("demo3-tab--active");
+          const container = document.querySelector(".demo3-tab-panels");
+          if (container) {
+            container.innerHTML = "";
+            container.appendChild(createDOMElem(div("demo3-panel demo3-panel--active", panelContents[i])));
+          }
+        },
+      },
+    });
+  });
+
+  return section("demo3-tabs", [
+    div("demo3-tabs-header", tabItems),
+    div("demo3-tab-panels", [div("demo3-panel demo3-panel--active", panelContents[0])]),
+  ]);
+}
+
+function buildRelated(): CreateDOMElemOptions {
+  const products = [
+    { name: "Trail Runner X", price: "19 990 Ft", image: "demo3-img5.jpg" },
+    { name: "Urban Sneaker", price: "15 990 Ft", image: "demo3-img6.jpg" },
+    { name: "Marathon Elite", price: "29 990 Ft", image: "demo3-img7.jpg" },
+    { name: "Sport Sand\u00e1l", price: "12 990 Ft", image: "demo3-img8.jpg" },
+  ];
+  return section("demo3-related", [
+    heading(2, "Kapcsol\u00f3d\u00f3 term\u00e9kek", "demo3-section-title"),
+    div("demo3-related-grid", products.map((p) =>
+      div("demo3-related-card", [
+        img(p.image, p.name, "demo3-related-img"),
+        div("demo3-related-info", [
+          heading(3, p.name, "demo3-related-name"),
+          para(p.price, "demo3-related-price"),
+          button("Megtekint\u00e9s", "demo-btn demo-btn-outline"),
+        ]),
+      ])
+    )),
+  ]);
+}
+
+page.appendChild(createDOMElem(buildBreadcrumb()));
+page.appendChild(createDOMElem(buildProduct()));
+page.appendChild(createDOMElem(buildTabs()));
+page.appendChild(createDOMElem(buildRelated()));
