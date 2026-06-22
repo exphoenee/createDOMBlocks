@@ -150,15 +150,20 @@ function getLanguagePatterns(lang: SupportedLanguage): TokenPattern[] {
   const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
   const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
 
+  // Python triple-quoted strings — must come before generic strings
+  if (lang === "python") {
+    patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+  }
+
+  // Generic strings before comments — so // inside URLs isn't treated as a comment
+  patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
+
   if (lang === "python") {
     patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-    patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
   } else {
     patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
     patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
   }
-
-  patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
 
   if (lang === "python") {
     patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });

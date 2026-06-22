@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4791,7 +4789,7 @@ __webpack_require__.r(__webpack_exports__);
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createAvatar (n\xe9vvel)", description: "Avatar monogrammal k\xfcl\xf6nb\xf6z\u0151 m\xe9retben.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createAvatar,
-        code: "createAvatar({ parent, id: \"ava-a1\", name: \"Viktor Bozzay\", size: \"lg\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createAvatar({ parent, id: \"ava-a2\", name: \"VB\", size: \"md\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createAvatar({ parent, id: \"ava-a3\", name: \"V\", size: \"sm\" });",
+        code: "createAvatar({\n  parent,\n  id: \"ava-a1\",\n  name: \"Viktor Bozzay\",\n  size: \"lg\" \n}); createDOMElem({\n  tag: \"span\",\n  parent,\n  text: \" \" \n});\n createAvatar({\n  parent,\n  id: \"ava-a2\",\n  name: \"VB\",\n  size: \"md\" \n}); createDOMElem({\n  tag: \"span\",\n  parent,\n  text: \" \" \n});\n createAvatar({\n  parent,\n  id: \"ava-a3\",\n  name: \"V\",\n  size: \"sm\" \n});",
         codeLang: "typescript" }, (parent) => {
         (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAvatar)({ parent, id: "ava-a1", name: "Viktor Bozzay", size: "lg" });
         (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: " " });
@@ -4800,7 +4798,7 @@ const sections = [
         (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAvatar)({ parent, id: "ava-a3", name: "V", size: "sm" });
     }),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createAvatar (k\xe9ppel)", description: "Avatar k\xe9pf\xe1jlb\xf3l.",
-        code: "createAvatar({ parent, id: \"ava-a4\", src: \"https://i.pravatar.cc/100?img=1\", size: \"lg\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createAvatar({ parent, id: \"ava-a5\", src: \"https://i.pravatar.cc/100?img=2\", size: \"md\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createAvatar({ parent, id: \"ava-a6\", src: \"https://i.pravatar.cc/100?img=3\", size: \"sm\" });",
+        code: "createAvatar({\n  parent,\n  id: \"ava-a4\",\n  src: \"https://i.pravatar.cc/100?img=1\",\n  size: \"lg\" \n}); createDOMElem({\n  tag: \"span\",\n  parent,\n  text: \" \" \n});\n createAvatar({\n  parent,\n  id: \"ava-a5\",\n  src: \"https://i.pravatar.cc/100?img=2\",\n  size: \"md\" \n}); createDOMElem({\n  tag: \"span\",\n  parent,\n  text: \" \" \n});\n createAvatar({\n  parent,\n  id: \"ava-a6\",\n  src: \"https://i.pravatar.cc/100?img=3\",\n  size: \"sm\" \n});",
         codeLang: "typescript" }, (parent) => {
         (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAvatar)({ parent, id: "ava-a4", src: "https://i.pravatar.cc/100?img=1", size: "lg" });
         (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: " " });
@@ -4809,7 +4807,7 @@ const sections = [
         (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAvatar)({ parent, id: "ava-a6", src: "https://i.pravatar.cc/100?img=3", size: "sm" });
     }),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createAvatar (n\xe9gyzet)", description: "Avatar n\xe9gyzet alakzattal.",
-        code: "createAvatar({ parent, id: \"ava-a7\", name: \"AB\", size: \"lg\", shape: \"square\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createAvatar({ parent, id: \"ava-a8\", name: \"CD\", size: \"md\", shape: \"square\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createAvatar({ parent, id: \"ava-a9\", name: \"EF\", size: \"sm\", shape: \"square\" });",
+        code: "createAvatar({\n  parent,\n  id: \"ava-a7\",\n  name: \"AB\",\n  size: \"lg\",\n  shape: \"square\" \n}); createDOMElem({\n  tag: \"span\",\n  parent,\n  text: \" \" \n});\n createAvatar({\n  parent,\n  id: \"ava-a8\",\n  name: \"CD\",\n  size: \"md\",\n  shape: \"square\" \n}); createDOMElem({\n  tag: \"span\",\n  parent,\n  text: \" \" \n});\n createAvatar({\n  parent,\n  id: \"ava-a9\",\n  name: \"EF\",\n  size: \"sm\",\n  shape: \"square\" \n});",
         codeLang: "typescript" }, (parent) => {
         (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAvatar)({ parent, id: "ava-a7", name: "AB", size: "lg", shape: "square" });
         (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: " " });

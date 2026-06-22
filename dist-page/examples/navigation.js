@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4789,7 +4787,7 @@ __webpack_require__.r(__webpack_exports__);
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createNav", description: "Navigációs sáv menüpontokkal és almenüvel.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createNav,
-        code: "createNav({ parent, id: \"n1\", items: [\n      { text: \"Főoldal\", href: \"#\", active: true },\n      { text: \"Rólunk\", href: \"#\" },\n      { text: \"Szolgáltatások\", href: \"#\", children: [{ text: \"Webfejlesztés\", href: \"#\" }] },\n      { text: \"Kapcsolat\", href: \"#\" },\n    ]})",
+        code: "createNav({\n  parent,\n  id: \"n1\",\n  items: [\n {\n    text: \"Főoldal\",\n    href: \"#\",\n    active: true \n  },\n  \n {\n    text: \"Rólunk\",\n    href: \"#\" \n  },\n  \n {\n    text: \"Szolgáltatások\",\n    href: \"#\",\n    children: [{\n      text: \"Webfejlesztés\",\n      href: \"#\" \n    }] \n  },\n  \n {\n    text: \"Kapcsolat\",\n    href: \"#\" \n  },\n  \n ]\n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createNav)({ parent, id: "n1", items: [
             { text: "Főoldal", href: "#", active: true },
             { text: "Rólunk", href: "#" },
@@ -4797,14 +4795,14 @@ const sections = [
             { text: "Kapcsolat", href: "#" },
         ] })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createBreadcrumb", description: "Morzsa menü a navigációs út vonatkozásában.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createBreadcrumb,
-        code: "createBreadcrumb({ parent, id: \"n2\", items: [\n      { text: \"Főoldal\", href: \"#\" },\n      { text: \"Termék\", href: \"#\" },\n      { text: \"Laptop\" },\n    ]})",
+        code: "createBreadcrumb({\n  parent,\n  id: \"n2\",\n  items: [\n {\n    text: \"Főoldal\",\n    href: \"#\" \n  },\n  \n {\n    text: \"Termék\",\n    href: \"#\" \n  },\n  \n {\n    text: \"Laptop\" \n  },\n  \n ]\n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBreadcrumb)({ parent, id: "n2", items: [
             { text: "Főoldal", href: "#" },
             { text: "Termék", href: "#" },
             { text: "Laptop" },
         ] })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTabs", description: "Lapozható tabok külön tartalommal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createTabs,
-        code: "createTabs({ parent, id: \"n3\", tabs: [\n      { id: \"t1\", label: \"Beállítások\", content: { tag: \"p\", text: \"Beállítások tartalma\" } },\n      { id: \"t2\", label: \"Profil\", content: { tag: \"p\", text: \"Profil tartalma\" } },\n      { id: \"t3\", label: \"Értesítések\", content: { tag: \"p\", text: \"Értesítések tartalma\" } },\n    ]})",
+        code: "createTabs({\n  parent,\n  id: \"n3\",\n  tabs: [\n {\n    id: \"t1\",\n    label: \"Beállítások\",\n    content: {\n      tag: \"p\",\n      text: \"Beállítások tartalma\" \n    } \n  },\n  \n {\n    id: \"t2\",\n    label: \"Profil\",\n    content: {\n      tag: \"p\",\n      text: \"Profil tartalma\" \n    } \n  },\n  \n {\n    id: \"t3\",\n    label: \"Értesítések\",\n    content: {\n      tag: \"p\",\n      text: \"Értesítések tartalma\" \n    } \n  },\n  \n ]\n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTabs)({ parent, id: "n3", tabs: [
             { id: "t1", label: "Beállítások", content: { tag: "p", text: "Beállítások tartalma" } },
             { id: "t2", label: "Profil", content: { tag: "p", text: "Profil tartalma" } },

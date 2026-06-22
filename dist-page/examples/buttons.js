@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4789,16 +4787,16 @@ __webpack_require__.r(__webpack_exports__);
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createButtonInput", description: "Input gomb a submit/reset mellett.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createButtonInput,
-        code: "createButtonInput({ parent, id: \"b1\", text: \"Button input\", click: () => console.log(\"clicked\") })",
+        code: "createButtonInput({\n  parent,\n  id: \"b1\",\n  text: \"Button input\",\n  click: () => console.log(\"clicked\") \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButtonInput)({ parent, id: "b1", text: "Button input", click: () => console.log("clicked") })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createSubmitInput", description: "Submit gomb, form-ok küldéséhez.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createSubmitInput,
-        code: "createSubmitInput({ parent, id: \"b2\", text: \"Küldés\" })",
+        code: "createSubmitInput({\n  parent,\n  id: \"b2\",\n  text: \"Küldés\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSubmitInput)({ parent, id: "b2", text: "Küldés" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createResetInput", description: "Reset gomb, form visszaállításhoz.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createResetInput,
-        code: "createResetInput({ parent, id: \"b3\", text: \"Visszaállítás\" })",
+        code: "createResetInput({\n  parent,\n  id: \"b3\",\n  text: \"Visszaállítás\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createResetInput)({ parent, id: "b3", text: "Visszaállítás" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createButton", description: "Általános button elem szöveggel és eseménykezelővel.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createButton,
-        code: "createButton({ parent, id: \"b4\", text: \"Gomb\", click: () => console.log(\"clicked\") })",
+        code: "createButton({\n  parent,\n  id: \"b4\",\n  text: \"Gomb\",\n  click: () => console.log(\"clicked\") \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButton)({ parent, id: "b4", text: "Gomb", click: () => console.log("clicked") })),
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);

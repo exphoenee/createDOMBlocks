@@ -1,33 +1,11 @@
 import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
-import { createDrawer, openDrawer, createMenu } from "../../src/index";
+import { createDrawer, openDrawer, createMenu, createCodeBlock } from "../../src/index";
 import { createHeader } from "./createHeader";
 import { createFooter } from "./createFooter";
 import { getDrawerMenuItems } from "./menuItems";
-import { highlightCode } from "../../src/components/highlighter";
 import { createPageLoading } from "./createPageLoading";
 import type { DocSection } from "./example";
 import { propsTable } from "./propsTable";
-
-function createCodeBlockHTML(code: string, lang?: string): CreateDOMElemOptions {
-  const highlighted = highlightCode(code, lang);
-  return {
-    tag: "div",
-    attrs: { class: "code-block" },
-    children: [
-      ...(lang
-        ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-        : []),
-      {
-        tag: "pre",
-        attrs: { class: "code-pre" },
-        children: [
-          { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-        ],
-      },
-    ],
-  };
-}
 
 export function initDocPage(): () => void {
   const done = createPageLoading();
@@ -59,18 +37,39 @@ export function renderSections(sections: DocSection[]): void {
   for (const section of sections) {
     const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
 
+    // Szekció fejléc (cím + leírás)
     const sectionEl = createDOMElem({
       tag: "section",
       attrs: { class: "doc-section" },
       children: [
         createDOMElem({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
         createDOMElem({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-        createCodeBlockHTML(section.code, section.codeLang),
-        createDOMElem({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-        createDOMElem({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
       ],
     });
     main.appendChild(sectionEl);
+
+    // Kódblokk a library createCodeBlock komponensével
+    createCodeBlock({
+      parent: sectionEl,
+      id: `code-${resultId}`,
+      language: section.codeLang,
+      code: section.code,
+    });
+
+    // Eredmény címke
+    const resultLabel = createDOMElem({
+      tag: "div",
+      text: "Eredm\u00E9ny:",
+      attrs: { class: "doc-result-label" },
+    });
+    sectionEl.appendChild(resultLabel);
+
+    // Eredmény konténer
+    const resultContainer = createDOMElem({
+      tag: "div",
+      attrs: { class: "doc-result", id: resultId },
+    });
+    sectionEl.appendChild(resultContainer);
 
     // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
     // beszúrjuk közvetlenül a szekció után
@@ -80,9 +79,6 @@ export function renderSections(sections: DocSection[]): void {
       main.appendChild(tableEl);
     }
 
-    const resultContainer = document.getElementById(resultId) as HTMLElement | null;
-    if (resultContainer) {
-      section.render(resultContainer);
-    }
+    section.render(resultContainer);
   }
 }

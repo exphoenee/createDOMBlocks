@@ -86,6 +86,132 @@ function normalizeBody(bodyText) {
 }
 
 /**
+ * Unescape common escape sequences so they render as actual characters
+ * in the displayed code block.
+ *
+ * Example: `\n` becomes a real newline, `\t` becomes a real tab.
+ * Preserves already-escaped backslashes (`\\` stays as `\\`).
+ */
+function unescapeCode(text) {
+  return text
+    .replace(/\\n/g, "\n")
+    .replace(/\\t/g, "\t");
+}
+
+/**
+ * Format extracted code with proper line breaks and indentation.
+ *
+ * - After `({` each comma-separated property gets its own line (indented)
+ * - Nested objects `{ }` are also expanded
+ * - Strings and template literals are preserved as-is
+ */
+function formatExtractedCode(code) {
+  let depth = 0;
+  let inString = false;
+  let strChar = null;
+  let inTemplate = false;
+  let result = "";
+  let i = 0;
+
+  while (i < code.length) {
+    const c = code[i];
+    const n = code[i + 1];
+
+    // --- Track string / template literal state ---
+    if ((c === '"' || c === "'") && !inTemplate) {
+      const isEscaped = i > 0 && code[i - 1] === "\\";
+      if (inString && strChar === c && !isEscaped) {
+        inString = false;
+        strChar = null;
+      } else if (!inString) {
+        inString = true;
+        strChar = c;
+      }
+      result += c;
+      i++;
+      continue;
+    }
+
+    if (c === "`" && !inString) {
+      inTemplate = !inTemplate;
+    }
+
+    if (inString || inTemplate) {
+      // Consume escape sequences whole
+      if (c === "\\" && n) {
+        result += c + n;
+        i += 2;
+      } else {
+        result += c;
+        i++;
+      }
+      continue;
+    }
+
+    // --- Formatting: `({` opens an object block ---
+    if (c === "(" && n === "{") {
+      depth++;
+      result += "({\n";
+      result += "  ".repeat(depth);
+      i += 2;
+      continue;
+    }
+
+    // --- Standalone `{` (nested object) ---
+    if (c === "{") {
+      depth++;
+      result += "{\n";
+      result += "  ".repeat(depth);
+      i++;
+      continue;
+    }
+
+    // --- Closing `})` ---
+    if (c === "}" && n === ")") {
+      depth--;
+      result += "\n";
+      result += "  ".repeat(depth);
+      result += "})";
+      i += 2;
+      continue;
+    }
+
+    // --- Standalone `}` ---
+    if (c === "}") {
+      depth--;
+      result += "\n";
+      result += "  ".repeat(depth);
+      result += "}";
+      i++;
+      continue;
+    }
+
+    // --- Comma → inside objects: newline + indent; elsewhere: stay on same line ---
+    if (c === ",") {
+      if (depth > 0) {
+        result += ",\n";
+        result += "  ".repeat(depth);
+      } else {
+        result += ", ";
+      }
+      i++;
+      continue;
+    }
+
+    // --- Collapse consecutive spaces ---
+    if (c === " " && result.endsWith(" ")) {
+      i++;
+      continue;
+    }
+
+    result += c;
+    i++;
+  }
+
+  return result.trim();
+}
+
+/**
  * Inject `code` and `codeLang` into an object-expression node in the source.
  * Operates on the CURRENT (possibly already-modified) source.
  */
@@ -203,6 +329,12 @@ export default function exampleLoader(source) {
       } else {
         bodyText = modifiedSource.slice(bodyNode.start, bodyNode.end);
       }
+
+      // Unescape \n, \t etc. so they render as actual line breaks / tabs
+      bodyText = unescapeCode(bodyText);
+
+      // Format: expand `({ ... })` blocks to multiple lines
+      bodyText = formatExtractedCode(bodyText);
 
       modifiedSource = injectCode(modifiedSource, metaNode, bodyText, DEFAULT_LANG);
     }

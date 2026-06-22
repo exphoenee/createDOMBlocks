@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4789,22 +4787,22 @@ __webpack_require__.r(__webpack_exports__);
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCustomDatePicker", description: "Egy\xe9ni d\xe1tum kiv\xe1laszt\xf3 napt\xe1r popup-pal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomDatePicker,
-        code: "createCustomDatePicker({ parent, id: \"dp1\", labelText: \"D\\xe1tum:\", placeholder: \"V\\xe1lassz d\\xe1tumot...\", onChange: (v: string) => console.log(v) })",
+        code: "createCustomDatePicker({\n  parent,\n  id: \"dp1\",\n  labelText: \"D\\xe1tum:\",\n  placeholder: \"V\\xe1lassz d\\xe1tumot...\",\n  onChange: (v: string) => console.log(v) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomDatePicker)({ parent, id: "dp1", labelText: "D\xe1tum:", placeholder: "V\xe1lassz d\xe1tumot...", onChange: (v) => console.log(v) })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCustomWeekPicker", description: "Egy\xe9ni h\xe9t kiv\xe1laszt\xf3.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomWeekPicker,
-        code: "createCustomWeekPicker({ parent, id: \"wp1\", labelText: \"H\\xe9t:\", placeholder: \"V\\xe1lassz hetet...\", onChange: (v: string) => console.log(v) })",
+        code: "createCustomWeekPicker({\n  parent,\n  id: \"wp1\",\n  labelText: \"H\\xe9t:\",\n  placeholder: \"V\\xe1lassz hetet...\",\n  onChange: (v: string) => console.log(v) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomWeekPicker)({ parent, id: "wp1", labelText: "H\xe9t:", placeholder: "V\xe1lassz hetet...", onChange: (v) => console.log(v) })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCustomMonthPicker", description: "Egy\xe9ni h\xf3nap kiv\xe1laszt\xf3.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomMonthPicker,
-        code: "createCustomMonthPicker({ parent, id: \"mp1\", labelText: \"H\\xf3nap:\", placeholder: \"V\\xe1lassz h\\xf3napot...\", onChange: (v: string) => console.log(v) })",
+        code: "createCustomMonthPicker({\n  parent,\n  id: \"mp1\",\n  labelText: \"H\\xf3nap:\",\n  placeholder: \"V\\xe1lassz h\\xf3napot...\",\n  onChange: (v: string) => console.log(v) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomMonthPicker)({ parent, id: "mp1", labelText: "H\xf3nap:", placeholder: "V\xe1lassz h\xf3napot...", onChange: (v) => console.log(v) })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCustomDateTimePicker", description: "Egy\xe9ni d\xe1tum + id\u0151 kiv\xe1laszt\xf3.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomDateTimePicker,
-        code: "createCustomDateTimePicker({ parent, id: \"dtp1\", labelText: \"D\\xe1tum-Id\\u0151:\", placeholder: \"V\\xe1lassz d\\xe1tumot \\xe9s id\\u0151t...\", onChange: (v: string) => console.log(v) })",
+        code: "createCustomDateTimePicker({\n  parent,\n  id: \"dtp1\",\n  labelText: \"D\\xe1tum-Id\\u0151:\",\n  placeholder: \"V\\xe1lassz d\\xe1tumot \\xe9s id\\u0151t...\",\n  onChange: (v: string) => console.log(v) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomDateTimePicker)({ parent, id: "dtp1", labelText: "D\xe1tum-Id\u0151:", placeholder: "V\xe1lassz d\xe1tumot \xe9s id\u0151t...", onChange: (v) => console.log(v) })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCustomDateRangePicker", description: "Egy\xe9ni d\xe1tumtartom\xe1ny kiv\xe1laszt\xf3.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomDateRangePicker,
-        code: "createCustomDateRangePicker({ parent, id: \"drp1\", labelText: \"Tartom\\xe1ny:\", onChange: (s: string, e: string) => console.log(s, e) })",
+        code: "createCustomDateRangePicker({\n  parent,\n  id: \"drp1\",\n  labelText: \"Tartom\\xe1ny:\",\n  onChange: (s: string,\n  e: string) => console.log(s,\n  e) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomDateRangePicker)({ parent, id: "drp1", labelText: "Tartom\xe1ny:", onChange: (s, e) => console.log(s, e) })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createDragAndDropFileInput", description: "Drag-and-drop f\xe1jl felt\xf6lt\u0151.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createDragAndDropFileInput,
-        code: "createDragAndDropFileInput({ parent, id: \"dd1\", labelText: \"F\\xe1jl felt\\xf6lt\\xe9se:\", dropText: \"H\\xfazd ide a f\\xe1jlokat\", accept: [\".jpg\", \".png\", \".pdf\"], multiple: true, onFiles: (f: File[]) => console.log(f.map((x) => x.name)) })",
+        code: "createDragAndDropFileInput({\n  parent,\n  id: \"dd1\",\n  labelText: \"F\\xe1jl felt\\xf6lt\\xe9se:\",\n  dropText: \"H\\xfazd ide a f\\xe1jlokat\",\n  accept: [\".jpg\",\n  \".png\",\n  \".pdf\"],\n  multiple: true,\n  onFiles: (f: File[]) => console.log(f.map((x) => x.name)) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDragAndDropFileInput)({ parent, id: "dd1", labelText: "F\xe1jl felt\xf6lt\xe9se:", dropText: "H\xfazd ide a f\xe1jlokat", accept: [".jpg", ".png", ".pdf"], multiple: true, onFiles: (f) => console.log(f.map((x) => x.name)) })),
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);

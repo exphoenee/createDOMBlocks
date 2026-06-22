@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4794,7 +4792,7 @@ const sections = [
         title: "createAccordion \u2014 t\xf6bb nyitva (multiple: true)",
         component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createAccordion,
         description: "\xd6sszecsukhat\xf3 szekci\xf3k. A <code>multiple: true</code> opci\xf3val egyszerre t\xf6bb szekci\xf3 is nyitva lehet.",
-        code: "createAccordion({\n        parent,\n        id: \"accMultiple\",\n        multiple: true,\n        items: [\n          { id: \"am1\", title: \"Els\\u0151 szekci\\xf3\", content: { tag: \"p\", text: \"Ez az els\\u0151 szekci\\xf3 tartalma. T\\xf6bb is nyitva lehet egyszerre.\" }, open: true },\n          { id: \"am2\", title: \"M\\xe1sodik szekci\\xf3\", content: { tag: \"p\", text: \"Ez a m\\xe1sodik szekci\\xf3 tartalma.\" } },\n          { id: \"am3\", title: \"Harmadik szekci\\xf3\", content: { tag: \"p\", text: \"Ez a harmadik szekci\\xf3 tartalma.\" } },\n        ],\n      })",
+        code: "createAccordion({\n  \n parent,\n  \n id: \"accMultiple\",\n  \n multiple: true,\n  \n items: [\n {\n    id: \"am1\",\n    title: \"Els\\u0151 szekci\\xf3\",\n    content: {\n      tag: \"p\",\n      text: \"Ez az els\\u0151 szekci\\xf3 tartalma. T\\xf6bb is nyitva lehet egyszerre.\" \n    },\n    open: true \n  },\n  \n {\n    id: \"am2\",\n    title: \"M\\xe1sodik szekci\\xf3\",\n    content: {\n      tag: \"p\",\n      text: \"Ez a m\\xe1sodik szekci\\xf3 tartalma.\" \n    } \n  },\n  \n {\n    id: \"am3\",\n    title: \"Harmadik szekci\\xf3\",\n    content: {\n      tag: \"p\",\n      text: \"Ez a harmadik szekci\\xf3 tartalma.\" \n    } \n  },\n  \n ],\n  \n \n})",
         codeLang: "typescript"
     }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAccordion)({
         parent,
@@ -4809,7 +4807,7 @@ const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({
         title: "createAccordion \u2014 csak egy nyitva (multiple: false)",
         description: "Amikor a <code>multiple</code> false (alap\xe9rtelmezett), egy \xfaj szekci\xf3 kinyit\xe1sa automatikusan bez\xe1rja a t\xf6bbit.",
-        code: "createAccordion({\n        parent,\n        id: \"accSingle\",\n        items: [\n          { id: \"as1\", title: \"Els\\u0151 szekci\\xf3\", content: { tag: \"p\", text: \"Csak egy szekci\\xf3 lehet nyitva egyszerre.\" }, open: true },\n          { id: \"as2\", title: \"M\\xe1sodik szekci\\xf3\", content: { tag: \"p\", text: \"Ha r\\xe1kattintasz, az els\\u0151 bez\\xe1r\\xf3dik.\" } },\n          { id: \"as3\", title: \"Harmadik szekci\\xf3\", content: { tag: \"p\", text: \"\\xc9s ford\\xedtva is \\xedgy műk\\xf6dik.\" } },\n        ],\n      })",
+        code: "createAccordion({\n  \n parent,\n  \n id: \"accSingle\",\n  \n items: [\n {\n    id: \"as1\",\n    title: \"Els\\u0151 szekci\\xf3\",\n    content: {\n      tag: \"p\",\n      text: \"Csak egy szekci\\xf3 lehet nyitva egyszerre.\" \n    },\n    open: true \n  },\n  \n {\n    id: \"as2\",\n    title: \"M\\xe1sodik szekci\\xf3\",\n    content: {\n      tag: \"p\",\n      text: \"Ha r\\xe1kattintasz, az els\\u0151 bez\\xe1r\\xf3dik.\" \n    } \n  },\n  \n {\n    id: \"as3\",\n    title: \"Harmadik szekci\\xf3\",\n    content: {\n      tag: \"p\",\n      text: \"\\xc9s ford\\xedtva is \\xedgy műk\\xf6dik.\" \n    } \n  },\n  \n ],\n  \n \n})",
         codeLang: "typescript"
     }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAccordion)({
         parent,
@@ -4821,7 +4819,7 @@ const sections = [
         ],
     })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTooltip", description: "Bubor\xe9k tooltip k\xfcl\xf6nb\xf6z\u0151 poz\xedci\xf3kkal. Vidd az egeret az elemek f\xf6l\xe9!", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createTooltip,
-        code: "createDOMElem({\n        tag: \"p\",\n        text: \"Vidd az egeret a gombok f\\xf6l\\xe9 a tooltip megjelen\\xedt\\xe9s\\xe9hez:\",\n        style: { marginBottom: \"1rem\", color: \"var(--text-light)\", fontSize: \"0.875rem\" },\n      });\n      createTooltip({ parent, id: \"int-tt1\", text: \"Ez egy tooltip!\", position: \"top\" });\n      createDOMElem({ tag: \"br\", parent });\n      createTooltip({ parent, id: \"int-tt2\", text: \"Als\\xf3 tooltip\", position: \"bottom\" });\n      createDOMElem({ tag: \"br\", parent });\n      createTooltip({ parent, id: \"int-tt3\", text: \"Bal tooltip\", position: \"left\" });\n      createDOMElem({ tag: \"br\", parent });\n      createTooltip({ parent, id: \"int-tt4\", text: \"Jobb tooltip\", position: \"right\" });",
+        code: "createDOMElem({\n  \n tag: \"p\",\n  \n text: \"Vidd az egeret a gombok f\\xf6l\\xe9 a tooltip megjelen\\xedt\\xe9s\\xe9hez:\",\n  \n style: {\n    marginBottom: \"1rem\",\n    color: \"var(--text-light)\",\n    fontSize: \"0.875rem\" \n  },\n  \n \n});\n createTooltip({\n  parent,\n  id: \"int-tt1\",\n  text: \"Ez egy tooltip!\",\n  position: \"top\" \n});\n createDOMElem({\n  tag: \"br\",\n  parent \n});\n createTooltip({\n  parent,\n  id: \"int-tt2\",\n  text: \"Als\\xf3 tooltip\",\n  position: \"bottom\" \n});\n createDOMElem({\n  tag: \"br\",\n  parent \n});\n createTooltip({\n  parent,\n  id: \"int-tt3\",\n  text: \"Bal tooltip\",\n  position: \"left\" \n});\n createDOMElem({\n  tag: \"br\",\n  parent \n});\n createTooltip({\n  parent,\n  id: \"int-tt4\",\n  text: \"Jobb tooltip\",\n  position: \"right\" \n});",
         codeLang: "typescript" }, (parent) => {
         (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({
             tag: "p",

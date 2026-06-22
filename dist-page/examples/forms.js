@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4789,55 +4787,55 @@ __webpack_require__.r(__webpack_exports__);
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTextInput", description: "Szöveg input létrehozása címkével.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createTextInput,
-        code: "createTextInput({ parent, id: \"t1\", labelText: \"Név:\", value: \"valami\", placeholder: \"Ide írj...\" })",
+        code: "createTextInput({\n  parent,\n  id: \"t1\",\n  labelText: \"Név:\",\n  value: \"valami\",\n  placeholder: \"Ide írj...\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTextInput)({ parent, id: "t1", labelText: "Név:", value: "valami", placeholder: "Ide írj..." })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTelInput", description: "Telefonszám input.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createTelInput,
-        code: "createTelInput({ parent, id: \"t2\", labelText: \"Telefon:\", value: \"+36301234567\" })",
+        code: "createTelInput({\n  parent,\n  id: \"t2\",\n  labelText: \"Telefon:\",\n  value: \"+36301234567\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTelInput)({ parent, id: "t2", labelText: "Telefon:", value: "+36301234567" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createUrlInput", description: "URL input.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createUrlInput,
-        code: "createUrlInput({ parent, id: \"t3\", labelText: \"URL:\", value: \"https://example.com\" })",
+        code: "createUrlInput({\n  parent,\n  id: \"t3\",\n  labelText: \"URL:\",\n  value: \"https://example.com\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createUrlInput)({ parent, id: "t3", labelText: "URL:", value: "https://example.com" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createSearchInput", description: "Keresési mezők.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createSearchInput,
-        code: "createSearchInput({ parent, id: \"t4\", labelText: \"Keresés:\", placeholder: \"Keress...\" })",
+        code: "createSearchInput({\n  parent,\n  id: \"t4\",\n  labelText: \"Keresés:\",\n  placeholder: \"Keress...\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSearchInput)({ parent, id: "t4", labelText: "Keresés:", placeholder: "Keress..." })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createEmailInput", description: "E-mail input.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createEmailInput,
-        code: "createEmailInput({ parent, id: \"t5\", labelText: \"Email:\", value: \"test@example.com\" })",
+        code: "createEmailInput({\n  parent,\n  id: \"t5\",\n  labelText: \"Email:\",\n  value: \"test@example.com\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createEmailInput)({ parent, id: "t5", labelText: "Email:", value: "test@example.com" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createPasswordInput", description: "Jelszó input.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createPasswordInput,
-        code: "createPasswordInput({ parent, id: \"t6\", labelText: \"Jelszó:\", placeholder: \"****\" })",
+        code: "createPasswordInput({\n  parent,\n  id: \"t6\",\n  labelText: \"Jelszó:\",\n  placeholder: \"****\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createPasswordInput)({ parent, id: "t6", labelText: "Jelszó:", placeholder: "****" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createNumberInput", description: "Szám input min/max/step paraméterrel.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createNumberInput,
-        code: "createNumberInput({ parent, id: \"t7\", labelText: \"Szám:\", value: \"42\", min: 0, max: 100, step: 5 })",
+        code: "createNumberInput({\n  parent,\n  id: \"t7\",\n  labelText: \"Szám:\",\n  value: \"42\",\n  min: 0,\n  max: 100,\n  step: 5 \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createNumberInput)({ parent, id: "t7", labelText: "Szám:", value: "42", min: 0, max: 100, step: 5 })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createDateInput", description: "Dátum kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createDateInput,
-        code: "createDateInput({ parent, id: \"t8\", labelText: \"Dátum:\", value: \"2024-01-15\" })",
+        code: "createDateInput({\n  parent,\n  id: \"t8\",\n  labelText: \"Dátum:\",\n  value: \"2024-01-15\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDateInput)({ parent, id: "t8", labelText: "Dátum:", value: "2024-01-15" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createDatetimeInput", description: "Dátum és idő kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createDatetimeInput,
-        code: "createDatetimeInput({ parent, id: \"t9\", labelText: \"Dátum-Idő:\", value: \"2024-01-15T14:30\" })",
+        code: "createDatetimeInput({\n  parent,\n  id: \"t9\",\n  labelText: \"Dátum-Idő:\",\n  value: \"2024-01-15T14:30\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDatetimeInput)({ parent, id: "t9", labelText: "Dátum-Idő:", value: "2024-01-15T14:30" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTimeInput", description: "Idő kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createTimeInput,
-        code: "createTimeInput({ parent, id: \"t10\", labelText: \"Idő:\", value: \"14:30\" })",
+        code: "createTimeInput({\n  parent,\n  id: \"t10\",\n  labelText: \"Idő:\",\n  value: \"14:30\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTimeInput)({ parent, id: "t10", labelText: "Idő:", value: "14:30" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createMonthInput", description: "Hónap kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createMonthInput,
-        code: "createMonthInput({ parent, id: \"t11\", labelText: \"Hónap:\", value: \"2024-01\" })",
+        code: "createMonthInput({\n  parent,\n  id: \"t11\",\n  labelText: \"Hónap:\",\n  value: \"2024-01\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createMonthInput)({ parent, id: "t11", labelText: "Hónap:", value: "2024-01" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createWeekInput", description: "Hét kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createWeekInput,
-        code: "createWeekInput({ parent, id: \"t12\", labelText: \"Hét:\", value: \"2024-W03\" })",
+        code: "createWeekInput({\n  parent,\n  id: \"t12\",\n  labelText: \"Hét:\",\n  value: \"2024-W03\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createWeekInput)({ parent, id: "t12", labelText: "Hét:", value: "2024-W03" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCheckbox", description: "Jelölő négyzet.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCheckbox,
-        code: "createCheckbox({ parent, id: \"t13\", labelText: \"Elfogadom\", checked: true })",
+        code: "createCheckbox({\n  parent,\n  id: \"t13\",\n  labelText: \"Elfogadom\",\n  checked: true \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCheckbox)({ parent, id: "t13", labelText: "Elfogadom", checked: true })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createColorInput", description: "Szín kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createColorInput,
-        code: "createColorInput({ parent, id: \"t14\", labelText: \"Szín:\", value: \"#3b82f6\" })",
+        code: "createColorInput({\n  parent,\n  id: \"t14\",\n  labelText: \"Szín:\",\n  value: \"#3b82f6\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createColorInput)({ parent, id: "t14", labelText: "Szín:", value: "#3b82f6" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createFileInput", description: "Fájl kiválasztó.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createFileInput,
-        code: "createFileInput({ parent, id: \"t15\", labelText: \"Fájl:\" })",
+        code: "createFileInput({\n  parent,\n  id: \"t15\",\n  labelText: \"Fájl:\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createFileInput)({ parent, id: "t15", labelText: "Fájl:" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createRangeInput", description: "Csúska min/max/step paraméterrel.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createRangeInput,
-        code: "createRangeInput({ parent, id: \"t16\", labelText: \"Csúska:\", min: 0, max: 100, value: \"50\" })",
+        code: "createRangeInput({\n  parent,\n  id: \"t16\",\n  labelText: \"Csúska:\",\n  min: 0,\n  max: 100,\n  value: \"50\" \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createRangeInput)({ parent, id: "t16", labelText: "Csúska:", min: 0, max: 100, value: "50" })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createForm", description: "Általáns form tömbbe szedett input konfigurációkkal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createForm,
-        code: "createForm({\n      parent, id: \"demoForm\", action: \"/api/submit\", method: \"POST\",\n      inputs: [\n        { type: \"text\", id: \"name\", labelText: \"Név:\" },\n        { type: \"email\", id: \"email\", labelText: \"Email:\" },\n        { type: \"submit\", id: \"submit\", value: \"Küldés\" },\n      ],\n      onSubmit: () => console.log(\"Submitted!\"),\n    })",
+        code: "createForm({\n  \n parent,\n  id: \"demoForm\",\n  action: \"/api/submit\",\n  method: \"POST\",\n  \n inputs: [\n {\n    type: \"text\",\n    id: \"name\",\n    labelText: \"Név:\" \n  },\n  \n {\n    type: \"email\",\n    id: \"email\",\n    labelText: \"Email:\" \n  },\n  \n {\n    type: \"submit\",\n    id: \"submit\",\n    value: \"Küldés\" \n  },\n  \n ],\n  \n onSubmit: () => console.log(\"Submitted!\"),\n  \n \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createForm)({
         parent, id: "demoForm", action: "/api/submit", method: "POST",
         inputs: [

@@ -293,9 +293,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _createHeader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./createHeader */ "./documentation/page-components/createHeader.ts");
 /* harmony import */ var _createFooter__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./createFooter */ "./documentation/page-components/createFooter.ts");
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
-/* harmony import */ var _src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../src/components/highlighter */ "./src/components/highlighter.ts");
-/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
-/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
+/* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _propsTable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./propsTable */ "./documentation/page-components/propsTable.ts");
 
 
 
@@ -303,28 +302,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function createCodeBlockHTML(code, lang) {
-    const highlighted = (0,_src_components_highlighter__WEBPACK_IMPORTED_MODULE_5__.highlightCode)(code, lang);
-    return {
-        tag: "div",
-        attrs: { class: "code-block" },
-        children: [
-            ...(lang
-                ? [{ tag: "div", text: lang.toUpperCase(), attrs: { class: "code-language" } }]
-                : []),
-            {
-                tag: "pre",
-                attrs: { class: "code-pre" },
-                children: [
-                    { tag: "code", content: highlighted, attrs: { class: `code-content language-${lang || ""}` } },
-                ],
-            },
-        ],
-    };
-}
 function initDocPage() {
-    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_6__.createPageLoading)();
+    const done = (0,_createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading)();
     const items = (0,_menuItems__WEBPACK_IMPORTED_MODULE_4__.getDrawerMenuItems)();
     (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDrawer)({
         id: "sidebar-drawer",
@@ -349,29 +328,44 @@ function renderSections(sections) {
     const renderedComponents = new Set();
     for (const section of sections) {
         const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
+        // Szekció fejléc (cím + leírás)
         const sectionEl = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
             tag: "section",
             attrs: { class: "doc-section" },
             children: [
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "h2", text: section.title, attrs: { class: "doc-section-title" } }),
                 (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "p", text: section.description, attrs: { class: "doc-section-desc" } }),
-                createCodeBlockHTML(section.code, section.codeLang),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", text: "Eredm\u00E9ny:", attrs: { class: "doc-result-label" } }),
-                (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({ tag: "div", attrs: { class: "doc-result", id: resultId } }),
             ],
         });
         main.appendChild(sectionEl);
+        // Kódblokk a library createCodeBlock komponensével
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({
+            parent: sectionEl,
+            id: `code-${resultId}`,
+            language: section.codeLang,
+            code: section.code,
+        });
+        // Eredmény címke
+        const resultLabel = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            text: "Eredm\u00E9ny:",
+            attrs: { class: "doc-result-label" },
+        });
+        sectionEl.appendChild(resultLabel);
+        // Eredmény konténer
+        const resultContainer = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
+            tag: "div",
+            attrs: { class: "doc-result", id: resultId },
+        });
+        sectionEl.appendChild(resultContainer);
         // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
         // beszúrjuk közvetlenül a szekció után
         if (section.component && !renderedComponents.has(section.component)) {
             renderedComponents.add(section.component);
-            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_7__.propsTable)(section.component);
+            const tableEl = (0,_propsTable__WEBPACK_IMPORTED_MODULE_6__.propsTable)(section.component);
             main.appendChild(tableEl);
         }
-        const resultContainer = document.getElementById(resultId);
-        if (resultContainer) {
-            section.render(resultContainer);
-        }
+        section.render(resultContainer);
     }
 }
 
@@ -3754,15 +3748,19 @@ function getLanguagePatterns(lang) {
     }
     const keywords = lang === "python" ? PY_KEYWORDS : lang === "typescript" ? TS_KEYWORDS : JS_KEYWORDS;
     const builtins = lang === "python" ? PY_BUILTINS : lang === "typescript" ? TS_BUILTINS : JS_BUILTINS;
+    // Python triple-quoted strings — must come before generic strings
+    if (lang === "python") {
+        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
+    }
+    // Generic strings before comments — so // inside URLs isn't treated as a comment
+    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /#.*$/gm, className: "hl-comment" });
-        patterns.push({ regex: /"""[\s\S]*?"""|'''[\s\S]*?'''/g, className: "hl-string" });
     }
     else {
         patterns.push({ regex: /\/\/.*$/gm, className: "hl-comment" });
         patterns.push({ regex: /\/\*[\s\S]*?\*\//g, className: "hl-comment" });
     }
-    patterns.push({ regex: /"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, className: "hl-string" });
     if (lang === "python") {
         patterns.push({ regex: /\b(?:0x[\da-fA-F]+|0o[0-7]+|0b[01]+|\d+\.?\d*(?:e[+-]?\d+)?)\b/g, className: "hl-number" });
     }
@@ -4789,20 +4787,20 @@ __webpack_require__.r(__webpack_exports__);
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createSelect", description: "Legördülő menü opciókkal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createSelect,
-        code: "createSelect({ parent, id: \"s1\", labelText: \"\", value: 2,\n      options: [{ text: \"Első\", value: 1 }, { text: \"Második\", value: 2 }, { text: \"Harmadik\", value: 3 }] })",
+        code: "createSelect({\n  parent,\n  id: \"s1\",\n  labelText: \"\",\n  value: 2,\n  \n options: [{\n    text: \"Első\",\n    value: 1 \n  },\n  {\n    text: \"Második\",\n    value: 2 \n  },\n  {\n    text: \"Harmadik\",\n    value: 3 \n  }] \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSelect)({ parent, id: "s1", labelText: "", value: 2,
         options: [{ text: "Első", value: 1 }, { text: "Második", value: 2 }, { text: "Harmadik", value: 3 }] })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createRadio", description: "Radio gomb csoport opciókkal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createRadio,
-        code: "createRadio({ parent, id: \"s2\", labelText: \"\", value: 2,\n      options: [{ text: \"Első\", value: 1 }, { text: \"Második\", value: 2 }, { text: \"Harmadik\", value: 3 }] })",
+        code: "createRadio({\n  parent,\n  id: \"s2\",\n  labelText: \"\",\n  value: 2,\n  \n options: [{\n    text: \"Első\",\n    value: 1 \n  },\n  {\n    text: \"Második\",\n    value: 2 \n  },\n  {\n    text: \"Harmadik\",\n    value: 3 \n  }] \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createRadio)({ parent, id: "s2", labelText: "", value: 2,
         options: [{ text: "Első", value: 1 }, { text: "Második", value: 2 }, { text: "Harmadik", value: 3 }] })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCustomSelect", description: "Custom legördülő egyéni stílussal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomSelect,
-        code: "createCustomSelect({ parent, id: \"s3\", labelText: \"\", placeholder: \"Valássz...\",\n      options: [{ text: \"Budapest\", value: \"bp\" }, { text: \"Debrecen\", value: \"dc\" }],\n      onChange: (val: string | number) => console.log(\"Select:\", val) })",
+        code: "createCustomSelect({\n  parent,\n  id: \"s3\",\n  labelText: \"\",\n  placeholder: \"Valássz...\",\n  \n options: [{\n    text: \"Budapest\",\n    value: \"bp\" \n  },\n  {\n    text: \"Debrecen\",\n    value: \"dc\" \n  }],\n  \n onChange: (val: string | number) => console.log(\"Select:\",\n  val) \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCustomSelect)({ parent, id: "s3", labelText: "", placeholder: "Valássz...",
         options: [{ text: "Budapest", value: "bp" }, { text: "Debrecen", value: "dc" }],
         onChange: (val) => console.log("Select:", val) })),
     (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTextarea", description: "Szövegdoboz sorokkal és oszlopokkal.", component: _src_index__WEBPACK_IMPORTED_MODULE_1__.createTextarea,
-        code: "createTextarea({ parent, id: \"s4\", labelText: \"Szöveg:\", value: \"Szöveg...\", rows: 5, cols: 40 })",
+        code: "createTextarea({\n  parent,\n  id: \"s4\",\n  labelText: \"Szöveg:\",\n  value: \"Szöveg...\",\n  rows: 5,\n  cols: 40 \n})",
         codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTextarea)({ parent, id: "s4", labelText: "Szöveg:", value: "Szöveg...", rows: 5, cols: 40 })),
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);
