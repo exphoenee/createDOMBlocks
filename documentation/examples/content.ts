@@ -5,39 +5,39 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createCard", description: "Kártya komponens címmel, testtel és lábléccel." },
+    { title: "createCard", description: "Kártya komponens címmel, testtel és lábléccel.", component: createCard },
     (parent) => createCard({ parent, id: "c1", title: "Kártya cím", body: { tag: "p", text: "Tartalom" }, footer: { tag: "div", text: "Lábléc" } }),
   ),
   example(
-    { title: "createGrid", description: "Rács elrendezés oszlopokkal." },
+    { title: "createGrid", description: "Rács elrendezés oszlopokkal.", component: createGrid },
     (parent) => { createGrid({ parent, id: "c2", columns: 3, gap: "1rem" }); },
   ),
   example(
-    { title: "createParagraph", description: "Sima bekezdés szöveg." },
+    { title: "createParagraph", description: "Sima bekezdés szöveg.", component: createParagraph },
     (parent) => createParagraph({ parent, id: "cont-p1", text: "Ez egy bekezdés szöveg." }),
   ),
   example(
-    { title: "createTitle", description: "Címsor h1-h6 szintekkel." },
+    { title: "createTitle", description: "Címsor h1-h6 szintekkel.", component: createTitle },
     (parent) => { for (let i = 1; i <= 3; i++) createTitle({ parent, id: `cont-title${i}`, text: `Címsor ${i}` }, i); },
   ),
   example(
-    { title: "createBlockquote", description: "Idézet szerzővel." },
+    { title: "createBlockquote", description: "Idézet szerzővel.", component: createBlockquote },
     (parent) => createBlockquote({ parent, id: "cont-bq1", text: "A kódolás a jövő nyelve.", author: "Bozzay Viktor" }),
   ),
   example(
-    { title: "createCodeBlock", description: "Kódblokk nyelv megadásával és syntax highlighting-gel." },
+    { title: "createCodeBlock", description: "Kódblokk nyelv megadásával és syntax highlighting-gel.", component: createCodeBlock },
     (parent) => createCodeBlock({ parent, id: "cont-cb1", language: "typescript", code: 'const x: number = 42;\nconsole.log(x);' }),
   ),
   example(
-    { title: "createImage", description: "Kép captionnal." },
+    { title: "createImage", description: "Kép captionnal.", component: createImage },
     (parent) => createImage({ parent, id: "cont-img1", src: "https://picsum.photos/400/200", alt: "Példa kép", caption: "Példa caption" }),
   ),
   example(
-    { title: "createLink", description: "Stilizált hivatkozás." },
+    { title: "createLink", description: "Stilizált hivatkozás.", component: createLink },
     (parent) => createLink({ parent, id: "cont-link1", text: "Példa link", href: "https://example.com", target: "_blank" }),
   ),
   example(
-    { title: "createDivider", description: "Vízszintes vonal elválasztáshoz." },
+    { title: "createDivider", description: "Vízszintes vonal elválasztáshoz.", component: createDivider },
     (parent) => createDivider({ parent, id: "cont-div1" }),
   ),
 ];

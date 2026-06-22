@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "build:page": "webpack && node scripts/build-page.mjs",
+    "build:page": "node scripts/gen-props.mjs && webpack && node scripts/build-page.mjs",
     "dev": "webpack serve --open",
     "typecheck": "tsc --noEmit",
     "test": "node --test scripts/example-loader.test.mjs",

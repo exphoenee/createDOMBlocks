@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createModal", description: "Modál dialógus ablak, ami portálként a body végére kerül." },
+    { title: "createModal", description: "Modál dialógus ablak, ami portálként a body végére kerül.", component: createModal },
     (parent) => {
       const modal = createModal(
         { modalTitle: "Példa Modal", body: { tag: "p", text: "Ez egy modal tartalma." } },

@@ -21,6 +21,12 @@ export interface ExampleMeta {
   code?: string;
   /** Build-time injected by the webpack loader */
   codeLang?: string;
+  /**
+   * A példa által bemutatott komponens-függvény (pl. createCarousel).
+   * Ha meg van adva, a renderSections automatikusan beszúr
+   * egy paraméter-táblázatot a komponens első előfordulásánál.
+   */
+  component?: Function;
 }
 
 export interface DocSection extends ExampleMeta {

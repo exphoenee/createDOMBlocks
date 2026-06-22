@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createNav", description: "Navigációs sáv menüpontokkal és almenüvel." },
+    { title: "createNav", description: "Navigációs sáv menüpontokkal és almenüvel.", component: createNav },
     (parent) => createNav({ parent, id: "n1", items: [
       { text: "Főoldal", href: "#", active: true },
       { text: "Rólunk", href: "#" },
@@ -14,7 +14,7 @@ const sections = [
     ]}),
   ),
   example(
-    { title: "createBreadcrumb", description: "Morzsa menü a navigációs út vonatkozásában." },
+    { title: "createBreadcrumb", description: "Morzsa menü a navigációs út vonatkozásában.", component: createBreadcrumb },
     (parent) => createBreadcrumb({ parent, id: "n2", items: [
       { text: "Főoldal", href: "#" },
       { text: "Termék", href: "#" },
@@ -22,7 +22,7 @@ const sections = [
     ]}),
   ),
   example(
-    { title: "createTabs", description: "Lapozható tabok külön tartalommal." },
+    { title: "createTabs", description: "Lapozható tabok külön tartalommal.", component: createTabs },
     (parent) => createTabs({ parent, id: "n3", tabs: [
       { id: "t1", label: "Beállítások", content: { tag: "p", text: "Beállítások tartalma" } },
       { id: "t2", label: "Profil", content: { tag: "p", text: "Profil tartalma" } },

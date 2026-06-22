@@ -1,5 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
-import { createCarousel, createCard } from "../../src/index";
+import { createCarousel } from "../../src/index";
 
 const done = initDocPage();
 
@@ -7,7 +7,7 @@ const app = document.getElementById("app") as HTMLElement;
 
 const sections = [
   example(
-    { title: "Alap Carousel", description: "Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal." },
+    { title: "Alap Carousel", description: "Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.", component: createCarousel },
     (parent) =>
       createCarousel({
         parent,
@@ -102,77 +102,6 @@ const sections = [
       }),
   ),
 ];
-
-createCard({
-  parent: app,
-  id: "carousel-params-card",
-  title: "Paraméterek",
-  body: {
-    tag: "table",
-    attrs: { class: "table" },
-    children: [
-      {
-        tag: "thead",
-        children: [
-          {
-            tag: "tr",
-            children: [
-              { tag: "th", text: "Paraméter" },
-              { tag: "th", text: "Típus" },
-              { tag: "th", text: "Leírás" },
-            ],
-          },
-        ],
-      },
-      {
-        tag: "tbody",
-        children: [
-          { tag: "tr", children: [{ tag: "td", text: "parent" }, { tag: "td", text: "HTMLElement | string" }, { tag: "td", text: "Szülő elem" }] },
-          { tag: "tr", children: [{ tag: "td", text: "id" }, { tag: "td", text: "string" }, { tag: "td", text: "Egyedi azonosító" }] },
-          { tag: "tr", children: [{ tag: "td", text: "class" }, { tag: "td", text: "string" }, { tag: "td", text: "Egyedi CSS osztály" }] },
-          { tag: "tr", children: [{ tag: "td", text: "slides" }, { tag: "td", text: "CarouselSlide[]" }, { tag: "td", text: "Slide-ok tömbje" }] },
-          { tag: "tr", children: [{ tag: "td", text: "showArrows" }, { tag: "td", text: "boolean" }, { tag: "td", text: "Nyíl megjelenítése (alapértelmezett: true)" }] },
-          { tag: "tr", children: [{ tag: "td", text: "showDots" }, { tag: "td", text: "boolean" }, { tag: "td", text: "Dot indikátorok megjelenítése (alapértelmezett: true)" }] },
-        ],
-      },
-    ],
-  },
-});
-
-createCard({
-  parent: app,
-  id: "carousel-slide-params-card",
-  title: "CarouselSlide paraméterek",
-  body: {
-    tag: "table",
-    attrs: { class: "table" },
-    children: [
-      {
-        tag: "thead",
-        children: [
-          {
-            tag: "tr",
-            children: [
-              { tag: "th", text: "Paraméter" },
-              { tag: "th", text: "Típus" },
-              { tag: "th", text: "Leírás" },
-            ],
-          },
-        ],
-      },
-      {
-        tag: "tbody",
-        children: [
-          { tag: "tr", children: [{ tag: "td", text: "icon" }, { tag: "td", text: "string" }, { tag: "td", text: "Ikon szöveg/emoji" }] },
-          { tag: "tr", children: [{ tag: "td", text: "title" }, { tag: "td", text: "string" }, { tag: "td", text: "Slide cím" }] },
-          { tag: "tr", children: [{ tag: "td", text: "description" }, { tag: "td", text: "string" }, { tag: "td", text: "Slide leírás" }] },
-          { tag: "tr", children: [{ tag: "td", text: "cta" }, { tag: "td", text: "{ text, href?, click? }" }, { tag: "td", text: "Call-to-action gomb" }] },
-          { tag: "tr", children: [{ tag: "td", text: "content" }, { tag: "td", text: "CreateDOMElemOptions" }, { tag: "td", text: "Egyedi tartalom" }] },
-        ],
-      },
-    ],
-  },
-});
 
 renderSections(sections);
 done();

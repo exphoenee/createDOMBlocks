@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createTable (tömb)", description: "Táblázat tömböl építve, fejléccel, sor számokkal és összeg oszloppal." },
+    { title: "createTable (tömb)", description: "Táblázat tömböl építve, fejléccel, sor számokkal és összeg oszloppal.", component: createTable },
     (parent) => createTable([
       ["Név", "Kor", "Város"], ["Anna", 25, "Budapest"], ["Béla", 32, "Debrecen"], ["Csaba", 18, "Szeged"],
     ], { parent, id: "tbl-array", hasHeader: true, addRowNumbers: true, sumRowValues: true }),

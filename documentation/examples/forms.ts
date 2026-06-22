@@ -5,71 +5,71 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createTextInput", description: "Szöveg input létrehozása címkével." },
+    { title: "createTextInput", description: "Szöveg input létrehozása címkével.", component: createTextInput },
     (parent) => createTextInput({ parent, id: "t1", labelText: "Név:", value: "valami", placeholder: "Ide írj..." }),
   ),
   example(
-    { title: "createTelInput", description: "Telefonszám input." },
+    { title: "createTelInput", description: "Telefonszám input.", component: createTelInput },
     (parent) => createTelInput({ parent, id: "t2", labelText: "Telefon:", value: "+36301234567" }),
   ),
   example(
-    { title: "createUrlInput", description: "URL input." },
+    { title: "createUrlInput", description: "URL input.", component: createUrlInput },
     (parent) => createUrlInput({ parent, id: "t3", labelText: "URL:", value: "https://example.com" }),
   ),
   example(
-    { title: "createSearchInput", description: "Keresési mezők." },
+    { title: "createSearchInput", description: "Keresési mezők.", component: createSearchInput },
     (parent) => createSearchInput({ parent, id: "t4", labelText: "Keresés:", placeholder: "Keress..." }),
   ),
   example(
-    { title: "createEmailInput", description: "E-mail input." },
+    { title: "createEmailInput", description: "E-mail input.", component: createEmailInput },
     (parent) => createEmailInput({ parent, id: "t5", labelText: "Email:", value: "test@example.com" }),
   ),
   example(
-    { title: "createPasswordInput", description: "Jelszó input." },
+    { title: "createPasswordInput", description: "Jelszó input.", component: createPasswordInput },
     (parent) => createPasswordInput({ parent, id: "t6", labelText: "Jelszó:", placeholder: "****" }),
   ),
   example(
-    { title: "createNumberInput", description: "Szám input min/max/step paraméterrel." },
+    { title: "createNumberInput", description: "Szám input min/max/step paraméterrel.", component: createNumberInput },
     (parent) => createNumberInput({ parent, id: "t7", labelText: "Szám:", value: "42", min: 0, max: 100, step: 5 }),
   ),
   example(
-    { title: "createDateInput", description: "Dátum kiválasztó." },
+    { title: "createDateInput", description: "Dátum kiválasztó.", component: createDateInput },
     (parent) => createDateInput({ parent, id: "t8", labelText: "Dátum:", value: "2024-01-15" }),
   ),
   example(
-    { title: "createDatetimeInput", description: "Dátum és idő kiválasztó." },
+    { title: "createDatetimeInput", description: "Dátum és idő kiválasztó.", component: createDatetimeInput },
     (parent) => createDatetimeInput({ parent, id: "t9", labelText: "Dátum-Idő:", value: "2024-01-15T14:30" }),
   ),
   example(
-    { title: "createTimeInput", description: "Idő kiválasztó." },
+    { title: "createTimeInput", description: "Idő kiválasztó.", component: createTimeInput },
     (parent) => createTimeInput({ parent, id: "t10", labelText: "Idő:", value: "14:30" }),
   ),
   example(
-    { title: "createMonthInput", description: "Hónap kiválasztó." },
+    { title: "createMonthInput", description: "Hónap kiválasztó.", component: createMonthInput },
     (parent) => createMonthInput({ parent, id: "t11", labelText: "Hónap:", value: "2024-01" }),
   ),
   example(
-    { title: "createWeekInput", description: "Hét kiválasztó." },
+    { title: "createWeekInput", description: "Hét kiválasztó.", component: createWeekInput },
     (parent) => createWeekInput({ parent, id: "t12", labelText: "Hét:", value: "2024-W03" }),
   ),
   example(
-    { title: "createCheckbox", description: "Jelölő négyzet." },
+    { title: "createCheckbox", description: "Jelölő négyzet.", component: createCheckbox },
     (parent) => createCheckbox({ parent, id: "t13", labelText: "Elfogadom", checked: true }),
   ),
   example(
-    { title: "createColorInput", description: "Szín kiválasztó." },
+    { title: "createColorInput", description: "Szín kiválasztó.", component: createColorInput },
     (parent) => createColorInput({ parent, id: "t14", labelText: "Szín:", value: "#3b82f6" }),
   ),
   example(
-    { title: "createFileInput", description: "Fájl kiválasztó." },
+    { title: "createFileInput", description: "Fájl kiválasztó.", component: createFileInput },
     (parent) => createFileInput({ parent, id: "t15", labelText: "Fájl:" }),
   ),
   example(
-    { title: "createRangeInput", description: "Csúska min/max/step paraméterrel." },
+    { title: "createRangeInput", description: "Csúska min/max/step paraméterrel.", component: createRangeInput },
     (parent) => createRangeInput({ parent, id: "t16", labelText: "Csúska:", min: 0, max: 100, value: "50" }),
   ),
   example(
-    { title: "createForm", description: "Általáns form tömbbe szedett input konfigurációkkal." },
+    { title: "createForm", description: "Általáns form tömbbe szedett input konfigurációkkal.", component: createForm },
     (parent) => createForm({
       parent, id: "demoForm", action: "/api/submit", method: "POST",
       inputs: [

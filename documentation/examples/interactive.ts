@@ -8,6 +8,7 @@ const sections = [
   example(
     {
       title: "createAccordion \u2014 t\xf6bb nyitva (multiple: true)",
+      component: createAccordion,
       description:
         "\xd6sszecsukhat\xf3 szekci\xf3k. A <code>multiple: true</code> opci\xf3val egyszerre t\xf6bb szekci\xf3 is nyitva lehet.",
     },
@@ -41,7 +42,7 @@ const sections = [
       }),
   ),
   example(
-    { title: "createTooltip", description: "Bubor\xe9k tooltip k\xfcl\xf6nb\xf6z\u0151 poz\xedci\xf3kkal. Vidd az egeret az elemek f\xf6l\xe9!" },
+    { title: "createTooltip", description: "Bubor\xe9k tooltip k\xfcl\xf6nb\xf6z\u0151 poz\xedci\xf3kkal. Vidd az egeret az elemek f\xf6l\xe9!", component: createTooltip },
     (parent) => {
       createDOMElem({
         tag: "p",

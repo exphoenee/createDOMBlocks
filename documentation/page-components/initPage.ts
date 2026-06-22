@@ -7,6 +7,7 @@ import { getDrawerMenuItems } from "./menuItems";
 import { highlightCode } from "../../src/components/highlighter";
 import { createPageLoading } from "./createPageLoading";
 import type { DocSection } from "./example";
+import { propsTable } from "./propsTable";
 
 function createCodeBlockHTML(code: string, lang?: string): CreateDOMElemOptions {
   const highlighted = highlightCode(code, lang);
@@ -52,6 +53,9 @@ export function renderSections(sections: DocSection[]): void {
   const main = document.querySelector(".page-content") as HTMLElement;
   if (!main) return;
 
+  // Dedup: mely komponensekhez már beszúrtunk táblázatot
+  const renderedComponents = new Set<Function>();
+
   for (const section of sections) {
     const resultId = `result-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -67,6 +71,14 @@ export function renderSections(sections: DocSection[]): void {
       ],
     });
     main.appendChild(sectionEl);
+
+    // Ha a szekciónak van component mezője és még nem rendereltük a tábláját,
+    // beszúrjuk közvetlenül a szekció után
+    if (section.component && !renderedComponents.has(section.component)) {
+      renderedComponents.add(section.component);
+      const tableEl = propsTable(section.component);
+      main.appendChild(tableEl);
+    }
 
     const resultContainer = document.getElementById(resultId) as HTMLElement | null;
     if (resultContainer) {
