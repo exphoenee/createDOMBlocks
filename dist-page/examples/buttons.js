@@ -173,6 +173,68 @@ function createPageLoading() {
 
 /***/ },
 
+/***/ "./documentation/page-components/example.ts"
+/*!**************************************************!*\
+  !*** ./documentation/page-components/example.ts ***!
+  \**************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   example: () => (/* binding */ example)
+/* harmony export */ });
+/**
+ * Example DSL — Single Source of Truth for documented code examples.
+ *
+ * Usage:
+ *   example(
+ *     { title: "createButtonInput", description: "…" },
+ *     (parent) => createButtonInput({ parent, id: "btnInput", text: "Button input" }),
+ *   )
+ *
+ * A custom webpack loader (scripts/example-loader.mjs) extracts the arrow
+ * function body at build time and injects the `code` field automatically.
+ * If the loader hasn't run (e.g. fallback), the `code` stays empty – a
+ * minimal `toString()` fallback is applied in that case so the page doesn't
+ * break.
+ */
+let exampleFallbackWarned = false;
+/**
+ * Creates a DocSection from metadata and a render function.
+ *
+ * At build time the loader injects the raw TypeScript source of the
+ * render body into the meta object as `code`.  At runtime this function
+ * simply spreads meta and attaches the render.
+ *
+ * Fallback: if `code` is empty (loader didn't run), use `render.toString()`
+ * stripped of the parameter prefix as a best-effort display string.
+ */
+function example(meta, renderFn) {
+    // The loader injects code + codeLang onto meta via object spread.
+    // If it didn't, fall back to toString() (Opcio C in the plan).
+    const metaAny = meta;
+    let code = typeof metaAny.code === "string" ? metaAny.code : "";
+    if (!code && !exampleFallbackWarned) {
+        console.warn("[example] code field is empty – the webpack loader may not have run. " +
+            "Falling back to render.toString().");
+        exampleFallbackWarned = true;
+    }
+    if (!code) {
+        // Fallback: strip the arrow prefix "(parent) => " or "(c) => "
+        const fnStr = renderFn.toString().replace(/^\s*(?:parent|c)\s*=>\s*/, "").trim();
+        code = fnStr;
+    }
+    return {
+        ...meta,
+        code,
+        codeLang: meta.codeLang ?? metaAny.codeLang,
+        render: renderFn,
+    };
+}
+
+
+/***/ },
+
 /***/ "./documentation/page-components/index.ts"
 /*!************************************************!*\
   !*** ./documentation/page-components/index.ts ***!
@@ -187,6 +249,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   createFooter: () => (/* reexport safe */ _createFooter__WEBPACK_IMPORTED_MODULE_2__.createFooter),
 /* harmony export */   createHeader: () => (/* reexport safe */ _createHeader__WEBPACK_IMPORTED_MODULE_1__.createHeader),
 /* harmony export */   createPageLoading: () => (/* reexport safe */ _createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading),
+/* harmony export */   example: () => (/* reexport safe */ _example__WEBPACK_IMPORTED_MODULE_6__.example),
 /* harmony export */   getDrawerMenuItems: () => (/* reexport safe */ _menuItems__WEBPACK_IMPORTED_MODULE_3__.getDrawerMenuItems),
 /* harmony export */   initDocPage: () => (/* reexport safe */ _initPage__WEBPACK_IMPORTED_MODULE_4__.initDocPage),
 /* harmony export */   openDrawer: () => (/* reexport safe */ _src_components_createDrawer__WEBPACK_IMPORTED_MODULE_0__.openDrawer),
@@ -198,6 +261,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
 /* harmony import */ var _initPage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./initPage */ "./documentation/page-components/initPage.ts");
 /* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _example__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./example */ "./documentation/page-components/example.ts");
+
 
 
 
@@ -1215,11 +1280,48 @@ __webpack_require__.r(__webpack_exports__);
 
 function createCodeBlock(params) {
     const children = [];
-    if (params.language) {
+    const copyable = params.copyable !== false;
+    const hasLanguage = !!params.language;
+    // Header row: language label + copy button
+    if (hasLanguage || copyable) {
+        const headerChildren = [];
+        if (hasLanguage) {
+            headerChildren.push({
+                tag: "span",
+                text: params.language.toUpperCase(),
+                attrs: { class: "code-language" },
+            });
+        }
+        if (copyable) {
+            headerChildren.push({
+                tag: "button",
+                attrs: {
+                    class: "code-copy-btn",
+                    type: "button",
+                    "data-code": params.code,
+                },
+                text: "Copy",
+                handleEvent: {
+                    event: "click",
+                    cb: (e) => {
+                        const btn = e.currentTarget;
+                        const code = btn.getAttribute("data-code") || "";
+                        navigator.clipboard.writeText(code).then(() => {
+                            btn.textContent = "Copied!";
+                            setTimeout(() => {
+                                btn.textContent = "Copy";
+                            }, 2000);
+                        }).catch(() => {
+                            /* clipboard write failed — silently ignore */
+                        });
+                    },
+                },
+            });
+        }
         children.push({
             tag: "div",
-            text: params.language.toUpperCase(),
-            attrs: { class: "code-language" },
+            attrs: { class: "code-header" },
+            children: headerChildren,
         });
     }
     const highlighted = (0,_highlighter__WEBPACK_IMPORTED_MODULE_1__.highlightCode)(params.code, params.language);
@@ -3147,14 +3249,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Cache for toast containers keyed by position */
 const containerCache = new Map();
-function getContainer(position) {
+function getContainer(position, width) {
     const existing = containerCache.get(position);
     if (existing && document.body.contains(existing))
         return existing;
+    const attrs = { class: `toast-container toast-container-${position}` };
+    if (width) {
+        attrs.style = `width: ${width}; max-width: ${width}`;
+    }
     const container = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
         tag: "div",
         parent: "body",
-        attrs: { class: `toast-container toast-container-${position}` },
+        attrs,
     });
     containerCache.set(position, container);
     return container;
@@ -3170,7 +3276,7 @@ function removeToast(toast) {
 function createToast(params) {
     const duration = params.duration || 3000;
     const position = params.position || "top-right";
-    const container = getContainer(position);
+    const container = getContainer(position, params.width);
     const rootAttrs = {
         class: `toast toast-${params.type || "info"}${params.class ? ` ${params.class}` : ""}`,
         role: "status",
@@ -4413,34 +4519,18 @@ __webpack_require__.r(__webpack_exports__);
 
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
-    {
-        title: "createButtonInput",
-        description: "Input gomb a submit/reset mellett.",
-        code: `createButtonInput({\n  parent: "#app",\n  id: "btnInput",\n  text: "Button input",\n  click: () => console.log("clicked"),\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButtonInput)({ parent: c, id: "b1", text: "Button input", click: () => console.log("clicked") }),
-    },
-    {
-        title: "createSubmitInput",
-        description: "Submit gomb, form-ok küldéséhez.",
-        code: `createSubmitInput({\n  parent: "#app",\n  id: "submitInput",\n  text: "Küldés",\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSubmitInput)({ parent: c, id: "b2", text: "Küldés" }),
-    },
-    {
-        title: "createResetInput",
-        description: "Reset gomb, form visszaállításhoz.",
-        code: `createResetInput({\n  parent: "#app",\n  id: "resetInput",\n  text: "Visszaállítás",\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createResetInput)({ parent: c, id: "b3", text: "Visszaállítás" }),
-    },
-    {
-        title: "createButton",
-        description: "Általános button elem szöveggel és eseménykezelővel.",
-        code: `createButton({\n  parent: "#app",\n  id: "btn1",\n  text: "Gomb",\n  click: () => console.log("clicked"),\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButton)({ parent: c, id: "b4", text: "Gomb", click: () => console.log("clicked") }),
-    },
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createButtonInput", description: "Input gomb a submit/reset mellett.",
+        code: "createButtonInput({ parent, id: \"b1\", text: \"Button input\", click: () => console.log(\"clicked\") })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButtonInput)({ parent, id: "b1", text: "Button input", click: () => console.log("clicked") })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createSubmitInput", description: "Submit gomb, form-ok küldéséhez.",
+        code: "createSubmitInput({ parent, id: \"b2\", text: \"Küldés\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSubmitInput)({ parent, id: "b2", text: "Küldés" })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createResetInput", description: "Reset gomb, form visszaállításhoz.",
+        code: "createResetInput({ parent, id: \"b3\", text: \"Visszaállítás\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createResetInput)({ parent, id: "b3", text: "Visszaállítás" })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createButton", description: "Általános button elem szöveggel és eseménykezelővel.",
+        code: "createButton({ parent, id: \"b4\", text: \"Gomb\", click: () => console.log(\"clicked\") })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButton)({ parent, id: "b4", text: "Gomb", click: () => console.log("clicked") })),
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);
 done();

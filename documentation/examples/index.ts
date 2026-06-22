@@ -5,7 +5,7 @@ import type { CreateDOMElemOptions } from "domelemjs";
 
 const done = initDocPage();
 
-const app = document.getElementById("app")!;
+const app = document.getElementById("app") as HTMLElement;
 
 createCard({
   parent: app,

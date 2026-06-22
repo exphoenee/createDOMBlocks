@@ -330,6 +330,7 @@ export interface ToastParams {
   message: string;
   duration?: number;
   position?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
+  width?: string;
 }
 
 export interface BadgeParams {
@@ -387,6 +388,7 @@ export interface CodeBlockParams {
   class?: string;
   code: string;
   language?: string;
+  copyable?: boolean;
 }
 
 export interface BlockquoteParams {

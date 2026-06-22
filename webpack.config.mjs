@@ -93,6 +93,24 @@ const documentationConfig = {
     rules: [
       {
         test: /\.ts$/,
+        include: path.resolve(__dirname, "documentation/examples"),
+        use: [
+          {
+            loader: "ts-loader",
+            options: {
+              compilerOptions: {
+                declaration: false,
+                declarationMap: false,
+                sourceMap: false,
+                rootDir: ".",
+              },
+            },
+          },
+          path.resolve(__dirname, "scripts/example-loader.mjs"),
+        ],
+      },
+      {
+        test: /\.ts$/,
         use: {
           loader: "ts-loader",
           options: {
@@ -104,7 +122,10 @@ const documentationConfig = {
             },
           },
         },
-        exclude: /node_modules/,
+        exclude: [
+          path.resolve(__dirname, "node_modules"),
+          path.resolve(__dirname, "documentation/examples"),
+        ],
       },
     ],
   },

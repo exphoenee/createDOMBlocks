@@ -173,6 +173,68 @@ function createPageLoading() {
 
 /***/ },
 
+/***/ "./documentation/page-components/example.ts"
+/*!**************************************************!*\
+  !*** ./documentation/page-components/example.ts ***!
+  \**************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   example: () => (/* binding */ example)
+/* harmony export */ });
+/**
+ * Example DSL — Single Source of Truth for documented code examples.
+ *
+ * Usage:
+ *   example(
+ *     { title: "createButtonInput", description: "…" },
+ *     (parent) => createButtonInput({ parent, id: "btnInput", text: "Button input" }),
+ *   )
+ *
+ * A custom webpack loader (scripts/example-loader.mjs) extracts the arrow
+ * function body at build time and injects the `code` field automatically.
+ * If the loader hasn't run (e.g. fallback), the `code` stays empty – a
+ * minimal `toString()` fallback is applied in that case so the page doesn't
+ * break.
+ */
+let exampleFallbackWarned = false;
+/**
+ * Creates a DocSection from metadata and a render function.
+ *
+ * At build time the loader injects the raw TypeScript source of the
+ * render body into the meta object as `code`.  At runtime this function
+ * simply spreads meta and attaches the render.
+ *
+ * Fallback: if `code` is empty (loader didn't run), use `render.toString()`
+ * stripped of the parameter prefix as a best-effort display string.
+ */
+function example(meta, renderFn) {
+    // The loader injects code + codeLang onto meta via object spread.
+    // If it didn't, fall back to toString() (Opcio C in the plan).
+    const metaAny = meta;
+    let code = typeof metaAny.code === "string" ? metaAny.code : "";
+    if (!code && !exampleFallbackWarned) {
+        console.warn("[example] code field is empty – the webpack loader may not have run. " +
+            "Falling back to render.toString().");
+        exampleFallbackWarned = true;
+    }
+    if (!code) {
+        // Fallback: strip the arrow prefix "(parent) => " or "(c) => "
+        const fnStr = renderFn.toString().replace(/^\s*(?:parent|c)\s*=>\s*/, "").trim();
+        code = fnStr;
+    }
+    return {
+        ...meta,
+        code,
+        codeLang: meta.codeLang ?? metaAny.codeLang,
+        render: renderFn,
+    };
+}
+
+
+/***/ },
+
 /***/ "./documentation/page-components/index.ts"
 /*!************************************************!*\
   !*** ./documentation/page-components/index.ts ***!
@@ -187,6 +249,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   createFooter: () => (/* reexport safe */ _createFooter__WEBPACK_IMPORTED_MODULE_2__.createFooter),
 /* harmony export */   createHeader: () => (/* reexport safe */ _createHeader__WEBPACK_IMPORTED_MODULE_1__.createHeader),
 /* harmony export */   createPageLoading: () => (/* reexport safe */ _createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading),
+/* harmony export */   example: () => (/* reexport safe */ _example__WEBPACK_IMPORTED_MODULE_6__.example),
 /* harmony export */   getDrawerMenuItems: () => (/* reexport safe */ _menuItems__WEBPACK_IMPORTED_MODULE_3__.getDrawerMenuItems),
 /* harmony export */   initDocPage: () => (/* reexport safe */ _initPage__WEBPACK_IMPORTED_MODULE_4__.initDocPage),
 /* harmony export */   openDrawer: () => (/* reexport safe */ _src_components_createDrawer__WEBPACK_IMPORTED_MODULE_0__.openDrawer),
@@ -198,6 +261,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
 /* harmony import */ var _initPage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./initPage */ "./documentation/page-components/initPage.ts");
 /* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _example__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./example */ "./documentation/page-components/example.ts");
+
 
 
 
@@ -1215,11 +1280,48 @@ __webpack_require__.r(__webpack_exports__);
 
 function createCodeBlock(params) {
     const children = [];
-    if (params.language) {
+    const copyable = params.copyable !== false;
+    const hasLanguage = !!params.language;
+    // Header row: language label + copy button
+    if (hasLanguage || copyable) {
+        const headerChildren = [];
+        if (hasLanguage) {
+            headerChildren.push({
+                tag: "span",
+                text: params.language.toUpperCase(),
+                attrs: { class: "code-language" },
+            });
+        }
+        if (copyable) {
+            headerChildren.push({
+                tag: "button",
+                attrs: {
+                    class: "code-copy-btn",
+                    type: "button",
+                    "data-code": params.code,
+                },
+                text: "Copy",
+                handleEvent: {
+                    event: "click",
+                    cb: (e) => {
+                        const btn = e.currentTarget;
+                        const code = btn.getAttribute("data-code") || "";
+                        navigator.clipboard.writeText(code).then(() => {
+                            btn.textContent = "Copied!";
+                            setTimeout(() => {
+                                btn.textContent = "Copy";
+                            }, 2000);
+                        }).catch(() => {
+                            /* clipboard write failed — silently ignore */
+                        });
+                    },
+                },
+            });
+        }
         children.push({
             tag: "div",
-            text: params.language.toUpperCase(),
-            attrs: { class: "code-language" },
+            attrs: { class: "code-header" },
+            children: headerChildren,
         });
     }
     const highlighted = (0,_highlighter__WEBPACK_IMPORTED_MODULE_1__.highlightCode)(params.code, params.language);
@@ -3147,14 +3249,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Cache for toast containers keyed by position */
 const containerCache = new Map();
-function getContainer(position) {
+function getContainer(position, width) {
     const existing = containerCache.get(position);
     if (existing && document.body.contains(existing))
         return existing;
+    const attrs = { class: `toast-container toast-container-${position}` };
+    if (width) {
+        attrs.style = `width: ${width}; max-width: ${width}`;
+    }
     const container = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
         tag: "div",
         parent: "body",
-        attrs: { class: `toast-container toast-container-${position}` },
+        attrs,
     });
     containerCache.set(position, container);
     return container;
@@ -3170,7 +3276,7 @@ function removeToast(toast) {
 function createToast(params) {
     const duration = params.duration || 3000;
     const position = params.position || "top-right";
-    const container = getContainer(position);
+    const container = getContainer(position, params.width);
     const rootAttrs = {
         class: `toast toast-${params.type || "info"}${params.class ? ` ${params.class}` : ""}`,
         role: "status",
@@ -4413,70 +4519,34 @@ __webpack_require__.r(__webpack_exports__);
 
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
-    {
-        title: "createCard",
-        description: "Kártya komponens címmel, testtel és lábléccel.",
-        code: `createCard({\n  parent: "#app",\n  id: "card1",\n  title: "Kártya cím",\n  body: { tag: "p", text: "Tartalom" },\n  footer: { tag: "div", text: "Lábléc" },\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCard)({ parent: c, id: "c1", title: "Kártya cím", body: { tag: "p", text: "Tartalom" }, footer: { tag: "div", text: "Lábléc" } }),
-    },
-    {
-        title: "createGrid",
-        description: "Rács elrendezés oszlopokkal.",
-        code: `createGrid({ parent: "#app", id: "grid1", columns: 3, gap: "1rem" });`,
-        codeLang: "typescript",
-        render: (c) => { (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createGrid)({ parent: c, id: "c2", columns: 3, gap: "1rem" }); },
-    },
-    {
-        title: "createParagraph",
-        description: "Sima bekezdés szöveg.",
-        code: `createParagraph({\n  parent: "#app",\n  id: "para1",\n  text: "Ez egy bekezdés szöveg.",\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createParagraph)({ parent: c, id: "cont-p1", text: "Ez egy bekezdés szöveg." }),
-    },
-    {
-        title: "createTitle",
-        description: "Címsor h1-h6 szintekkel.",
-        code: `for (let i = 1; i <= 3; i++) {\n  createTitle({ parent: "#app", id: \`title\${i}\`, text: \`Címsor \${i}\` }, i);\n}`,
-        codeLang: "typescript",
-        render: (c) => { for (let i = 1; i <= 3; i++)
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTitle)({ parent: c, id: `cont-title${i}`, text: `Címsor ${i}` }, i); },
-    },
-    {
-        title: "createBlockquote",
-        description: "Idézet szerzővel.",
-        code: `createBlockquote({\n  parent: "#app",\n  id: "quote1",\n  text: "A kódolás a jövő nyelve.",\n  author: "Bozzay Viktor",\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBlockquote)({ parent: c, id: "cont-bq1", text: "A kódolás a jövő nyelve.", author: "Bozzay Viktor" }),
-    },
-    {
-        title: "createCodeBlock",
-        description: "Kódblokk nyelv megadásával és syntax highlighting-gel.",
-        code: `createCodeBlock({\n  parent: "#app",\n  id: "code1",\n  language: "typescript",\n  code: 'const x: number = 42;\\nconsole.log(x);',\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({ parent: c, id: "cont-cb1", language: "typescript", code: 'const x: number = 42;\nconsole.log(x);' }),
-    },
-    {
-        title: "createImage",
-        description: "Kép captionnal.",
-        code: `createImage({\n  parent: "#app",\n  id: "img1",\n  src: "https://picsum.photos/400/200",\n  alt: "Példa kép",\n  caption: "Példa caption",\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createImage)({ parent: c, id: "cont-img1", src: "https://picsum.photos/400/200", alt: "Példa kép", caption: "Példa caption" }),
-    },
-    {
-        title: "createLink",
-        description: "Stilizált hivatkozás.",
-        code: `createLink({\n  parent: "#app",\n  id: "link1",\n  text: "Példa link",\n  href: "https://example.com",\n  target: "_blank",\n});`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createLink)({ parent: c, id: "cont-link1", text: "Példa link", href: "https://example.com", target: "_blank" }),
-    },
-    {
-        title: "createDivider",
-        description: "Vízszintes vonal elválasztáshoz.",
-        code: `createDivider({ parent: "#app", id: "divider1" });`,
-        codeLang: "typescript",
-        render: (c) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDivider)({ parent: c, id: "cont-div1" }),
-    },
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCard", description: "Kártya komponens címmel, testtel és lábléccel.",
+        code: "createCard({ parent, id: \"c1\", title: \"Kártya cím\", body: { tag: \"p\", text: \"Tartalom\" }, footer: { tag: \"div\", text: \"Lábléc\" } })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCard)({ parent, id: "c1", title: "Kártya cím", body: { tag: "p", text: "Tartalom" }, footer: { tag: "div", text: "Lábléc" } })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createGrid", description: "Rács elrendezés oszlopokkal.",
+        code: "createGrid({ parent, id: \"c2\", columns: 3, gap: \"1rem\" });",
+        codeLang: "typescript" }, (parent) => { (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createGrid)({ parent, id: "c2", columns: 3, gap: "1rem" }); }),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createParagraph", description: "Sima bekezdés szöveg.",
+        code: "createParagraph({ parent, id: \"cont-p1\", text: \"Ez egy bekezdés szöveg.\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createParagraph)({ parent, id: "cont-p1", text: "Ez egy bekezdés szöveg." })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createTitle", description: "Címsor h1-h6 szintekkel.",
+        code: "for (let i = 1; i <= 3; i++) createTitle({ parent, id: `cont-title${i}`, text: `Címsor ${i}` }, i);",
+        codeLang: "typescript" }, (parent) => { for (let i = 1; i <= 3; i++)
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createTitle)({ parent, id: `cont-title${i}`, text: `Címsor ${i}` }, i); }),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createBlockquote", description: "Idézet szerzővel.",
+        code: "createBlockquote({ parent, id: \"cont-bq1\", text: \"A kódolás a jövő nyelve.\", author: \"Bozzay Viktor\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBlockquote)({ parent, id: "cont-bq1", text: "A kódolás a jövő nyelve.", author: "Bozzay Viktor" })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createCodeBlock", description: "Kódblokk nyelv megadásával és syntax highlighting-gel.",
+        code: "createCodeBlock({ parent, id: \"cont-cb1\", language: \"typescript\", code: 'const x: number = 42;\\nconsole.log(x);' })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCodeBlock)({ parent, id: "cont-cb1", language: "typescript", code: 'const x: number = 42;\nconsole.log(x);' })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createImage", description: "Kép captionnal.",
+        code: "createImage({ parent, id: \"cont-img1\", src: \"https://picsum.photos/400/200\", alt: \"Példa kép\", caption: \"Példa caption\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createImage)({ parent, id: "cont-img1", src: "https://picsum.photos/400/200", alt: "Példa kép", caption: "Példa caption" })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createLink", description: "Stilizált hivatkozás.",
+        code: "createLink({ parent, id: \"cont-link1\", text: \"Példa link\", href: \"https://example.com\", target: \"_blank\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createLink)({ parent, id: "cont-link1", text: "Példa link", href: "https://example.com", target: "_blank" })),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createDivider", description: "Vízszintes vonal elválasztáshoz.",
+        code: "createDivider({ parent, id: \"cont-div1\" })",
+        codeLang: "typescript" }, (parent) => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createDivider)({ parent, id: "cont-div1" })),
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);
 done();

@@ -6,14 +6,7 @@ import { createFooter } from "./createFooter";
 import { getDrawerMenuItems } from "./menuItems";
 import { highlightCode } from "../../src/components/highlighter";
 import { createPageLoading } from "./createPageLoading";
-
-export interface DocSection {
-  title: string;
-  description: string;
-  code: string;
-  codeLang?: string;
-  render: (container: HTMLElement) => void;
-}
+import type { DocSection } from "./example";
 
 function createCodeBlockHTML(code: string, lang?: string): CreateDOMElemOptions {
   const highlighted = highlightCode(code, lang);
@@ -75,7 +68,7 @@ export function renderSections(sections: DocSection[]): void {
     });
     main.appendChild(sectionEl);
 
-    const resultContainer = document.getElementById(resultId);
+    const resultContainer = document.getElementById(resultId) as HTMLElement | null;
     if (resultContainer) {
       section.render(resultContainer);
     }

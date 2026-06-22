@@ -173,6 +173,68 @@ function createPageLoading() {
 
 /***/ },
 
+/***/ "./documentation/page-components/example.ts"
+/*!**************************************************!*\
+  !*** ./documentation/page-components/example.ts ***!
+  \**************************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   example: () => (/* binding */ example)
+/* harmony export */ });
+/**
+ * Example DSL — Single Source of Truth for documented code examples.
+ *
+ * Usage:
+ *   example(
+ *     { title: "createButtonInput", description: "…" },
+ *     (parent) => createButtonInput({ parent, id: "btnInput", text: "Button input" }),
+ *   )
+ *
+ * A custom webpack loader (scripts/example-loader.mjs) extracts the arrow
+ * function body at build time and injects the `code` field automatically.
+ * If the loader hasn't run (e.g. fallback), the `code` stays empty – a
+ * minimal `toString()` fallback is applied in that case so the page doesn't
+ * break.
+ */
+let exampleFallbackWarned = false;
+/**
+ * Creates a DocSection from metadata and a render function.
+ *
+ * At build time the loader injects the raw TypeScript source of the
+ * render body into the meta object as `code`.  At runtime this function
+ * simply spreads meta and attaches the render.
+ *
+ * Fallback: if `code` is empty (loader didn't run), use `render.toString()`
+ * stripped of the parameter prefix as a best-effort display string.
+ */
+function example(meta, renderFn) {
+    // The loader injects code + codeLang onto meta via object spread.
+    // If it didn't, fall back to toString() (Opcio C in the plan).
+    const metaAny = meta;
+    let code = typeof metaAny.code === "string" ? metaAny.code : "";
+    if (!code && !exampleFallbackWarned) {
+        console.warn("[example] code field is empty – the webpack loader may not have run. " +
+            "Falling back to render.toString().");
+        exampleFallbackWarned = true;
+    }
+    if (!code) {
+        // Fallback: strip the arrow prefix "(parent) => " or "(c) => "
+        const fnStr = renderFn.toString().replace(/^\s*(?:parent|c)\s*=>\s*/, "").trim();
+        code = fnStr;
+    }
+    return {
+        ...meta,
+        code,
+        codeLang: meta.codeLang ?? metaAny.codeLang,
+        render: renderFn,
+    };
+}
+
+
+/***/ },
+
 /***/ "./documentation/page-components/index.ts"
 /*!************************************************!*\
   !*** ./documentation/page-components/index.ts ***!
@@ -187,6 +249,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   createFooter: () => (/* reexport safe */ _createFooter__WEBPACK_IMPORTED_MODULE_2__.createFooter),
 /* harmony export */   createHeader: () => (/* reexport safe */ _createHeader__WEBPACK_IMPORTED_MODULE_1__.createHeader),
 /* harmony export */   createPageLoading: () => (/* reexport safe */ _createPageLoading__WEBPACK_IMPORTED_MODULE_5__.createPageLoading),
+/* harmony export */   example: () => (/* reexport safe */ _example__WEBPACK_IMPORTED_MODULE_6__.example),
 /* harmony export */   getDrawerMenuItems: () => (/* reexport safe */ _menuItems__WEBPACK_IMPORTED_MODULE_3__.getDrawerMenuItems),
 /* harmony export */   initDocPage: () => (/* reexport safe */ _initPage__WEBPACK_IMPORTED_MODULE_4__.initDocPage),
 /* harmony export */   openDrawer: () => (/* reexport safe */ _src_components_createDrawer__WEBPACK_IMPORTED_MODULE_0__.openDrawer),
@@ -198,6 +261,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _menuItems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./menuItems */ "./documentation/page-components/menuItems.ts");
 /* harmony import */ var _initPage__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./initPage */ "./documentation/page-components/initPage.ts");
 /* harmony import */ var _createPageLoading__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./createPageLoading */ "./documentation/page-components/createPageLoading.ts");
+/* harmony import */ var _example__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./example */ "./documentation/page-components/example.ts");
+
 
 
 
@@ -1215,11 +1280,48 @@ __webpack_require__.r(__webpack_exports__);
 
 function createCodeBlock(params) {
     const children = [];
-    if (params.language) {
+    const copyable = params.copyable !== false;
+    const hasLanguage = !!params.language;
+    // Header row: language label + copy button
+    if (hasLanguage || copyable) {
+        const headerChildren = [];
+        if (hasLanguage) {
+            headerChildren.push({
+                tag: "span",
+                text: params.language.toUpperCase(),
+                attrs: { class: "code-language" },
+            });
+        }
+        if (copyable) {
+            headerChildren.push({
+                tag: "button",
+                attrs: {
+                    class: "code-copy-btn",
+                    type: "button",
+                    "data-code": params.code,
+                },
+                text: "Copy",
+                handleEvent: {
+                    event: "click",
+                    cb: (e) => {
+                        const btn = e.currentTarget;
+                        const code = btn.getAttribute("data-code") || "";
+                        navigator.clipboard.writeText(code).then(() => {
+                            btn.textContent = "Copied!";
+                            setTimeout(() => {
+                                btn.textContent = "Copy";
+                            }, 2000);
+                        }).catch(() => {
+                            /* clipboard write failed — silently ignore */
+                        });
+                    },
+                },
+            });
+        }
         children.push({
             tag: "div",
-            text: params.language.toUpperCase(),
-            attrs: { class: "code-language" },
+            attrs: { class: "code-header" },
+            children: headerChildren,
         });
     }
     const highlighted = (0,_highlighter__WEBPACK_IMPORTED_MODULE_1__.highlightCode)(params.code, params.language);
@@ -3147,14 +3249,18 @@ __webpack_require__.r(__webpack_exports__);
 
 /** Cache for toast containers keyed by position */
 const containerCache = new Map();
-function getContainer(position) {
+function getContainer(position, width) {
     const existing = containerCache.get(position);
     if (existing && document.body.contains(existing))
         return existing;
+    const attrs = { class: `toast-container toast-container-${position}` };
+    if (width) {
+        attrs.style = `width: ${width}; max-width: ${width}`;
+    }
     const container = (0,domelemjs__WEBPACK_IMPORTED_MODULE_0__.createDOMElem)({
         tag: "div",
         parent: "body",
-        attrs: { class: `toast-container toast-container-${position}` },
+        attrs,
     });
     containerCache.set(position, container);
     return container;
@@ -3170,7 +3276,7 @@ function removeToast(toast) {
 function createToast(params) {
     const duration = params.duration || 3000;
     const position = params.position || "top-right";
-    const container = getContainer(position);
+    const container = getContainer(position, params.width);
     const rootAttrs = {
         class: `toast toast-${params.type || "info"}${params.class ? ` ${params.class}` : ""}`,
         role: "status",
@@ -4415,64 +4521,44 @@ __webpack_require__.r(__webpack_exports__);
 
 const done = (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.initDocPage)();
 const sections = [
-    {
-        title: "createAlert",
-        description: "Figyelmeztető üzenet típusonként: success, error, warning, info.",
-        code: `createAlert({ parent: "#app", id: "alert1", type: "success", title: "Siker!", message: "Mentés sikeres." });\ncreateAlert({ parent: "#app", id: "alert2", type: "error", title: "Hiba!", message: "Valami rossz." });\ncreateAlert({ parent: "#app", id: "alert3", type: "warning", title: "Figyelem!", message: "Vigyázz!" });\ncreateAlert({ parent: "#app", id: "alert4", type: "info", title: "Info", message: "Elcsukható.", dismissible: true });`,
-        codeLang: "typescript",
-        render: (c) => {
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent: c, id: "fb-a1", type: "success", title: "Siker!", message: "Mentés sikeres." });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent: c, id: "fb-a2", type: "error", title: "Hiba!", message: "Valami rossz." });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent: c, id: "fb-a3", type: "warning", title: "Figyelem!", message: "Vigyázz!" });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent: c, id: "fb-a4", type: "info", title: "Info", message: "Elcsukható.", dismissible: true });
-        },
-    },
-    {
-        title: "createBadge",
-        description: "Állapot jelző pici szöveggel.",
-        code: `createBadge({ parent: "#app", id: "badge1", text: "Új", type: "info" });\ncreateBadge({ parent: "#app", id: "badge2", text: "Siker", type: "success" });\ncreateBadge({ parent: "#app", id: "badge3", text: "Hiba", type: "error" });`,
-        codeLang: "typescript",
-        render: (c) => {
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBadge)({ parent: c, id: "fb-b1", text: "Új", type: "info" });
-            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent: c, text: " " });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBadge)({ parent: c, id: "fb-b2", text: "Siker", type: "success" });
-            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent: c, text: " " });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBadge)({ parent: c, id: "fb-b3", text: "Hiba", type: "error" });
-        },
-    },
-    {
-        title: "createSpinner",
-        description: "Töltés indikátor meretre váltással.",
-        code: `createSpinner({ parent: "#app", id: "spin1", size: "sm" });\ncreateSpinner({ parent: "#app", id: "spin2", size: "md" });\ncreateSpinner({ parent: "#app", id: "spin3", size: "lg" });`,
-        codeLang: "typescript",
-        render: (c) => {
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSpinner)({ parent: c, id: "fb-s1", size: "sm" });
-            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent: c, text: "  " });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSpinner)({ parent: c, id: "fb-s2", size: "md" });
-            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent: c, text: "  " });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSpinner)({ parent: c, id: "fb-s3", size: "lg" });
-        },
-    },
-    {
-        title: "createProgressBar",
-        description: "Folyamatjelző egyéni színnel és százalék kijelzéssel.",
-        code: `createProgressBar({ parent: "#app", id: "pb1", value: 75, label: "Letöltés:", showPercentage: true });\ncreateProgressBar({ parent: "#app", id: "pb2", value: 30, color: "#22c55e", label: "Telepítés:", showPercentage: true });`,
-        codeLang: "typescript",
-        render: (c) => {
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createProgressBar)({ parent: c, id: "fb-p1", value: 75, label: "Letöltés:", showPercentage: true });
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createProgressBar)({ parent: c, id: "fb-p2", value: 30, color: "#22c55e", label: "Telepítés:", showPercentage: true });
-        },
-    },
-    {
-        title: "createToast",
-        description: "Ideiglenes értesítés.",
-        code: `createButton({\n  parent: "#app",\n  id: "toastBtn",\n  text: "Toast megjelenítése",\n  click: () => createToast({ id: "toast1", message: "Értesítés!", type: "success" }),\n});`,
-        codeLang: "typescript",
-        render: (c) => {
-            (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButton)({ parent: c, id: "fb-toast-btn", text: "Toast megjelenítése",
-                click: () => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createToast)({ parent: document.body, id: "fb-toast", message: "Értesítés!", type: "success", duration: 3000 }) });
-        },
-    },
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createAlert", description: "Figyelmeztető üzenet típusonként: success, error, warning, info.",
+        code: "createAlert({ parent, id: \"fb-a1\", type: \"success\", title: \"Siker!\", message: \"Mentés sikeres.\" });\n      createAlert({ parent, id: \"fb-a2\", type: \"error\", title: \"Hiba!\", message: \"Valami rossz.\" });\n      createAlert({ parent, id: \"fb-a3\", type: \"warning\", title: \"Figyelem!\", message: \"Vigyázz!\" });\n      createAlert({ parent, id: \"fb-a4\", type: \"info\", title: \"Info\", message: \"Elcsukható.\", dismissible: true });",
+        codeLang: "typescript" }, (parent) => {
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent, id: "fb-a1", type: "success", title: "Siker!", message: "Mentés sikeres." });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent, id: "fb-a2", type: "error", title: "Hiba!", message: "Valami rossz." });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent, id: "fb-a3", type: "warning", title: "Figyelem!", message: "Vigyázz!" });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createAlert)({ parent, id: "fb-a4", type: "info", title: "Info", message: "Elcsukható.", dismissible: true });
+    }),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createBadge", description: "Állapot jelző pici szöveggel.",
+        code: "createBadge({ parent, id: \"fb-b1\", text: \"Új\", type: \"info\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createBadge({ parent, id: \"fb-b2\", text: \"Siker\", type: \"success\" }); createDOMElem({ tag: \"span\", parent, text: \" \" });\n      createBadge({ parent, id: \"fb-b3\", text: \"Hiba\", type: \"error\" });",
+        codeLang: "typescript" }, (parent) => {
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBadge)({ parent, id: "fb-b1", text: "Új", type: "info" });
+        (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: " " });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBadge)({ parent, id: "fb-b2", text: "Siker", type: "success" });
+        (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: " " });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createBadge)({ parent, id: "fb-b3", text: "Hiba", type: "error" });
+    }),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createSpinner", description: "Töltés indikátor meretre váltással.",
+        code: "createSpinner({ parent, id: \"fb-s1\", size: \"sm\" }); createDOMElem({ tag: \"span\", parent, text: \"  \" });\n      createSpinner({ parent, id: \"fb-s2\", size: \"md\" }); createDOMElem({ tag: \"span\", parent, text: \"  \" });\n      createSpinner({ parent, id: \"fb-s3\", size: \"lg\" });",
+        codeLang: "typescript" }, (parent) => {
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSpinner)({ parent, id: "fb-s1", size: "sm" });
+        (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: "  " });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSpinner)({ parent, id: "fb-s2", size: "md" });
+        (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "span", parent, text: "  " });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createSpinner)({ parent, id: "fb-s3", size: "lg" });
+    }),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createProgressBar", description: "Folyamatjelző egyéni színnel és százalék kijelzéssel.",
+        code: "createProgressBar({ parent, id: \"fb-p1\", value: 75, label: \"Letöltés:\", showPercentage: true });\n      createProgressBar({ parent, id: \"fb-p2\", value: 30, color: \"#22c55e\", label: \"Telepítés:\", showPercentage: true });",
+        codeLang: "typescript" }, (parent) => {
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createProgressBar)({ parent, id: "fb-p1", value: 75, label: "Letöltés:", showPercentage: true });
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createProgressBar)({ parent, id: "fb-p2", value: 30, color: "#22c55e", label: "Telepítés:", showPercentage: true });
+    }),
+    (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.example)({ title: "createToast", description: "Ideiglenes értesítés.",
+        code: "createButton({ parent, id: \"fb-toast-btn\", text: \"Toast megjelenítése\",\n        click: () => createToast({ parent: document.body, id: \"fb-toast\", message: \"Értesítés!\", type: \"success\", duration: 3000, width: \"300px\" }) });",
+        codeLang: "typescript" }, (parent) => {
+        (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createButton)({ parent, id: "fb-toast-btn", text: "Toast megjelenítése",
+            click: () => (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createToast)({ parent: document.body, id: "fb-toast", message: "Értesítés!", type: "success", duration: 3000, width: "300px" }) });
+    }),
 ];
 (0,_page_components_index__WEBPACK_IMPORTED_MODULE_0__.renderSections)(sections);
 done();

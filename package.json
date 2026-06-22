@@ -1,6 +1,6 @@
 {
   "name": "createdomblocks",
-  "version": "2.1.0",
+  "version": "2.0.0",
   "description": "Creating complex HTML blocks using JS.",
   "type": "module",
   "main": "./dist/index.js",
@@ -25,6 +25,7 @@
     "build:page": "webpack && node scripts/build-page.mjs",
     "dev": "webpack serve --open",
     "typecheck": "tsc --noEmit",
+    "test": "node --test scripts/example-loader.test.mjs",
     "clean": "rm -rf dist dist-page"
   },
   "repository": {
@@ -48,6 +49,7 @@
     "domelemjs": "^2.0.1"
   },
   "devDependencies": {
+    "@babel/parser": "^8.0.0",
     "ts-loader": "^9.5.0",
     "typescript": "^5.3.0",
     "webpack": "^5.90.0",

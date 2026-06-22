@@ -1,25 +1,13 @@
-import { initDocPage, renderSections } from "../page-components/index";
+import { initDocPage, renderSections, example } from "../page-components/index";
 import { createMenu, createCard } from "../../src/index";
 import { createDOMElem } from "domelemjs";
-import type { DocSection } from "../page-components/index";
 
 const done = initDocPage();
 
-const sections: DocSection[] = [
-  {
-    title: "createMenu (egyszerű)",
-    description: "Egyszerű menü linkekkel, drawer-ben használható navigációs listaként.",
-    code: `createMenu({
-  id: \"simpleMenu\",
-  items: [
-    { label: \"Kezdőlap\", href: \"#\" },
-    { label: \"Profil\", href: \"#\" },
-    { label: \"Beállítások\", href: \"#\" },
-    { label: \"Kilépés\", href: \"#\" },
-  ],
-});`,
-    codeLang: "typescript",
-    render: (c) => {
+const sections = [
+  example(
+    { title: "createMenu (egyszerű)", description: "Egyszerű menü linkekkel, drawer-ben használható navigációs listaként." },
+    (parent) => {
       const menu = createMenu({
         id: "menu-ex-1",
         items: [
@@ -30,40 +18,16 @@ const sections: DocSection[] = [
         ],
       });
       createCard({
-        parent: c,
+        parent,
         id: "menu-card-1",
         title: "Egyszerű menü",
         body: { tag: "div", children: [menu] },
       });
     },
-  },
-  {
-    title: "createMenu (almenüvel)",
-    description: "Menü csoportosított almenükkel, ahol a csoportcímek nem linkek, hanem szöveges fejlécek.",
-    code: `createMenu({
-  id: \"menuWithSub\",
-  items: [
-    { label: \"Kezdőlap\", href: \"#\" },
-    {
-      label: \"Termékek\",
-      children: [
-        { label: \"Kategória 1\", href: \"#\" },
-        { label: \"Kategória 2\", href: \"#\" },
-        { label: \"Kategória 3\", href: \"#\" },
-      ],
-    },
-    {
-      label: \"Beállítások\",
-      children: [
-        { label: \"Profil\", href: \"#\" },
-        { label: \"Biztonság\", href: \"#\" },
-      ],
-    },
-    { label: \"Kapcsolat\", href: \"#\" },
-  ],
-});`,
-    codeLang: "typescript",
-    render: (c) => {
+  ),
+  example(
+    { title: "createMenu (almenüvel)", description: "Menü csoportosított almenükkel, ahol a csoportcímek nem linkek, hanem szöveges fejlécek." },
+    (parent) => {
       const menu = createMenu({
         id: "menu-ex-2",
         items: [
@@ -87,36 +51,18 @@ const sections: DocSection[] = [
         ],
       });
       createCard({
-        parent: c,
+        parent,
         id: "menu-card-2",
         title: "Menü almenükkel",
         body: { tag: "div", children: [menu] },
       });
     },
-  },
-  {
-    title: "createMenu drawer-ben",
-    description: "A createMenu tipikusan egy createDrawer children-eként használatos, hogy oldalsó navigációs menüt építsünk.",
-    code: `createDrawer({
-  id: \"apiDrawer\",
-  title: \"Navigáció\",
-  children: [
-    createMenu({
-      id: \"apiDrawer\",
-      items: [
-        { label: \"Főoldal\", href: \"#\" },
-        { label: \"Profil\", href: \"#\" },
-        { label: \"Kilépés\", href: \"#\" },
-      ],
-    }),
-  ],
-  mode: \"overlay\",
-  hasOverlay: true,
-});`,
-    codeLang: "typescript",
-    render: (c) => {
+  ),
+  example(
+    { title: "createMenu drawer-ben", description: "A createMenu tipikusan egy createDrawer children-eként használatos, hogy oldalsó navigációs menüt építsünk." },
+    (parent) => {
       createCard({
-        parent: c,
+        parent,
         id: "menu-card-3",
         title: "Paraméterek",
         body: {
@@ -145,7 +91,7 @@ const sections: DocSection[] = [
       });
       createDOMElem({ tag: "p", text: "MenuItem objektum:", style: { fontWeight: "600", marginTop: "1rem" } });
       createCard({
-        parent: c,
+        parent,
         id: "menu-card-4",
         body: {
           tag: "table",
@@ -177,7 +123,7 @@ const sections: DocSection[] = [
         },
       });
     },
-  },
+  ),
 ];
 
 renderSections(sections);

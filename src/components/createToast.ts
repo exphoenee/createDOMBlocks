@@ -4,14 +4,19 @@ import type { ToastParams } from "../types";
 /** Cache for toast containers keyed by position */
 const containerCache = new Map<string, HTMLElement>();
 
-function getContainer(position: string): HTMLElement {
+function getContainer(position: string, width?: string): HTMLElement {
   const existing = containerCache.get(position);
   if (existing && document.body.contains(existing)) return existing;
+
+  const attrs: Record<string, string> = { class: `toast-container toast-container-${position}` };
+  if (width) {
+    attrs.style = `width: ${width}; max-width: ${width}`;
+  }
 
   const container = createDOMElem({
     tag: "div",
     parent: "body",
-    attrs: { class: `toast-container toast-container-${position}` },
+    attrs,
   });
 
   containerCache.set(position, container);
@@ -31,7 +36,7 @@ export function createToast(params: ToastParams): HTMLElement {
   const duration = params.duration || 3000;
   const position = params.position || "top-right";
 
-  const container = getContainer(position);
+  const container = getContainer(position, params.width);
 
   const rootAttrs: Record<string, string> = {
     class: `toast toast-${params.type || "info"}${params.class ? ` ${params.class}` : ""}`,

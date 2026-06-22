@@ -1,30 +1,16 @@
-import { initDocPage, renderSections } from "../page-components/index";
-import { createCarousel, createCard, createCodeBlock } from "../../src/index";
-import type { DocSection } from "../page-components/index";
+import { initDocPage, renderSections, example } from "../page-components/index";
+import { createCarousel, createCard } from "../../src/index";
 
 const done = initDocPage();
 
-const app = document.getElementById("app")!;
+const app = document.getElementById("app") as HTMLElement;
 
-const sections: DocSection[] = [
-  {
-    title: "Alap Carousel",
-    description: "Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.",
-    code: `createCarousel({
-  parent: "#app",
-  id: "myCarousel",
-  slides: [
-    { icon: "🚀", title: "Első slide", description: "Gyors indulás" },
-    { icon: "🛡️", title: "Második slide", description: "Biztonság" },
-    { icon: "📊", title: "Harmadik slide", description: "Monitoring" },
-  ],
-  showArrows: true,
-  showDots: true,
-});`,
-    codeLang: "typescript",
-    render: (c: HTMLElement) =>
+const sections = [
+  example(
+    { title: "Alap Carousel", description: "Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal." },
+    (parent) =>
       createCarousel({
-        parent: c,
+        parent,
         id: "demo-carousel-1",
         slides: [
           { icon: "🚀", title: "Első slide", description: "Gyors indulás" },
@@ -35,32 +21,12 @@ const sections: DocSection[] = [
         showArrows: true,
         showDots: true,
       }),
-  },
-  {
-    title: "Carousel CTA gombokkal",
-    description: "Carousel slide-okonCTA gombokkal és hivatkozásokkal.",
-    code: `createCarousel({
-  parent: "#app",
-  id: "ctaCarousel",
-  slides: [
-    {
-      icon: "📖",
-      title: "Olvasás",
-      description: "Tiszta, olvasható CV",
-      cta: { text: "Megnyitás →", href: "cv-plain.html" },
-    },
-    {
-      icon: "📊",
-      title: "Projektmenedzser",
-      description: "Gantt chart",
-      cta: { text: "Megnyitás →", href: "cv-gantt.html" },
-    },
-  ],
-});`,
-    codeLang: "typescript",
-    render: (c: HTMLElement) =>
+  ),
+  example(
+    { title: "Carousel CTA gombokkal", description: "Carousel slide-okonCTA gombokkal és hivatkozásokkal." },
+    (parent) =>
       createCarousel({
-        parent: c,
+        parent,
         id: "demo-carousel-2",
         slides: [
           {
@@ -85,31 +51,12 @@ const sections: DocSection[] = [
         showArrows: true,
         showDots: true,
       }),
-  },
-  {
-    title: "Custom tartalommal",
-    description: "Carousel egyedi tartalommal minden slide-ban.",
-    code: `createCarousel({
-  parent: "#app",
-  id: "customCarousel",
-  slides: [
-    {
-      title: "Kártya 1",
-      content: { tag: "p", text: "Ez egyedi tartalom." },
-    },
-    {
-      title: "Kártya 2",
-      content: { tag: "ul", children: [
-        { tag: "li", text: "Első elem" },
-        { tag: "li", text: "Második elem" },
-      ]},
-    },
-  ],
-});`,
-    codeLang: "typescript",
-    render: (c: HTMLElement) =>
+  ),
+  example(
+    { title: "Custom tartalommal", description: "Carousel egyedi tartalommal minden slide-ban." },
+    (parent) =>
       createCarousel({
-        parent: c,
+        parent,
         id: "demo-carousel-3",
         slides: [
           {
@@ -136,25 +83,12 @@ const sections: DocSection[] = [
         showArrows: true,
         showDots: true,
       }),
-  },
-  {
-    title: "Nyíl nélkül",
-    description: "Carousel csak dot indikátorokkal, nyíl nélkül.",
-    code: `createCarousel({
-  parent: "#app",
-  id: "dotsOnly",
-  slides: [
-    { icon: "1️⃣", title: "Első" },
-    { icon: "2️⃣", title: "Második" },
-    { icon: "3️⃣", title: "Harmadik" },
-  ],
-  showArrows: false,
-  showDots: true,
-});`,
-    codeLang: "typescript",
-    render: (c: HTMLElement) =>
+  ),
+  example(
+    { title: "Nyíl nélkül", description: "Carousel csak dot indikátorokkal, nyíl nélkül." },
+    (parent) =>
       createCarousel({
-        parent: c,
+        parent,
         id: "demo-carousel-4",
         slides: [
           { icon: "1️⃣", title: "Első" },
@@ -166,7 +100,7 @@ const sections: DocSection[] = [
         showArrows: false,
         showDots: true,
       }),
-  },
+  ),
 ];
 
 createCard({
