@@ -8,6 +8,10 @@ const PROJECT_ROOT = path.resolve(__dirname, "..");
 
 const DIST_PAGE = path.resolve(PROJECT_ROOT, "dist-page");
 
+const SITE_URL = "https://exphoenee.github.io/createDOMBlocks/";
+const SITE_NAME = "createDOMBlocks";
+const OG_IMAGE_URL = `${SITE_URL}assets/og.jpg`;
+
 function mkdirp(dir) {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 }
@@ -35,25 +39,39 @@ function extractDescription(html) {
   return m ? m[1] : "TypeScript könyvtár komplex HTML blokkok és űrlapelemek létrehozásához.";
 }
 
-function buildMetaTags(title, description) {
-  return `  <meta property="og:title" content="${title}" />
-  <meta property="og:description" content="${description}" />
-  <meta property="og:image" content="assets/og.png" />
+function escapeAttr(str) {
+  return str.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+function buildMetaTags(title, description, pageUrl) {
+  const safeTitle = escapeAttr(title);
+  const safeDescription = escapeAttr(description);
+  return `  <meta property="og:title" content="${safeTitle}" />
+  <meta property="og:description" content="${safeDescription}" />
+  <meta property="og:image" content="${OG_IMAGE_URL}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="${safeTitle}" />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="${pageUrl}" />
+  <meta property="og:site_name" content="${SITE_NAME}" />
+  <meta property="og:locale" content="hu_HU" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${title}" />
-  <meta name="twitter:description" content="${description}" />
-  <meta name="twitter:image" content="assets/og.png" />
+  <meta name="twitter:title" content="${safeTitle}" />
+  <meta name="twitter:description" content="${safeDescription}" />
+  <meta name="twitter:image" content="${OG_IMAGE_URL}" />
+  <meta name="twitter:image:alt" content="${safeTitle}" />
   <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
   <link rel="manifest" href="assets/site.webmanifest">`;
 }
 
-function injectMeta(html) {
+function injectMeta(html, filename) {
   const title = extractTitle(html);
   const description = extractDescription(html);
-  const metaTags = buildMetaTags(title, description);
+  const pageUrl = filename === "index.html" ? SITE_URL : `${SITE_URL}${filename}`;
+  const metaTags = buildMetaTags(title, description, pageUrl);
   return html.replace(/(<\/title>)/, `$1\n${metaTags}`);
 }
 
@@ -63,7 +81,7 @@ const docDir = path.resolve(PROJECT_ROOT, "documentation");
 for (const file of readdirSync(docDir)) {
   if (file.endsWith(".html")) {
     const src = readFileSync(path.join(docDir, file), "utf-8");
-    const out = injectMeta(src);
+    const out = injectMeta(src, file);
     writeFileSync(path.join(DIST_PAGE, file), out);
   }
 }
