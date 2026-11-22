@@ -169,6 +169,7 @@ function formatExtractedCode(code) {
     // --- Closing `})` ---
     if (c === "}" && n === ")") {
       depth--;
+      result = result.trimEnd();
       result += "\n";
       result += "  ".repeat(depth);
       result += "})";
@@ -179,6 +180,7 @@ function formatExtractedCode(code) {
     // --- Standalone `}` ---
     if (c === "}") {
       depth--;
+      result = result.trimEnd();
       result += "\n";
       result += "  ".repeat(depth);
       result += "}";
