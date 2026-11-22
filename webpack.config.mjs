@@ -70,6 +70,7 @@ const documentationConfig = {
     "examples/avatars": "./documentation/examples/avatars.ts",
     "examples/customInputs": "./documentation/examples/customInputs.ts",
     "examples/carousel": "./documentation/examples/carousel.ts",
+    "examples/timeline": "./documentation/examples/timeline.ts",
     "examples/drawer": "./documentation/examples/drawer.ts",
     "examples/menu": "./documentation/examples/menu.ts",
     "examples/draganddrop": "./documentation/examples/draganddrop.ts",

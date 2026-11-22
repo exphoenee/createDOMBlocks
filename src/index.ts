@@ -68,6 +68,7 @@ export {
   closeDrawer,
   createMenu,
   createCarousel,
+  createTimeline,
 } from "./components";
 
 export type {
@@ -141,6 +142,9 @@ export type {
 export type {
   CarouselSlide,
   CarouselParams,
+  TimelineItem,
+  TimelineParams,
+  ImageState,
 } from "./types";
 
 export type {

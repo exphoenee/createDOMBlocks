@@ -33,6 +33,13 @@ const sections = [
     (parent) => createImage({ parent, id: "cont-img1", src: "https://picsum.photos/400/200", alt: "Példa kép", caption: "Példa caption" }),
   ),
   example(
+    { title: "createImage – betöltés és hiba", description: "A kép maga tölt: betöltés alatt spinner (cserélhető), hibánál újrapróbálás gombos fallback.", component: createImage },
+    (parent) => {
+      createImage({ parent, id: "cont-img2", src: "https://picsum.photos/id/237/400/200", alt: "Saját spinnerrel", width: 400, height: 200, spinner: () => ({ tag: "span", text: "⏳ Töltés…" }) });
+      return createImage({ parent, id: "cont-img3", src: "https://invalid.example/nincs.png", alt: "Hibás kép", width: 400, height: 200, retries: 1 });
+    },
+  ),
+  example(
     { title: "createLink", description: "Stilizált hivatkozás.", component: createLink },
     (parent) => createLink({ parent, id: "cont-link1", text: "Példa link", href: "https://example.com", target: "_blank" }),
   ),

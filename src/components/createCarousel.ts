@@ -32,7 +32,8 @@ function buildSlide(slide: CarouselSlide): CreateDOMElemOptions {
 
   const slideAttrs: Record<string, string> = {
     class: `carousel-slide${slide.class ? ` ${slide.class}` : ""}`,
-    role: "listitem",
+    role: "group",
+    "aria-roledescription": "slide",
   };
   if (slide.id) slideAttrs.id = slide.id;
 
@@ -44,37 +45,31 @@ function buildSlide(slide: CarouselSlide): CreateDOMElemOptions {
 }
 
 export function createCarousel(params: CarouselParams): HTMLElement {
+  const labels = params.labels ?? {};
   const rootAttrs: Record<string, string> = {
     class: `carousel-wrap${params.class ? ` ${params.class}` : ""}`,
   };
   if (params.id) rootAttrs.id = params.id;
 
-  const stageId = params.id ? `${params.id}-stage` : "carousel-stage";
-  const dotsId = params.id ? `${params.id}-dots` : "carousel-dots";
   const showArrows = params.showArrows !== false;
   const showDots = params.showDots !== false;
 
-  const slideElements = params.slides.map((s) => buildSlide(s));
-
   const navChildren: CreateDOMElemOptions[] = [];
-
   if (showArrows) {
     navChildren.push({
       tag: "button",
       text: "\u25C0",
-      attrs: { class: "carousel-arrow carousel-prev", "aria-label": "Previous" },
+      attrs: { type: "button", class: "carousel-arrow carousel-prev", "aria-label": labels.prev ?? "Previous" },
     });
   }
-
   if (showDots) {
-    navChildren.push({ tag: "div", attrs: { class: "carousel-dots", id: dotsId, role: "tablist" } });
+    navChildren.push({ tag: "div", attrs: { class: "carousel-dots", role: "group" } });
   }
-
   if (showArrows) {
     navChildren.push({
       tag: "button",
       text: "\u25B6",
-      attrs: { class: "carousel-arrow carousel-next", "aria-label": "Next" },
+      attrs: { type: "button", class: "carousel-arrow carousel-next", "aria-label": labels.next ?? "Next" },
     });
   }
 
@@ -85,24 +80,56 @@ export function createCarousel(params: CarouselParams): HTMLElement {
     children: [
       {
         tag: "div",
-        attrs: { class: "carousel-stage", id: stageId, role: "list" },
-        children: slideElements,
+        attrs: {
+          class: "carousel-stage",
+          role: "region",
+          "aria-roledescription": "carousel",
+          "aria-label": labels.stage ?? "Carousel",
+          tabindex: "0",
+        },
+        children: params.slides.map((s) => buildSlide(s)),
       },
-      { tag: "div", attrs: { class: "carousel-nav", role: "group", "aria-label": "Carousel navigation" }, children: navChildren },
+      { tag: "div", attrs: { class: "carousel-nav", role: "group", "aria-label": labels.nav ?? "Carousel navigation" }, children: navChildren },
     ],
   });
 
-  initCarouselLogic(carousel, stageId, dotsId, showArrows);
+  if (params.slideWidth) carousel.style.setProperty("--carousel-slide-w", params.slideWidth);
+  if (params.height) carousel.style.setProperty("--carousel-height", params.height);
 
+  initCarouselLogic(carousel, params);
   return carousel;
 }
 
-function initCarouselLogic(root: HTMLElement, stageId: string, dotsId: string, showArrows: boolean): void {
-  const stage = root.querySelector(`#${stageId}`) as HTMLElement;
+const FOCUSABLE = "a, button, input, select, textarea, [tabindex]";
+
+/** Csak az aktív slide vesz részt a tab sorrendben; az eredeti tabindex a data-tabindex-ben marad. */
+function setSlideFocus(slide: HTMLElement, active: boolean): void {
+  slide.setAttribute("aria-hidden", active ? "false" : "true");
+  slide.querySelectorAll<HTMLElement>(FOCUSABLE).forEach((el) => {
+    if (active) {
+      const orig = el.dataset.tabindex;
+      if (orig === undefined) return;
+      if (orig === "") el.removeAttribute("tabindex");
+      else el.setAttribute("tabindex", orig);
+    } else {
+      if (el.dataset.tabindex === undefined) el.dataset.tabindex = el.getAttribute("tabindex") ?? "";
+      el.setAttribute("tabindex", "-1");
+    }
+  });
+}
+
+function mod(n: number, m: number): number {
+  return ((n % m) + m) % m;
+}
+
+function initCarouselLogic(root: HTMLElement, params: CarouselParams): void {
+  const stage = root.querySelector<HTMLElement>(".carousel-stage");
   if (!stage) return;
 
-  const slides = Array.from(stage.querySelectorAll(".carousel-slide")) as HTMLElement[];
-  const dotsWrap = root.querySelector(`#${dotsId}`) as HTMLElement | null;
+  const slides = Array.from(stage.querySelectorAll<HTMLElement>(":scope > .carousel-slide"));
+  const dotsWrap = root.querySelector<HTMLElement>(".carousel-dots");
+  const prevBtn = root.querySelector<HTMLElement>(".carousel-prev");
+  const nextBtn = root.querySelector<HTMLElement>(".carousel-next");
   const N = slides.length;
   if (N === 0) return;
   let current = 0;
@@ -111,86 +138,135 @@ function initCarouselLogic(root: HTMLElement, stageId: string, dotsId: string, s
   if (dotsWrap) {
     for (let i = 0; i < N; i++) {
       const d = document.createElement("button");
+      d.type = "button";
       d.className = "carousel-dot";
-      d.setAttribute("aria-label", `Slide ${i + 1}`);
+      d.setAttribute("aria-label", params.labels?.dot ? params.labels.dot(i + 1) : `Slide ${i + 1}`);
       d.addEventListener("click", () => goTo(i));
       dotsWrap.appendChild(d);
       dots.push(d);
     }
   }
 
-  function mod(n: number, m: number): number {
-    return ((n % m) + m) % m;
-  }
-
   function goTo(idx: number): void {
+    const previous = current;
     current = mod(idx, N);
     const prev = mod(current - 1, N);
     const next = mod(current + 1, N);
     slides.forEach((slide, i) => {
-      const stepsAhead = mod(i - current, N);
-      if (i === current) slide.dataset.state = "active";
-      else if (i === prev) slide.dataset.state = "prev";
-      else if (i === next) slide.dataset.state = "next";
-      else slide.dataset.state = stepsAhead <= Math.floor(N / 2) ? "hidden-next" : "hidden-prev";
+      let state: string;
+      if (i === current) state = "active";
+      else if (i === prev) state = "prev";
+      else if (i === next) state = "next";
+      else state = mod(i - current, N) <= Math.floor(N / 2) ? "hidden-next" : "hidden-prev";
+      slide.dataset.state = state;
+      setSlideFocus(slide, state === "active");
     });
     dots.forEach((d, i) => {
       d.classList.toggle("active", i === current);
+      d.setAttribute("aria-current", String(i === current));
     });
+    if (previous !== current) params.onChange?.(current);
   }
 
-  if (showArrows) {
-    const nextBtn = root.querySelector(".carousel-next");
-    const prevBtn = root.querySelector(".carousel-prev");
-    nextBtn?.addEventListener("click", () => goTo(current + 1));
-    prevBtn?.addEventListener("click", () => goTo(current - 1));
-  }
+  prevBtn?.addEventListener("click", () => goTo(current - 1));
+  nextBtn?.addEventListener("click", () => goTo(current + 1));
 
+  // A szomszédos slide-ra kattintva arra lép; az aktív slide saját vezérlői működnek.
   stage.addEventListener("click", (e: Event) => {
-    const target = (e.target as HTMLElement).closest(".carousel-slide") as HTMLElement | null;
-    if (!target) return;
-    const state = target.dataset.state;
-    if (state === "prev") {
+    const slide = (e.target as HTMLElement).closest<HTMLElement>(".carousel-slide");
+    if (!slide) return;
+    const state = slide.dataset.state;
+    if (state === "prev" || state === "next") {
       e.preventDefault();
-      goTo(current - 1);
-    } else if (state === "next") {
-      e.preventDefault();
-      goTo(current + 1);
+      e.stopPropagation();
+      goTo(current + (state === "next" ? 1 : -1));
     }
   });
 
-  let startX = 0;
-  let startY = 0;
-  let dragging = false;
+  // Húzás / swipe Pointer Events-szel; a függőleges görgetés a böngészőé (touch-action: pan-y).
+  let slideW = 210;
+  const measure = (): void => {
+    slideW = slides[0].offsetWidth || slideW;
+  };
+  const clamp = (v: number, min: number, max: number): number => Math.min(max, Math.max(min, v));
+  const drag = { active: false, startX: 0, startY: 0, moved: false, suppress: false };
 
-  stage.addEventListener("touchstart", (e: TouchEvent) => {
-    startX = e.touches[0].clientX;
-    startY = e.touches[0].clientY;
-  }, { passive: true });
-
-  stage.addEventListener("touchend", (e: TouchEvent) => {
-    const dx = e.changedTouches[0].clientX - startX;
-    const dy = e.changedTouches[0].clientY - startY;
-    if (Math.abs(dx) < 30 || Math.abs(dy) > Math.abs(dx) * 0.9) return;
-    if (dx < 0) goTo(current + 1);
-    else goTo(current - 1);
-  }, { passive: true });
-
-  stage.addEventListener("mousedown", (e: MouseEvent) => {
-    startX = e.clientX;
-    dragging = true;
-  });
-  stage.addEventListener("mouseup", (e: MouseEvent) => {
-    if (!dragging) return;
-    dragging = false;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) < 40) return;
-    if (dx < 0) goTo(current + 1);
-    else goTo(current - 1);
-  });
-  stage.addEventListener("mouseleave", () => {
-    dragging = false;
+  stage.addEventListener("pointerdown", (e: PointerEvent) => {
+    if (drag.active) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    measure();
+    drag.active = true;
+    drag.startX = e.clientX;
+    drag.startY = e.clientY;
+    drag.moved = false;
+    drag.suppress = false;
+    // Itt még nincs pointer capture: egy sima koppintás clickjét a stage-hez irányítaná.
   });
 
-  goTo(0);
+  stage.addEventListener("pointermove", (e: PointerEvent) => {
+    if (!drag.active) return;
+    const dx = e.clientX - drag.startX;
+    const dy = e.clientY - drag.startY;
+    if (!drag.moved) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      if (Math.abs(dy) > Math.abs(dx)) {
+        drag.active = false;
+        return;
+      }
+      drag.moved = true;
+      stage.classList.add("is-dragging");
+      try {
+        stage.setPointerCapture(e.pointerId);
+      } catch {
+        /* szintetikus pointer */
+      }
+    }
+    if (Math.abs(dx) > 8) drag.suppress = true;
+    stage.style.setProperty("--carousel-drag", `${clamp(dx, -slideW * 0.5, slideW * 0.5)}px`);
+  });
+
+  stage.addEventListener("pointerup", (e: PointerEvent) => {
+    if (!drag.active) return;
+    const dx = e.clientX - drag.startX;
+    drag.active = false;
+    stage.classList.remove("is-dragging");
+    if (!drag.moved) return;
+    stage.style.setProperty("--carousel-drag", "0px");
+    if (Math.abs(dx) >= Math.max(40, slideW * 0.18)) goTo(dx < 0 ? current + 1 : current - 1);
+  });
+
+  stage.addEventListener("pointercancel", () => {
+    if (!drag.active) return;
+    drag.active = false;
+    stage.classList.remove("is-dragging");
+    stage.style.setProperty("--carousel-drag", "0px");
+  });
+
+  // A húzást záró clicket (link, gomb, szomszédos slide) elnyeli.
+  stage.addEventListener(
+    "click",
+    (e: Event) => {
+      if (drag.suppress) {
+        e.preventDefault();
+        e.stopPropagation();
+        drag.suppress = false;
+      }
+    },
+    true
+  );
+  stage.addEventListener("dragstart", (e: Event) => e.preventDefault());
+
+  // Billentyűzet: csak ha maga a stage vagy egy nyíl fókuszált (a slide-ban lévő vezérlők nyilait nem veszi el).
+  const onKey = (e: KeyboardEvent): void => {
+    if (e.target !== stage && e.target !== prevBtn && e.target !== nextBtn) return;
+    if (e.key === "ArrowRight") goTo(current + 1);
+    else if (e.key === "ArrowLeft") goTo(current - 1);
+    else if (e.key === "Home") goTo(0);
+    else if (e.key === "End") goTo(N - 1);
+    else return;
+    e.preventDefault();
+  };
+  [stage, prevBtn, nextBtn].forEach((el) => el?.addEventListener("keydown", onKey as EventListener));
+
+  goTo(params.startIndex ?? 0);
 }

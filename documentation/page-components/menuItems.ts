@@ -36,6 +36,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       children: [
         { label: "Accordion / Tooltip", href: "interactive.html" },
         { label: "Carousel", href: "carousel.html" },
+        { label: "Timeline", href: "timeline.html" },
       ],
     },
     {

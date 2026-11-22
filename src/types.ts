@@ -408,6 +408,13 @@ export interface GridParams {
   columns?: number;
   /** Rácselemek közötti rés */
   gap?: string;
+  /**
+   * Egy oszlop minimális szélessége (pl. "280px"). A szabad szélességhez igazodik az oszlopok száma
+   * (`repeat(auto-fill, minmax(min, 1fr))`). A `columns` megadása felülírja.
+   */
+  minItemWidth?: string;
+  /** Rácselemek */
+  children?: (CreateDOMElemOptions | HTMLElement)[];
 }
 
 export interface NavItem {
@@ -479,6 +486,10 @@ export interface TabsParams {
   tabs: TabItem[];
   /** Aktív tab azonosítója */
   activeTab?: string;
+  /** A tablist elérhetőségi neve (aria-label) */
+  ariaLabel?: string;
+  /** Tabváltáskor hívódik, az új tab azonosítójával */
+  onChange?: (tabId: string) => void;
 }
 
 export interface AlertParams {
@@ -591,6 +602,8 @@ export interface ProgressBarParams {
   color?: string;
 }
 
+export type ImageState = "loading" | "loaded" | "error";
+
 export interface ImageParams {
   /** Szülő elem */
   parent: HTMLElement | string;
@@ -609,10 +622,50 @@ export interface ImageParams {
   /** Kép magassága */
   height?: number | string;
   /**
-   * Lusta betöltés
+   * A betöltés csak akkor indul, ha a kép a látótérbe kerül
    * @default false
    */
   lazy?: boolean;
+  /**
+   * Betöltés alatt mutatott elem: kész elem, `createDOMElem` opciók vagy factory.
+   * Alapértelmezetten a `createSpinner`. `false` esetén nem jelenik meg semmi.
+   */
+  spinner?: HTMLElement | CreateDOMElemOptions | (() => HTMLElement | CreateDOMElemOptions) | false;
+  /**
+   * Hiba esetén mutatott elem. Alapértelmezetten hibaüzenet újrapróbálás gombbal.
+   */
+  fallback?: HTMLElement | CreateDOMElemOptions | ((error: Error, retry: () => void) => HTMLElement | CreateDOMElemOptions);
+  /**
+   * Az alapértelmezett hibaüzenet szövege
+   * @default "A kép nem tölthető be"
+   */
+  errorText?: string;
+  /**
+   * Az újrapróbálás gomb szövege
+   * @default "Újra"
+   */
+  retryText?: string;
+  /**
+   * Letöltési mód. `"image"`: `Image` objektummal tölt (cross-origin is működik).
+   * `"fetch"`: `fetch()`-csel tölt, blob URL-t használ (HTTP hibák, megszakítható, CORS szükséges).
+   * @default "image"
+   */
+  strategy?: "image" | "fetch";
+  /** Extra beállítások a `fetch()`-hez (`strategy: "fetch"`) */
+  fetchInit?: RequestInit;
+  /** Időkorlát ms-ban; túllépéskor hiba */
+  timeout?: number;
+  /**
+   * Automatikus újrapróbálások száma a hibaállapot előtt
+   * @default 0
+   */
+  retries?: number;
+  /** A kép betöltődésekor hívódik */
+  onLoad?: (img: HTMLImageElement) => void;
+  /** Végleges hiba esetén hívódik */
+  onError?: (error: Error) => void;
+  /** Állapotváltáskor hívódik */
+  onStateChange?: (state: ImageState) => void;
 }
 
 export interface LinkParams {
@@ -957,7 +1010,7 @@ export interface CarouselSlide {
   /** Call-to-action gomb (href nélkül button, href-fel link) */
   cta?: { text: string; href?: string; click?: (e: Event) => void };
   /** Egyedi tartalom a slide-ban */
-  content?: CreateDOMElemOptions | CreateDOMElemOptions[];
+  content?: CreateDOMElemOptions | HTMLElement | (CreateDOMElemOptions | HTMLElement)[];
 }
 
 export interface CarouselParams {
@@ -979,4 +1032,55 @@ export interface CarouselParams {
    * @default true
    */
   showDots?: boolean;
+  /**
+   * Kezdő slide indexe
+   * @default 0
+   */
+  startIndex?: number;
+  /** Aktív slide váltáskor hívódik, az új indexszel */
+  onChange?: (index: number) => void;
+  /** Egy slide szélessége (CSS érték, pl. "320px"); a `--carousel-slide-w` változót állítja */
+  slideWidth?: string;
+  /** A színpad magassága (CSS érték, pl. "420px"); a `--carousel-height` változót állítja */
+  height?: string;
+  /** Elérhetőségi feliratok (fordításhoz) */
+  labels?: {
+    stage?: string;
+    nav?: string;
+    prev?: string;
+    next?: string;
+    /** A pötty felirata, 1-alapú sorszámmal */
+    dot?: (n: number) => string;
+  };
+}
+
+export interface TimelineItem {
+  /** Időszak, pl. "2021 – jelenleg" */
+  period: string;
+  /** Cím / pozíció */
+  title: string;
+  /** Alcím (pl. cég) */
+  subtitle?: string;
+  /** Leírás; kompakt nézetben rejtett */
+  description?: string;
+  /** Kiemelt kis jelvény, pl. "jelenlegi" */
+  badge?: string;
+}
+
+export interface TimelineParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Idővonal egyedi azonosítója */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /** Bejegyzések */
+  items: TimelineItem[];
+  /**
+   * Kompakt nézet (a leírások rejtettek)
+   * @default false
+   */
+  compact?: boolean;
+  /** Az idővonal elérhetőségi neve (aria-label) */
+  ariaLabel?: string;
 }
