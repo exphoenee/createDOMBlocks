@@ -186,6 +186,45 @@ textarea.textarea-input {
   min-height: 80px;
 }
 
+/* Jelszó mező: szem gomb a jobb oldalon */
+.password-field {
+  position: relative;
+  display: flex;
+}
+
+.password-field input {
+  padding-right: 2.75rem;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: color var(--transition), background-color var(--transition);
+}
+
+.password-toggle:hover {
+  color: var(--text);
+  background-color: var(--bg-alt);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
 /* Színválasztó: a szöveges mezők paddingja miatt a swatch 1px magasra esne össze */
 .color-input input[type="color"] {
   width: 4rem;

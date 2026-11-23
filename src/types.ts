@@ -91,6 +91,21 @@ export interface EmailInputParams extends BaseInputParams {
 
 export interface PasswordInputParams extends BaseInputParams {
   type?: "password";
+  /**
+   * Szem ikonos gomb a mező jobb oldalán, amivel a jelszó megjeleníthető / elrejthető
+   * @default true
+   */
+  showToggle?: boolean;
+  /**
+   * A gomb elérhetőségi felirata, amíg a jelszó rejtett
+   * @default "Jelszó megjelenítése"
+   */
+  showLabel?: string;
+  /**
+   * A gomb elérhetőségi felirata, amíg a jelszó látható
+   * @default "Jelszó elrejtése"
+   */
+  hideLabel?: string;
 }
 
 export interface NumberInputParams extends BaseInputParams {

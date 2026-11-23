@@ -313,3 +313,27 @@ describe("createMenu collapsible", () => {
     expect(nav.querySelector("button.drawer-toggle")).toBeNull();
   });
 });
+
+describe("createPasswordInput", () => {
+  it("a szem gomb váltogatja a password / text típust és az ikont", async () => {
+    const { createPasswordInput } = await import("../src/index");
+    const c = createPasswordInput({ parent: "root", id: "pw", labelText: "Jelszó" });
+    const input = c.querySelector("input") as HTMLInputElement;
+    const btn = c.querySelector(".password-toggle") as HTMLButtonElement;
+    expect(input.type).toBe("password");
+    const eyeHtml = btn.innerHTML;
+    btn.click();
+    expect(input.type).toBe("text");
+    expect(btn.getAttribute("aria-pressed")).toBe("true");
+    expect(btn.innerHTML).not.toBe(eyeHtml);
+    btn.click();
+    expect(input.type).toBe("password");
+    expect(btn.innerHTML).toBe(eyeHtml);
+  });
+
+  it("showToggle: false esetén nincs gomb", async () => {
+    const { createPasswordInput } = await import("../src/index");
+    const c = createPasswordInput({ parent: "root", id: "pw2", showToggle: false });
+    expect(c.querySelector(".password-toggle")).toBeNull();
+  });
+});
