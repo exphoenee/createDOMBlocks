@@ -67,12 +67,16 @@ function buildMetaTags(title, description, pageUrl) {
   <link rel="manifest" href="assets/site.webmanifest">`;
 }
 
+// A téma már a CSS betöltése előtt beáll (nincs világos villanás sötét módban).
+// A logika megegyezik a documentation/page-components/theme.ts-ével.
+const THEME_BOOT_SCRIPT = `  <script>(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){}})();</script>`;
+
 function injectMeta(html, filename) {
   const title = extractTitle(html);
   const description = extractDescription(html);
   const pageUrl = filename === "index.html" ? SITE_URL : `${SITE_URL}${filename}`;
   const metaTags = buildMetaTags(title, description, pageUrl);
-  return html.replace(/(<\/title>)/, `$1\n${metaTags}`);
+  return html.replace(/(<\/title>)/, `$1\n${THEME_BOOT_SCRIPT}\n${metaTags}`);
 }
 
 mkdirp(DIST_PAGE);

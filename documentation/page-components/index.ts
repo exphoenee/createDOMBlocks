@@ -6,6 +6,8 @@ export { initDocPage, renderSections, addFooter } from "./initPage";
 export { createPageLoading } from "./createPageLoading";
 export { example } from "./example";
 export { propsTable } from "./propsTable";
+export { getTheme, setTheme, applyTheme, initTheme, onThemeChange } from "./theme";
+export type { Theme } from "./theme";
 export type { DrawerMenuItem, DrawerParams } from "../../src/types";
 export type { HeaderParams } from "./createHeader";
 export type { FooterParams } from "./createFooter";

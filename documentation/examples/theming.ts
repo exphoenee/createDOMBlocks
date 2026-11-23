@@ -73,6 +73,7 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
       { Változó: "--warning / --warning-bg", Alap: "#f59e0b / #fef3c7", Szerep: "Figyelmeztetés" },
       { Változó: "--info / --info-bg", Alap: "#3b82f6 / #dbeafe", Szerep: "Információ" },
       { Változó: "--neutral / --neutral-bg", Alap: "#6b7280 / #f3f4f6", Szerep: "Semleges állapot" },
+      { Változó: "--success-text / --error-text / --warning-text / --info-text", Alap: "#166534 / #991b1b / #92400e / #1e40af", Szerep: "Szöveg a -bg hátterű állapotelemeken (alert, badge, toast); sötét témában világosabbak" },
       { Változó: "--radius", Alap: "0.5rem", Szerep: "Alap lekerekítés: inputok, gombok, kártyák" },
       { Változó: "--radius-lg", Alap: "1rem", Szerep: "Nagyobb elemek lekerekítése: modál, hero" },
       { Változó: "--shadow / --shadow-md / --shadow-lg", Alap: "…", Szerep: "Három árnyékfokozat (kártya, lebegő elem, modál)" },
@@ -177,6 +178,11 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
 /* ---------------------------------------------------------------- 4. Sötét mód */
 {
   const body = card("theme-dark", "Sötét mód");
+  text(body, "<strong>Kész sötét téma a dobozból.</strong> A <code>style.css</code> tartalmaz egy opt-in sötét témát: állítsd a <code>&lt;html&gt;</code> elemre a <code>data-theme=\"dark\"</code> attribútumot, és minden komponens átvált. Ezt használja ez a dokumentáció is (jobb felső sarok: nap / hold gomb). Automatikusan nem kapcsol be, hogy a meglévő oldalak kinézete ne változzon.");
+  code(body, "theme-dark-builtin", "typescript", `// kézi kapcsoló + a rendszerbeállítás követése
+const preferred = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+document.documentElement.dataset.theme = localStorage.getItem("theme") ?? preferred;`);
+  text(body, "Ha a saját palettádat szeretnéd, az alábbi változókat írd felül (a beépített téma ugyanezt teszi):", { marginTop: "1rem" });
   text(body, "A sötét mód ugyanígy működik: a háttér-, szöveg- és keretváltozókat kell felülírni. Kétféleképp is kérheted — az operációs rendszer beállítása szerint, vagy kézi kapcsolóval (a kettő kombinálható):");
   code(body, "theme-dark-css", "css", `/* 1) Automatikus: a rendszer beállítása szerint */
 @media (prefers-color-scheme: dark) {

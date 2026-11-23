@@ -6,8 +6,10 @@ import { getDrawerMenuItems } from "./menuItems";
 import { createPageLoading } from "./createPageLoading";
 import type { DocSection } from "./example";
 import { propsTable } from "./propsTable";
+import { initTheme } from "./theme";
 
 export function initDocPage(): () => void {
+  initTheme();
   const done = createPageLoading();
   const items = getDrawerMenuItems();
   createDrawer({
