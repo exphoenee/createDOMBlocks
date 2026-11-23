@@ -522,8 +522,8 @@ input.reset-input:disabled {
 }
 
 .props-type {
-  width: 1%; /* a típus oszlop a tartalmához igazodik, a többi hely a leírásé */
-  max-width: 16rem;
+  min-width: 9rem; /* a jelvény ne törjön karakterenként */
+  max-width: 18rem;
 }
 
 .props-desc {
@@ -540,8 +540,7 @@ input.reset-input:disabled {
   font-size: 0.8125rem;
   line-height: 1.4;
   max-width: 100%;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: normal; /* csak szóközöknél törik (a hosszú típusok amúgy is rövidítve vannak) */
   border: 1px solid transparent;
   transition: opacity 0.15s ease;
 }
