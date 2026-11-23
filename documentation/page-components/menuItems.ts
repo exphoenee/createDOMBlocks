@@ -3,6 +3,7 @@ import type { DrawerMenuItem } from "../../src/types";
 export function getDrawerMenuItems(): DrawerMenuItem[] {
   return [
     { label: "Kezdőlap", href: "index.html" },
+    { label: "Témázás", href: "theming.html" },
     {
       label: "Forms",
       children: [

@@ -50,6 +50,7 @@ table {
 :root {
   --primary: #3b82f6;
   --primary-hover: #2563eb;
+  --on-primary: #ffffff; /* szöveg a --primary színű felületeken */
   --secondary: #6b7280;
   --success: #22c55e;
   --success-bg: #dcfce7;
@@ -364,7 +365,7 @@ input.reset-input {
 /* --- button-input (generic action) --- */
 input.button-input {
   background-color: var(--primary);
-  color: white;
+  color: var(--on-primary);
 }
 
 input.button-input:hover {
@@ -622,7 +623,7 @@ th[aria-sort="descending"] .table-sort-btn::after {
 .table-page-btn.is-current {
   background: var(--primary);
   border-color: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
   cursor: default;
 }
 
@@ -1542,7 +1543,7 @@ th[aria-sort="descending"] .table-sort-btn::after {
   width: 3rem;
   height: 3rem;
   background: var(--primary);
-  color: #fff;
+  color: var(--on-primary);
 }
 
 .music-btn.music-play:hover:not(:disabled) {

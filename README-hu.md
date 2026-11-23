@@ -255,6 +255,23 @@ openModal("confirmModal");
 
 ---
 
+## Témázás
+
+A színeket, lekerekítést, árnyékot és az animáció sebességét CSS változók adják, így a komponensek megjelenése a könyvtár módosítása nélkül testre szabható. Töltsd be a saját CSS-ed a `style.css` **után**, és írd felül a változókat:
+
+```css
+:root {
+  --primary: #7c3aed;        /* márkaszín: gombok, aktív elemek, fókusz */
+  --primary-hover: #6d28d9;
+  --radius: 0.25rem;         /* kisebb lekerekítés mindenhol */
+}
+
+/* vagy az oldal egy részére szűkítve */
+.admin-panel { --primary: #16a34a; --bg: #f0fdf4; }
+```
+
+Elérhető változók: `--primary`, `--primary-hover`, `--on-primary`, `--secondary`, `--text`, `--text-light`, `--bg`, `--bg-alt`, `--border`, `--success|error|warning|info|neutral` (+ `-bg`), `--radius`, `--radius-lg`, `--shadow`, `--shadow-md`, `--shadow-lg`, `--transition`. Élő demót, sötét módot és osztályszintű testreszabást a [Témázás útmutatóban](https://exphoenee.github.io/createDOMBlocks/theming.html) találsz.
+
 ## Példa
 
 ```typescript

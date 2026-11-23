@@ -255,6 +255,23 @@ openModal("confirmModal");
 
 ---
 
+## Theming
+
+All colors, radii, shadows and the transition speed come from CSS custom properties, so you can restyle every component without touching the library. Load your own CSS **after** `style.css` and override the variables:
+
+```css
+:root {
+  --primary: #7c3aed;        /* brand color: buttons, active items, focus */
+  --primary-hover: #6d28d9;
+  --radius: 0.25rem;         /* less rounded corners everywhere */
+}
+
+/* or scope a theme to a part of the page */
+.admin-panel { --primary: #16a34a; --bg: #f0fdf4; }
+```
+
+Available variables: `--primary`, `--primary-hover`, `--on-primary`, `--secondary`, `--text`, `--text-light`, `--bg`, `--bg-alt`, `--border`, `--success|error|warning|info|neutral` (+ `-bg`), `--radius`, `--radius-lg`, `--shadow`, `--shadow-md`, `--shadow-lg`, `--transition`. See the [Theming guide](https://exphoenee.github.io/createDOMBlocks/theming.html) for a live demo, dark mode and class-level customization.
+
 ## Example
 
 ```typescript

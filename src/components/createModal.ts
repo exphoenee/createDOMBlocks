@@ -56,10 +56,11 @@ export function createModal(
     children: [{
       tag: "div",
       style: {
-        background: "white",
+        background: "var(--bg)",
+        color: "var(--text)",
         padding: "1.5rem",
-        borderRadius: "1rem",
-        boxShadow: "0 0.5rem 1rem rgba(0,0,0,0.5)",
+        borderRadius: "var(--radius-lg)",
+        boxShadow: "var(--shadow-lg)",
         minWidth: params.width !== undefined ? "0" : "320px",
         ...(params.width !== undefined ? { width: toCss(params.width) } : {}),
         maxWidth: toCss(params.maxWidth ?? "90vw"),
@@ -103,7 +104,7 @@ export function createModal(
         {
           tag: "div",
           attrs: { class: "modal-footer" },
-          style: { display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" },
+          style: { display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem", borderTop: "1px solid var(--border)", paddingTop: "1rem" },
           children: [
             createButton({
               id: `${params.id}-cancel-btn`,
