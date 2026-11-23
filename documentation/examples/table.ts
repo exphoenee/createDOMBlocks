@@ -1,5 +1,6 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
 import { createTable } from "../../src/index";
+import type { TableServerQuery } from "../../src/index";
 
 const done = initDocPage();
 
@@ -59,6 +60,59 @@ const sections = [
         pageSize: 10,
         pageSizeOptions: [5, 10, 25],
       });
+    },
+  ),
+  example(
+    { title: "Table – oldalméret-választó (select)", description: "A `pageSizeOptions` tömb adja a select opcióit a megadott sorrendben, pl. `[5, 10, 15]` vagy `[10, 25, 50, 100, \"all\"]`. Az `\"all\"` a Mind opció (minden sor egy oldalon). Külön `pageSize` nélkül az első szám az alapértelmezett." },
+    (parent) => {
+      const rows = Array.from({ length: 120 }, (_, i) => ({ Sor: i + 1, Érték: ((i * 53) % 97) + 3 }));
+      return createTable(rows, {
+        parent,
+        id: "tbl-sizes",
+        hasHeader: true,
+        sortable: true,
+        pageSizeOptions: [10, 25, 50, 100, "all"],
+        labels: { rowsPerPage: "Sor / oldal:", all: "Mind" },
+      });
+    },
+  ),
+  example(
+    { title: "Table – szerveroldali lapozás", description: "A `serverSide` módban a táblázat nem dolgozik a sorokkal: az előző / következő gombok, az oldalszámok, az oldalméret-választó, a rendezés és a szűrés az `onChange`-et hívják (oldal, oldalméret, szűrő, rendezés). A választ a visszaadott elem `setData(rows, { total })`-jával kell megadni; addig a táblázat betöltés állapotú, a lapozó letiltott. Itt egy 600 ms késleltetésű mock szerver szolgálja ki az adatot.", component: createTable },
+    (parent) => {
+      // mock szerver: 237 sor, szűrés + rendezés + lapozás késleltetéssel
+      const all = Array.from({ length: 237 }, (_, i) => ({ Azonosító: i + 1, Név: `Felhasználó ${i + 1}`, Pont: ((i * 37) % 100) + 1 }));
+      const fetchPage = (q: TableServerQuery) =>
+        new Promise<{ rows: typeof all; total: number }>((resolve) =>
+          setTimeout(() => {
+            let list = all.filter((r) => !q.filter || Object.values(r).join(" ").toLowerCase().includes(q.filter.toLowerCase()));
+            if (q.sort) {
+              const key = q.sort.column as keyof (typeof all)[number];
+              const dir = q.sort.direction === "asc" ? 1 : -1;
+              list = [...list].sort((a, b) => (a[key] > b[key] ? dir : a[key] < b[key] ? -dir : 0));
+            }
+            const size = q.pageSize === "all" ? list.length : q.pageSize;
+            resolve({ rows: list.slice((q.page - 1) * size, q.page * size), total: list.length });
+          }, 600)
+        );
+
+      const table = createTable(all.slice(0, 10), {
+        parent,
+        id: "tbl-server",
+        hasHeader: true,
+        sortable: true,
+        filterable: true,
+        pageSize: 10,
+        pageSizeOptions: [10, 25, 50],
+        serverSide: {
+          total: all.length,
+          onChange: (query) => {
+            fetchPage(query)
+              .then(({ rows, total }) => table.setData(rows, { total }))
+              .catch(() => table.setLoading(false));
+          },
+        },
+      });
+      return table;
     },
   ),
 ];

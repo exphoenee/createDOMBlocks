@@ -1,5 +1,5 @@
 import { createDOMElem } from "domelemjs";
-import type { TableParams, TableLabels } from "../types";
+import type { TableParams, TableLabels, TableElement, TableServerQuery } from "../types";
 
 type Cell = string | number;
 
@@ -10,6 +10,7 @@ const DEFAULT_LABELS: Required<Omit<TableLabels, "info">> & Pick<TableLabels, "i
   next: "Következő",
   page: "Oldal",
   rowsPerPage: "Sor / oldal",
+  all: "Mind",
   noResults: "Nincs találat",
   sortAsc: "növekvő",
   sortDesc: "csökkenő",
@@ -41,12 +42,22 @@ function pageList(current: number, total: number): (number | "…")[] {
 
 export function createTable(
   data: Record<string, string | number>[] | (string | number)[][],
+  params: TableParams & { serverSide: NonNullable<TableParams["serverSide"]> }
+): TableElement;
+export function createTable(
+  data: Record<string, string | number>[] | (string | number)[][],
   params: TableParams
-): HTMLElement {
+): HTMLElement;
+export function createTable(
+  data: Record<string, string | number>[] | (string | number)[][],
+  params: TableParams
+): HTMLElement | TableElement {
+  const server = params.serverSide;
   const p = {
     ...params,
     showHeader: params.showHeader ?? true,
-    showFooter: params.showFooter ?? true,
+    // szerveroldali lapozásnál az összegek csak az aktuális oldalra szólnának, ezért nincs lábléc
+    showFooter: server ? false : params.showFooter ?? true,
     dataIsArray: Array.isArray(data[0]),
   };
 
@@ -54,7 +65,9 @@ export function createTable(
   const L = { ...DEFAULT_LABELS, ...params.labels };
 
   let headers: Cell[];
-  let rows: Cell[][];
+  let rawRows: Cell[][];
+  /** Az objektum-sorok kulcsai (setData-hoz); tömbös adatnál nincs */
+  let objectKeys: string[] | null = null;
 
   if (p.dataIsArray) {
     const arrData = data as Cell[][];
@@ -62,17 +75,18 @@ export function createTable(
     headers = p.hasHeader
       ? (arrData.shift() as Cell[])
       : arrData[0].map((_: Cell, index: number) => `Column #${index}`);
-    rows = arrData;
+    rawRows = arrData;
   } else {
     const objData = data as Record<string, Cell>[];
-    headers = Object.keys(objData[0]);
-    rows = objData.map((row) => Object.values(row));
+    headers = Object.keys(objData[0] ?? {});
+    objectKeys = [...(headers as string[])];
+    rawRows = objData.map((row) => Object.values(row));
   }
 
   const footers: number[] = Array(headers.length).fill(0);
 
   if (p.hasFooter && p.showFooter) {
-    rows.forEach((row) =>
+    rawRows.forEach((row) =>
       row.forEach((cell, cellIdx) => {
         footers[cellIdx] = footers[cellIdx] + parseFloat(String(cell));
       })
@@ -83,14 +97,21 @@ export function createTable(
     if (p.hasHeader || !p.dataIsArray) headers.push(cellNames.sum as string);
     const total = footers.reduce((acc, cell) => acc + (Number.isNaN(cell) ? 0 : cell), 0);
     footers.push(total);
-    rows.forEach((row) => row.push(row.reduce<number>((acc, cell) => acc + Number(cell), 0)));
   }
 
   if (p.addRowNumbers) {
     if (p.hasHeader) headers.unshift(cellNames.rowNr as string);
     footers.unshift(0);
-    rows.forEach((row, rowIdx) => row.unshift(rowIdx + 1));
   }
+
+  /** Számított oszlopok (összeg, sorszám) hozzáadása; az offset a szerveroldali oldalak miatt kell */
+  const decorate = (raw: Cell[][], offset = 0): Cell[][] =>
+    raw.map((row, i) => {
+      const r = [...row];
+      if (p.sumRowValues) r.push(row.reduce<number>((acc, cell) => acc + Number(cell), 0));
+      if (p.addRowNumbers) r.unshift(offset + i + 1);
+      return r;
+    });
 
   const footerRow: Cell[] = footers.map((val, idx) => {
     if (val === 0 && headers[idx] !== cellNames.total) return headers[idx];
@@ -100,17 +121,33 @@ export function createTable(
   // ---- nézet: szűrés + rendezés + lapozás ----
   const sortable = p.sortable ?? false;
   const filterable = p.filterable ?? false;
-  const paged = !!p.pageSize && p.pageSize > 0;
-  const sizeOptions = paged ? Array.from(new Set([...(p.pageSizeOptions ?? []), p.pageSize!])).sort((a, b) => a - b) : [];
+  // Oldalméret-választó: a megadott sorrendben, `"all"` = az összes sor egy oldalon
+  const sizeOptions = Array.from(new Set((p.pageSizeOptions ?? []).filter((n) => n === "all" || (typeof n === "number" && n > 0))));
+  const firstNumeric = sizeOptions.find((n): n is number => typeof n === "number");
+  const initialSize: number | "all" =
+    p.pageSize && p.pageSize > 0
+      ? p.pageSize
+      : sizeOptions.includes("all") && firstNumeric === undefined
+        ? "all"
+        : firstNumeric ?? 0;
+  const paged = initialSize === "all" || initialSize > 0;
+
   const view = {
     sortCol: -1,
     sortDir: "none" as "none" | "asc" | "desc",
     query: "",
-    page: 1,
-    pageSize: p.pageSize ?? 0,
+    page: Math.max(1, server?.page ?? 1),
+    pageSize: initialSize as number | "all",
   };
 
+  // A táblázat tényleges sorai: kliens módban az összes, szerver módban az aktuális oldal
+  const initialOffset = server && typeof view.pageSize === "number" ? (view.page - 1) * view.pageSize : 0;
+  let rows: Cell[][] = decorate(rawRows, initialOffset);
+  let serverTotal = server ? server.total : 0;
+  let loading = false;
+
   const visibleRows = (): Cell[][] => {
+    if (server) return rows; // a szűrést / rendezést a szerver végezte
     let list = rows;
     const q = view.query.trim().toLowerCase();
     if (q) list = list.filter((row) => row.some((cell) => String(cell).toLowerCase().includes(q)));
@@ -191,7 +228,7 @@ export function createTable(
   if (params.id) rootAttrs.id = params.id;
 
   // Egyik extra funkció sincs bekapcsolva: marad az egyszerű <table>
-  if (!sortable && !filterable && !paged) {
+  if (!sortable && !filterable && !paged && !server) {
     return createDOMElem({ parent: params.parent, tag: "table", attrs: rootAttrs, children: tableChildren });
   }
 
@@ -201,6 +238,21 @@ export function createTable(
   const info = createDOMElem({ tag: "span", append: false, attrs: { class: "table-info", "aria-live": "polite" } });
   const pager = createDOMElem({ tag: "nav", append: false, attrs: { class: "table-pager", "aria-label": L.page } });
   const toolbar = createDOMElem({ tag: "div", append: false, attrs: { class: "table-toolbar" } });
+
+  /** Változás után: kliens módban újrarajzol, szerver módban lekérdezést kér a hívótól */
+  let filterTimer: ReturnType<typeof setTimeout> | undefined;
+  const changed = (opts: { debounce?: boolean } = {}): void => {
+    if (!server) return render();
+    const wait = server.filterDebounce ?? 300;
+    if (opts.debounce && wait > 0) {
+      clearTimeout(filterTimer);
+      filterTimer = setTimeout(requestServer, wait);
+      render();
+      return;
+    }
+    clearTimeout(filterTimer);
+    requestServer();
+  };
 
   if (filterable) {
     createDOMElem({
@@ -212,27 +264,30 @@ export function createTable(
         cb: (e: Event) => {
           view.query = (e.target as HTMLInputElement).value;
           view.page = 1;
-          render();
+          changed({ debounce: true });
         },
       },
     });
   }
 
-  if (paged && sizeOptions.length > 1) {
+  if (paged && sizeOptions.length > 0) {
     const label = createDOMElem({ tag: "label", parent: toolbar, attrs: { class: "table-size" }, children: [{ tag: "span", text: L.rowsPerPage }] });
     const select = document.createElement("select");
     select.className = "table-size-select";
-    sizeOptions.forEach((n) => {
+    // ha a kezdő méret nincs a listában, megjelenik az elején, hogy a select helyes értéket mutasson
+    const shown = sizeOptions.includes(view.pageSize) ? sizeOptions : [view.pageSize, ...sizeOptions];
+    shown.forEach((n) => {
       const o = document.createElement("option");
       o.value = String(n);
-      o.textContent = String(n);
+      o.textContent = n === "all" ? L.all : String(n);
       if (n === view.pageSize) o.selected = true;
       select.appendChild(o);
     });
+    select.setAttribute("aria-label", L.rowsPerPage);
     select.addEventListener("change", () => {
-      view.pageSize = Number(select.value);
+      view.pageSize = select.value === "all" ? "all" : Number(select.value);
       view.page = 1;
-      render();
+      changed();
     });
     label.appendChild(select);
   }
@@ -256,7 +311,30 @@ export function createTable(
       view.sortDir = view.sortDir === "asc" ? "desc" : view.sortDir === "desc" ? "none" : "asc";
     }
     view.page = 1;
+    changed();
+  }
+
+  function currentQuery(): TableServerQuery {
+    const active = view.sortCol >= 0 && view.sortDir !== "none";
+    return {
+      page: view.page,
+      pageSize: view.pageSize,
+      filter: view.query.trim(),
+      sort: active ? { column: String(headers[view.sortCol]), index: view.sortCol, direction: view.sortDir as "asc" | "desc" } : null,
+    };
+  }
+
+  function setLoading(on: boolean): void {
+    loading = on;
+    container.classList.toggle("is-loading", on);
+    container.setAttribute("aria-busy", String(on));
+  }
+
+  function requestServer(): void {
+    if (!server) return;
+    setLoading(true);
     render();
+    server.onChange(currentQuery());
   }
 
   function pageButton(label: string, page: number, opts: { disabled?: boolean; current?: boolean; aria?: string } = {}): HTMLElement {
@@ -269,13 +347,13 @@ export function createTable(
         class: `table-page-btn${opts.current ? " is-current" : ""}`,
         ...(opts.aria ? { "aria-label": opts.aria } : {}),
         ...(opts.current ? { "aria-current": "page" } : {}),
-        ...(opts.disabled ? { disabled: "" } : {}),
+        ...(opts.disabled || loading ? { disabled: "" } : {}),
       },
       handleEvent: {
         event: "click",
         cb: () => {
           view.page = page;
-          render();
+          changed();
         },
       },
     });
@@ -283,11 +361,13 @@ export function createTable(
 
   function render(): void {
     const list = visibleRows();
-    const total = list.length;
-    const pages = paged ? Math.max(1, Math.ceil(total / view.pageSize)) : 1;
+    const total = server ? serverTotal : list.length;
+    const size = view.pageSize === "all" ? Math.max(total, 1) : view.pageSize;
+    const pages = paged ? Math.max(1, Math.ceil(total / size)) : 1;
     view.page = Math.min(Math.max(view.page, 1), pages);
-    const start = paged ? (view.page - 1) * view.pageSize : 0;
-    const slice = paged ? list.slice(start, start + view.pageSize) : list;
+    const start = paged ? (view.page - 1) * size : 0;
+    // szerver módban a sorok már az aktuális oldal sorai
+    const slice = paged && !server ? list.slice(start, start + size) : list;
 
     tbody.textContent = "";
     if (slice.length) {
@@ -314,7 +394,12 @@ export function createTable(
     // info + lapozó
     const from = total === 0 ? 0 : start + 1;
     const to = start + slice.length;
-    info.textContent = L.info ? L.info({ from, to, total, all: rows.length }) : paged ? `${from}–${to} / ${total}` : `${total} / ${rows.length}`;
+    const all = server ? serverTotal : rawRows.length;
+    info.textContent = L.info
+      ? L.info({ from, to, total, all })
+      : paged
+        ? `${from}–${to} / ${total}`
+        : `${total} / ${all}`;
 
     pager.textContent = "";
     if (paged) {
@@ -332,5 +417,28 @@ export function createTable(
   }
 
   render();
-  return container;
+
+  if (!server) return container;
+
+  // ---- szerveroldali vezérlő ----
+  const controller = container as TableElement;
+  controller.setData = (newData, opts = {}) => {
+    const incoming = newData as Record<string, Cell>[] | Cell[][];
+    const raw: Cell[][] = incoming.map((row) =>
+      Array.isArray(row) ? row : (objectKeys ?? Object.keys(row)).map((k) => (row as Record<string, Cell>)[k] ?? "")
+    );
+    if (opts.total !== undefined) serverTotal = opts.total;
+    if (opts.page !== undefined) view.page = Math.max(1, opts.page);
+    const size = view.pageSize === "all" ? 0 : view.pageSize;
+    rows = decorate(raw, size ? (view.page - 1) * size : 0);
+    setLoading(false);
+    render();
+  };
+  controller.setLoading = (on = true) => {
+    setLoading(on);
+    render();
+  };
+  controller.getQuery = currentQuery;
+  controller.reload = () => requestServer();
+  return controller;
 }

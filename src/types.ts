@@ -282,6 +282,8 @@ export interface TableLabels {
   page?: string;
   /** Oldalméret választó felirata */
   rowsPerPage?: string;
+  /** Az "összes sor" opció felirata az oldalméret-választóban */
+  all?: string;
   /** Üres találati lista szövege */
   noResults?: string;
   /** Növekvő rendezés jelzése */
@@ -290,6 +292,53 @@ export interface TableLabels {
   sortDesc?: string;
   /** Az összesítő sor szövege (alapból "1–10 / 53") */
   info?: (state: { from: number; to: number; total: number; all: number }) => string;
+}
+
+export interface TableServerQuery {
+  /** A kért oldal (1-től) */
+  page: number;
+  /** Oldalméret; `"all"` esetén az összes sor */
+  pageSize: number | "all";
+  /** A szűrőmező aktuális szövege (üres, ha nincs szűrés) */
+  filter: string;
+  /** A kért rendezés; `null`, ha nincs */
+  sort: { column: string; index: number; direction: "asc" | "desc" } | null;
+}
+
+export interface TableServerSide {
+  /** Az összes sor száma a szerveren (a lapozó ebből számolja az oldalakat) */
+  total: number;
+  /**
+   * Lapozás / oldalméret / rendezés / szűrés változáskor hívódik (az előző / következő gombokra és az
+   * oldalszámokra is). A hívó lekéri az adatot, és a `setData`-val adja vissza; amíg nem érkezik meg,
+   * a táblázat `is-loading` állapotú, a lapozó gombjai letiltottak.
+   */
+  onChange: (query: TableServerQuery) => void;
+  /**
+   * A kezdő oldal száma (a `createTable` első paramétere ennek az oldalnak a sorai)
+   * @default 1
+   */
+  page?: number;
+  /**
+   * A szűrőmezőbe gépelés és a lekérdezés közti várakozás ms-ban
+   * @default 300
+   */
+  filterDebounce?: number;
+}
+
+export interface TableElement extends HTMLElement {
+  /**
+   * Új sorok megjelenítése (szerveroldali lapozásnál az aktuális oldal sorai, fejléc nélkül;
+   * objektum-sorok a kezdeti adat kulcsai szerint). A `total` frissíti az összes sor számát,
+   * a `page` az oldalszámot. Megszünteti a betöltés állapotot.
+   */
+  setData: (rows: Record<string, string | number>[] | (string | number)[][], opts?: { total?: number; page?: number }) => void;
+  /** Betöltés állapot kézi állítása (pl. hiba után `setLoading(false)`) */
+  setLoading: (on?: boolean) => void;
+  /** Az aktuális lekérdezés (oldal, oldalméret, szűrő, rendezés) */
+  getQuery: () => TableServerQuery;
+  /** Az aktuális lekérdezés újrafuttatása (az `onChange` újra hívódik) */
+  reload: () => void;
 }
 
 export interface TableParams {
@@ -346,13 +395,23 @@ export interface TableParams {
   filterable?: boolean;
   /**
    * Lapozás: ennyi sor jelenik meg egy oldalon. Bekapcsolva a visszatérési érték egy `.table-container`.
-   * A lábléc összegei az összes sorra vonatkoznak.
+   * A lábléc összegei az összes sorra vonatkoznak. Ha nincs megadva, de van `pageSizeOptions`,
+   * az első szám a lista elejéről az alapértelmezett (ha csak `"all"` van, akkor az összes sor).
    */
   pageSize?: number;
-  /** Választható oldalméretek (a `pageSize`-zal együtt); egynél több érték esetén legördülő jelenik meg */
-  pageSizeOptions?: number[];
+  /**
+   * Oldalméret-választó (select) a megadott sorrendben, pl. `[5, 10, 15]` vagy `[10, 25, 50, 100, "all"]`.
+   * A `"all"` az "Mind" opció: minden sor egy oldalon. A lista bekapcsolja a lapozást is.
+   */
+  pageSizeOptions?: (number | "all")[];
   /** Feliratok (fordításhoz) */
   labels?: TableLabels;
+  /**
+   * Szerveroldali lapozás / rendezés / szűrés: a táblázat nem dolgozik a sorokkal, hanem az `onChange`-ben
+   * kéri az adatot, a választ a visszaadott elem `setData`-jával kell megadni. Az első paraméter az induló
+   * oldal sorai. Ilyenkor a lábléc (összegek) nem jelenik meg, mert csak az aktuális oldalt ismeri.
+   */
+  serverSide?: TableServerSide;
 }
 
 export interface ModalParams {

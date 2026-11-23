@@ -631,6 +631,17 @@ th[aria-sort="descending"] .table-sort-btn::after {
   cursor: not-allowed;
 }
 
+/* Szerveroldali lapozás: betöltés állapot */
+.table-container.is-loading .table-scroll {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.table-container.is-loading .table-info::after {
+  content: " …";
+}
+
 .table-page-gap {
   padding: 0 0.25rem;
   color: var(--text-light);
