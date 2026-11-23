@@ -203,8 +203,10 @@ example(
       assert.ok(!code.startsWith("{"), "code should not start with opening brace");
       assert.ok(!code.endsWith("}"), "code should not end with closing brace");
       // Should contain both statements
-      assert.ok(code.includes('createAlert({\n  parent,\n  id: "a1"'), "first statement present");
-      assert.ok(code.includes('createAlert({\n  parent,\n  id: "a2"'), "second statement present");
+      // A szerző formázása megmarad (a sorok nem esnek szét), a közös behúzás levonva
+      assert.ok(code.includes('createAlert({ parent, id: "a1", type: "success", message: "OK" });'), "first statement present");
+      assert.ok(!code.startsWith(" "), "no leading indentation");
+      assert.ok(code.includes('createAlert({ parent, id: "a2", type: "error", message: "Hiba" });'), "second statement present");
       // Should have proper newlines between statements
       assert.ok(code.includes(");\n"), "statements should be separated by newline");
     });
