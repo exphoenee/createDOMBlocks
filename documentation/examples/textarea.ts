@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createTextarea", description: "Szövegdoboz sorokkal és oszlopokkal.", component: createTextarea },
+    { title: "Textarea", description: "Szövegdoboz sorokkal és oszlopokkal.", component: createTextarea },
     (parent) => createTextarea({ parent, id: "s4", labelText: "Szöveg:", value: "Szöveg...", rows: 5, cols: 40 }),
   ),
 ];

@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createOrderedList", description: "Rendezett lista (ol) indulásos számmal.", component: createOrderedList },
+    { title: "Ordered list", description: "Rendezett lista (ol) indulásos számmal.", component: createOrderedList },
     (parent) => createOrderedList(["Tizedik", "Tizenegyedik", "Tizenkettedik"], { parent, id: "l2", start: 10 }),
   ),
 ];

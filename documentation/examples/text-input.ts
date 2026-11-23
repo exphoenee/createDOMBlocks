@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createTextInput", description: "Szöveg input létrehozása címkével.", component: createTextInput },
+    { title: "Text input", description: "Szöveg input létrehozása címkével.", component: createTextInput },
     (parent) => createTextInput({ parent, id: "t1", labelText: "Név:", value: "valami", placeholder: "Ide írj..." }),
   ),
 ];

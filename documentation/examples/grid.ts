@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createGrid", description: "Rács elrendezés oszlopokkal.", component: createGrid },
+    { title: "Grid", description: "Rács elrendezés oszlopokkal.", component: createGrid },
     (parent) => { createGrid({ parent, id: "c2", columns: 3, gap: "1rem" }); },
   ),
 ];

@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createResetInput", description: "Reset gomb, form visszaállításhoz.", component: createResetInput },
+    { title: "Reset input", description: "Reset gomb, form visszaállításhoz.", component: createResetInput },
     (parent) => createResetInput({ parent, id: "b3", text: "Visszaállítás" }),
   ),
 ];

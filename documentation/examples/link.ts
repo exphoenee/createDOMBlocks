@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createLink", description: "Stilizált hivatkozás.", component: createLink },
+    { title: "Link", description: "Stilizált hivatkozás.", component: createLink },
     (parent) => createLink({ parent, id: "cont-link1", text: "Példa link", href: "https://example.com", target: "_blank" }),
   ),
 ];

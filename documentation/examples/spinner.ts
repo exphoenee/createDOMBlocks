@@ -6,7 +6,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createSpinner", description: "Töltés indikátor meretre váltással.", component: createSpinner },
+    { title: "Spinner", description: "Töltés indikátor meretre váltással.", component: createSpinner },
     (parent) => {
       createSpinner({ parent, id: "fb-s1", size: "sm" }); createDOMElem({ tag: "span", parent, text: "  " });
       createSpinner({ parent, id: "fb-s2", size: "md" }); createDOMElem({ tag: "span", parent, text: "  " });

@@ -6,7 +6,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createAvatar (n\xe9vvel)", description: "Avatar monogrammal k\xfcl\xf6nb\xf6z\u0151 m\xe9retben.", component: createAvatar },
+    { title: "Avatar (n\xe9vvel)", description: "Avatar monogrammal k\xfcl\xf6nb\xf6z\u0151 m\xe9retben.", component: createAvatar },
     (parent) => {
       createAvatar({ parent, id: "ava-a1", name: "Viktor Bozzay", size: "lg" }); createDOMElem({ tag: "span", parent, text: " " });
       createAvatar({ parent, id: "ava-a2", name: "VB", size: "md" }); createDOMElem({ tag: "span", parent, text: " " });
@@ -14,7 +14,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createAvatar (k\xe9ppel)", description: "Avatar k\xe9pf\xe1jlb\xf3l." },
+    { title: "Avatar (k\xe9ppel)", description: "Avatar k\xe9pf\xe1jlb\xf3l." },
     (parent) => {
       createAvatar({ parent, id: "ava-a4", src: "https://i.pravatar.cc/100?img=1", size: "lg" }); createDOMElem({ tag: "span", parent, text: " " });
       createAvatar({ parent, id: "ava-a5", src: "https://i.pravatar.cc/100?img=2", size: "md" }); createDOMElem({ tag: "span", parent, text: " " });
@@ -22,7 +22,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createAvatar (n\xe9gyzet)", description: "Avatar n\xe9gyzet alakzattal." },
+    { title: "Avatar (n\xe9gyzet)", description: "Avatar n\xe9gyzet alakzattal." },
     (parent) => {
       createAvatar({ parent, id: "ava-a7", name: "AB", size: "lg", shape: "square" }); createDOMElem({ tag: "span", parent, text: " " });
       createAvatar({ parent, id: "ava-a8", name: "CD", size: "md", shape: "square" }); createDOMElem({ tag: "span", parent, text: " " });

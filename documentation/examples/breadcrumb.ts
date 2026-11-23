@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createBreadcrumb", description: "Morzsa menü a navigációs út vonatkozásában.", component: createBreadcrumb },
+    { title: "Breadcrumb", description: "Morzsa menü a navigációs út vonatkozásában.", component: createBreadcrumb },
     (parent) => createBreadcrumb({ parent, id: "n2", items: [
       { text: "Főoldal", href: "#" },
       { text: "Termék", href: "#" },

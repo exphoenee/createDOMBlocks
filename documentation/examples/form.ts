@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createForm", description: "Általáns form tömbbe szedett input konfigurációkkal.", component: createForm },
+    { title: "Form", description: "Általáns form tömbbe szedett input konfigurációkkal.", component: createForm },
     (parent) => createForm({
       parent, id: "demoForm", action: "/api/submit", method: "POST",
       inputs: [

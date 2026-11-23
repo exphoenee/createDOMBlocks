@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createBlockquote", description: "Idézet szerzővel.", component: createBlockquote },
+    { title: "Blockquote", description: "Idézet szerzővel.", component: createBlockquote },
     (parent) => createBlockquote({ parent, id: "cont-bq1", text: "A kódolás a jövő nyelve.", author: "Bozzay Viktor" }),
   ),
 ];

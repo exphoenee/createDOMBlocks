@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createTelInput", description: "Telefonszám input.", component: createTelInput },
+    { title: "Tel input", description: "Telefonszám input.", component: createTelInput },
     (parent) => createTelInput({ parent, id: "t2", labelText: "Telefon:", value: "+36301234567" }),
   ),
 ];

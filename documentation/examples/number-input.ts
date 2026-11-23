@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createNumberInput", description: "Szám input min/max/step paraméterrel.", component: createNumberInput },
+    { title: "Number input", description: "Szám input min/max/step paraméterrel.", component: createNumberInput },
     (parent) => createNumberInput({ parent, id: "t7", labelText: "Szám:", value: "42", min: 0, max: 100, step: 5 }),
   ),
 ];

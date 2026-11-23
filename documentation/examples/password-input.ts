@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createPasswordInput", description: "Jelszó input.", component: createPasswordInput },
+    { title: "Password input", description: "Jelszó input.", component: createPasswordInput },
     (parent) => createPasswordInput({ parent, id: "t6", labelText: "Jelszó:", placeholder: "****" }),
   ),
 ];

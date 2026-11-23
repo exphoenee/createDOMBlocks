@@ -6,7 +6,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createBadge", description: "Állapot jelző pici szöveggel.", component: createBadge },
+    { title: "Badge", description: "Állapot jelző pici szöveggel.", component: createBadge },
     (parent) => {
       createBadge({ parent, id: "fb-b1", text: "Új", type: "info" }); createDOMElem({ tag: "span", parent, text: " " });
       createBadge({ parent, id: "fb-b2", text: "Siker", type: "success" }); createDOMElem({ tag: "span", parent, text: " " });

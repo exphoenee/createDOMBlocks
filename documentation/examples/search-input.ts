@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createSearchInput", description: "Keresési mezők.", component: createSearchInput },
+    { title: "Search input", description: "Keresési mezők.", component: createSearchInput },
     (parent) => createSearchInput({ parent, id: "t4", labelText: "Keresés:", placeholder: "Keress..." }),
   ),
 ];

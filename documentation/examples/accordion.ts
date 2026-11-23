@@ -6,7 +6,7 @@ const done = initDocPage();
 const sections = [
   example(
     {
-      title: "createAccordion \u2014 t\xf6bb nyitva (multiple: true)",
+      title: "Accordion \u2014 t\xf6bb nyitva (multiple: true)",
       component: createAccordion,
       description:
         "\xd6sszecsukhat\xf3 szekci\xf3k. A <code>multiple: true</code> opci\xf3val egyszerre t\xf6bb szekci\xf3 is nyitva lehet.",
@@ -25,7 +25,7 @@ const sections = [
   ),
   example(
     {
-      title: "createAccordion \u2014 csak egy nyitva (multiple: false)",
+      title: "Accordion \u2014 csak egy nyitva (multiple: false)",
       description:
         "Amikor a <code>multiple</code> false (alap\xe9rtelmezett), egy \xfaj szekci\xf3 kinyit\xe1sa automatikusan bez\xe1rja a t\xf6bbit.",
     },

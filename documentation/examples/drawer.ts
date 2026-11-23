@@ -6,7 +6,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createDrawer (overlay mód)", description: "Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.", component: createDrawer },
+    { title: "Drawer (overlay mód)", description: "Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.", component: createDrawer },
     (parent) => {
       createDrawer({
         id: "doc-overlay-drawer",
@@ -27,7 +27,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createDrawer (push mód)", description: "Oldalsó panel ami kitolja a tartalmat, overlay nélkül." },
+    { title: "Drawer (push mód)", description: "Oldalsó panel ami kitolja a tartalmat, overlay nélkül." },
     (parent) => {
       createDrawer({
         id: "doc-push-drawer",
@@ -54,7 +54,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createDrawer menüvel", description: "Drawer beépített menüvel, alapértelmezetten nyitva." },
+    { title: "Drawer menüvel", description: "Drawer beépített menüvel, alapértelmezetten nyitva." },
     (parent) => {
       createDrawer({
         id: "doc-menu-drawer",

@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createSubmitInput", description: "Submit gomb, form-ok küldéséhez.", component: createSubmitInput },
+    { title: "Submit input", description: "Submit gomb, form-ok küldéséhez.", component: createSubmitInput },
     (parent) => createSubmitInput({ parent, id: "b2", text: "Küldés" }),
   ),
 ];

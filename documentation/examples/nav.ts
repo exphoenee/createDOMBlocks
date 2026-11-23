@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createNav", description: "Navigációs sáv menüpontokkal és almenüvel.", component: createNav },
+    { title: "Nav", description: "Navigációs sáv menüpontokkal és almenüvel.", component: createNav },
     (parent) => createNav({ parent, id: "n1", items: [
       { text: "Főoldal", href: "#", active: true },
       { text: "Rólunk", href: "#" },

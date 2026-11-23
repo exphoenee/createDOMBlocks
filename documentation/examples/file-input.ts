@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createFileInput", description: "Fájl kiválasztó.", component: createFileInput },
+    { title: "File input", description: "Fájl kiválasztó.", component: createFileInput },
     (parent) => createFileInput({ parent, id: "t15", labelText: "Fájl:" }),
   ),
 ];

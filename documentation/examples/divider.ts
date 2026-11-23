@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createDivider", description: "Vízszintes vonal elválasztáshoz.", component: createDivider },
+    { title: "Divider", description: "Vízszintes vonal elválasztáshoz.", component: createDivider },
     (parent) => createDivider({ parent, id: "cont-div1" }),
   ),
 ];

@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createDateInput", description: "Dátum kiválasztó.", component: createDateInput },
+    { title: "Date input", description: "Dátum kiválasztó.", component: createDateInput },
     (parent) => createDateInput({ parent, id: "t8", labelText: "Dátum:", value: "2024-01-15" }),
   ),
 ];

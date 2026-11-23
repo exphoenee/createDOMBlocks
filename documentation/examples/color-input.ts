@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createColorInput", description: "Szín kiválasztó.", component: createColorInput },
+    { title: "Color input", description: "Szín kiválasztó.", component: createColorInput },
     (parent) => createColorInput({ parent, id: "t14", labelText: "Szín:", value: "#3b82f6" }),
   ),
 ];

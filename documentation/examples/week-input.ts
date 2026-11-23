@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createWeekInput", description: "Hét kiválasztó.", component: createWeekInput },
+    { title: "Week input", description: "Hét kiválasztó.", component: createWeekInput },
     (parent) => createWeekInput({ parent, id: "t12", labelText: "Hét:", value: "2024-W03" }),
   ),
 ];

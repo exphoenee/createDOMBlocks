@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createUnorderedList", description: "Rendezetlen lista (ul) elemekből.", component: createUnorderedList },
+    { title: "Unordered list", description: "Rendezetlen lista (ul) elemekből.", component: createUnorderedList },
     (parent) => createUnorderedList(["Első", "Második", "Harmadik", "Negyedik"], { parent, id: "l1" }),
   ),
 ];

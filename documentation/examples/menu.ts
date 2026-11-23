@@ -5,7 +5,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createMenu (egyszerű)", description: "Egyszerű menü linkekkel, drawer-ben használható navigációs listaként.", component: createMenu },
+    { title: "Menu (egyszerű)", description: "Egyszerű menü linkekkel, drawer-ben használható navigációs listaként.", component: createMenu },
     (parent) => {
       const menu = createMenu({
         id: "menu-ex-1",
@@ -25,7 +25,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createMenu (almenüvel)", description: "Menü csoportosított almenükkel, ahol a csoportcímek nem linkek, hanem szöveges fejlécek." },
+    { title: "Menu (almenüvel)", description: "Menü csoportosított almenükkel, ahol a csoportcímek nem linkek, hanem szöveges fejlécek." },
     (parent) => {
       const menu = createMenu({
         id: "menu-ex-2",
@@ -58,7 +58,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createMenu (összecsukható csoportok)", description: "A `collapsible: true` a gyermekes csoportokat összecsukhatóvá teszi (fejlécre kattintva nyílnak). A `open` mezővel a kezdőállapot állítható; alapból az aktuális oldalt tartalmazó csoport nyitott.", component: createMenu },
+    { title: "Menu (összecsukható csoportok)", description: "A `collapsible: true` a gyermekes csoportokat összecsukhatóvá teszi (fejlécre kattintva nyílnak). A `open` mezővel a kezdőállapot állítható; alapból az aktuális oldalt tartalmazó csoport nyitott.", component: createMenu },
     (parent) => {
       const menu = createMenu({
         id: "menu-ex-collapsible",
