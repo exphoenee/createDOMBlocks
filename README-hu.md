@@ -255,6 +255,22 @@ openModal("confirmModal");
 
 ---
 
+## Nyelvesítés (i18n)
+
+Minden komponens minden szöveges paramétere (címke, placeholder, gomb felirat, cím, üzenet, aria-label, táblázat cella …) elfogad sima szöveget, `tr("kulcs")` hivatkozást vagy függvényt. A hivatkozások és függvények **nyelvváltáskor automatikusan újraszámolódnak**: a komponens ugyanaz az elem marad, ezért az állapota (begépelt érték, aktív fül, oldal, lejátszás) megmarad. A beépített feliratok (táblázat lapozó, modál gombok, jelszó szem gomb, naptár hónapnevei …) is átváltanak. A könyvtár magyar (`hu`, alapértelmezett) és angol (`en`) katalógust tartalmaz.
+
+```ts
+import { registerMessages, setLocale, tr, createTextInput } from "createdomblocks";
+
+registerMessages("hu", { "form.name": "Név" });
+registerMessages("en", { "form.name": "Name" });
+
+createTextInput({ parent: "app", id: "name", labelText: tr("form.name") });
+setLocale("en"); // a címke frissül, a begépelt érték megmarad
+```
+
+Továbbá: `loadMessages(lang, urlVagyBetöltő)`, `t(kulcs, paraméterek)` `{név}` behelyettesítéssel és többes számmal (`kulcs_one` / `kulcs_other`), `onLocaleChange(cb)`, `setFallbackLocale(lang)`. Élő demót, a teljes API-t és a beépített `cdb.*` kulcsok listáját a [Nyelvesítés útmutatóban](https://exphoenee.github.io/createDOMBlocks/i18n.html) találod.
+
 ## Témázás
 
 A színeket, lekerekítést, árnyékot és az animáció sebességét CSS változók adják, így a komponensek megjelenése a könyvtár módosítása nélkül testre szabható. Töltsd be a saját CSS-ed a `style.css` **után**, és írd felül a változókat:

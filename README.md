@@ -255,6 +255,22 @@ openModal("confirmModal");
 
 ---
 
+## Localization (i18n)
+
+Every text parameter of every component (labels, placeholders, button text, titles, messages, aria-labels, table cells …) accepts a plain string, a `tr("key")` reference, or a function. References and functions are **recomputed automatically when the locale changes**: the component stays the same element, so its state (typed value, active tab, page, playback) is preserved. Built-in labels (table pager, modal buttons, password toggle, calendar month names …) switch too. Hungarian (`hu`, the default) and English (`en`) catalogs are included.
+
+```ts
+import { registerMessages, setLocale, tr, createTextInput } from "createdomblocks";
+
+registerMessages("hu", { "form.name": "Név" });
+registerMessages("en", { "form.name": "Name" });
+
+createTextInput({ parent: "app", id: "name", labelText: tr("form.name") });
+setLocale("en"); // the label updates, the typed value stays
+```
+
+Also available: `loadMessages(lang, urlOrLoader)`, `t(key, params)` with `{name}` interpolation and plurals (`key_one` / `key_other`), `onLocaleChange(cb)`, `setFallbackLocale(lang)`. See the [Localization guide](https://exphoenee.github.io/createDOMBlocks/i18n.html) for a live demo, the full API and the list of built-in `cdb.*` keys.
+
 ## Theming
 
 All colors, radii, shadows and the transition speed come from CSS custom properties, so you can restyle every component without touching the library. Load your own CSS **after** `style.css` and override the variables:

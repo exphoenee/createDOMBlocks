@@ -17,6 +17,7 @@ export {
 } from "./i18n";
 export type { Messages, MessageParams, TextRef, TextValue } from "./i18n";
 export { hu as huMessages, en as enMessages } from "./locales";
+export { createDOMElem as createLocalizedElem } from "./dom";
 export type { DOMOptions } from "./dom";
 
 export { createTextInput } from "./inputs/createTextInput";
