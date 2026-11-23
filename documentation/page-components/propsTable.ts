@@ -98,13 +98,32 @@ function collectTypeNames(typeName: string): string[] {
   return result;
 }
 
+const TYPE_MAX_LEN = 48;
+
+/**
+ * Hosszú típusok rövidítése a táblázatban (a teljes típus a title attribútumban marad):
+ * inline objektumtípusnál csak a kulcsok, egyébként levágott szöveg.
+ */
+function shortenType(typeStr: string): string {
+  if (typeStr.length <= TYPE_MAX_LEN) return typeStr;
+  if (typeStr.startsWith("{")) {
+    const keys = [...typeStr.matchAll(/(?:^|[;{]\s*)([A-Za-z_$][\w$]*\??)\s*:/g)].map((m) => m[1]);
+    if (keys.length) {
+      const shown = keys.slice(0, 4).join(", ");
+      return `{ ${shown}${keys.length > 4 ? ", …" : ""} }`;
+    }
+  }
+  return `${typeStr.slice(0, TYPE_MAX_LEN - 1).trimEnd()}…`;
+}
+
 function renderTypeBadge(typeStr: string): CreateDOMElemOptions {
   const simplified = simplifyType(typeStr);
   const badgeClass = getTypeBadgeClass(typeStr);
+  const short = shortenType(simplified);
   return {
     tag: "code",
-    attrs: { class: `type-badge ${badgeClass}` },
-    text: simplified,
+    attrs: { class: `type-badge ${badgeClass}`, ...(short !== simplified ? { title: simplified } : {}) },
+    text: short,
   };
 }
 

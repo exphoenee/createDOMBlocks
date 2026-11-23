@@ -521,8 +521,14 @@ input.reset-input:disabled {
   font-size: 0.875rem;
 }
 
+.props-type {
+  width: 1%; /* a típus oszlop a tartalmához igazodik, a többi hely a leírásé */
+  max-width: 16rem;
+}
+
 .props-desc {
   color: var(--text);
+  min-width: 14rem;
 }
 
 /* Type badges */
@@ -533,7 +539,9 @@ input.reset-input:disabled {
   font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
   font-size: 0.8125rem;
   line-height: 1.4;
-  white-space: nowrap;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
   border: 1px solid transparent;
   transition: opacity 0.15s ease;
 }
