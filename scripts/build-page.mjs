@@ -97,6 +97,44 @@ if (existsSync(demosDir)) {
   }
 }
 
+// Régi, többkomponenses oldalak címei: átirányítás az adott kategória első komponens-oldalára,
+// hogy a meglévő linkek / könyvjelzők ne adjanak 404-et.
+const LEGACY_REDIRECTS = {
+  "forms.html": "text-input.html",
+  "selection.html": "select.html",
+  "customInputs.html": "custom-date-picker.html",
+  "draganddrop.html": "drag-and-drop-file-input.html",
+  "buttons.html": "button.html",
+  "content.html": "card.html",
+  "lists.html": "unordered-list.html",
+  "tables.html": "table.html",
+  "avatars.html": "avatar.html",
+  "navigation.html": "nav.html",
+  "feedback.html": "alert.html",
+  "interactive.html": "accordion.html",
+};
+for (const [oldPage, target] of Object.entries(LEGACY_REDIRECTS)) {
+  if (!existsSync(path.join(DIST_PAGE, target))) continue;
+  writeFileSync(
+    path.join(DIST_PAGE, oldPage),
+    `<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Átirányítás | ${SITE_NAME}</title>
+  <meta http-equiv="refresh" content="0; url=${target}" />
+  <link rel="canonical" href="${SITE_URL}${target}" />
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <p>Az oldal áthelyezve: <a href="${target}">${target}</a></p>
+  <script>location.replace(${JSON.stringify(target)} + location.hash);</script>
+</body>
+</html>
+`,
+  );
+}
+
 copyFileSync(path.resolve(PROJECT_ROOT, "style.css"), path.join(DIST_PAGE, "style.css"));
 
 const assetsDir = path.resolve(PROJECT_ROOT, "assets");
