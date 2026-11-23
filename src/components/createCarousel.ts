@@ -1,9 +1,11 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin, t, watchLocale } from "../i18n";
+import type { TextValue } from "../i18n";
+import type { DOMOptions } from "../dom";
 import type { CarouselParams, CarouselSlide } from "../types";
 
-function buildSlide(slide: CarouselSlide): CreateDOMElemOptions {
-  const children: CreateDOMElemOptions[] = [];
+function buildSlide(slide: CarouselSlide): DOMOptions {
+  const children: DOMOptions[] = [];
 
   if (slide.icon) {
     children.push({ tag: "div", text: slide.icon, attrs: { class: "carousel-slide-icon" } });
@@ -46,7 +48,7 @@ function buildSlide(slide: CarouselSlide): CreateDOMElemOptions {
 
 export function createCarousel(params: CarouselParams): HTMLElement {
   const labels = params.labels ?? {};
-  const rootAttrs: Record<string, string> = {
+  const rootAttrs: Record<string, TextValue> = {
     class: `carousel-wrap${params.class ? ` ${params.class}` : ""}`,
   };
   if (params.id) rootAttrs.id = params.id;
@@ -54,12 +56,12 @@ export function createCarousel(params: CarouselParams): HTMLElement {
   const showArrows = params.showArrows !== false;
   const showDots = params.showDots !== false;
 
-  const navChildren: CreateDOMElemOptions[] = [];
+  const navChildren: DOMOptions[] = [];
   if (showArrows) {
     navChildren.push({
       tag: "button",
       text: "\u25C0",
-      attrs: { type: "button", class: "carousel-arrow carousel-prev", "aria-label": labels.prev ?? "Previous" },
+      attrs: { type: "button", class: "carousel-arrow carousel-prev", "aria-label": labels.prev ?? builtin("carousel.prev", "Previous") },
     });
   }
   if (showDots) {
@@ -69,7 +71,7 @@ export function createCarousel(params: CarouselParams): HTMLElement {
     navChildren.push({
       tag: "button",
       text: "\u25B6",
-      attrs: { type: "button", class: "carousel-arrow carousel-next", "aria-label": labels.next ?? "Next" },
+      attrs: { type: "button", class: "carousel-arrow carousel-next", "aria-label": labels.next ?? builtin("carousel.next", "Next") },
     });
   }
 
@@ -84,12 +86,12 @@ export function createCarousel(params: CarouselParams): HTMLElement {
           class: "carousel-stage",
           role: "region",
           "aria-roledescription": "carousel",
-          "aria-label": labels.stage ?? "Carousel",
+          "aria-label": labels.stage ?? builtin("carousel.stage", "Carousel"),
           tabindex: "0",
         },
         children: params.slides.map((s) => buildSlide(s)),
       },
-      { tag: "div", attrs: { class: "carousel-nav", role: "group", "aria-label": labels.nav ?? "Carousel navigation" }, children: navChildren },
+      { tag: "div", attrs: { class: "carousel-nav", role: "group", "aria-label": labels.nav ?? builtin("carousel.nav", "Carousel navigation") }, children: navChildren },
     ],
   });
 
@@ -135,12 +137,15 @@ function initCarouselLogic(root: HTMLElement, params: CarouselParams): void {
   let current = 0;
 
   const dots: HTMLElement[] = [];
+  const dotLabel = (n: number): string => (params.labels?.dot ? params.labels.dot(n) : t("cdb.carousel.dot", { n }, "Slide {n}"));
+  // nyelvváltáskor a pöttyök feliratai is frissülnek
+  watchLocale(root, () => dots.forEach((d, i) => d.setAttribute("aria-label", dotLabel(i + 1))));
   if (dotsWrap) {
     for (let i = 0; i < N; i++) {
       const d = document.createElement("button");
       d.type = "button";
       d.className = "carousel-dot";
-      d.setAttribute("aria-label", params.labels?.dot ? params.labels.dot(i + 1) : `Slide ${i + 1}`);
+      d.setAttribute("aria-label", dotLabel(i + 1));
       d.addEventListener("click", () => goTo(i));
       dotsWrap.appendChild(d);
       dots.push(d);

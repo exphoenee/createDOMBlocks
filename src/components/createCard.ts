@@ -1,9 +1,9 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { CardParams } from "../types";
 
 export function createCard(params: CardParams): HTMLElement {
-  const children: (CreateDOMElemOptions | HTMLElement)[] = [];
+  const children: (DOMOptions | HTMLElement)[] = [];
 
   if (params.title) {
     children.push({

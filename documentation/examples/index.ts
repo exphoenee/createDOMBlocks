@@ -1,5 +1,5 @@
 import { initDocPage } from "../page-components/index";
-import { createCard, createCodeBlock } from "../../src/index";
+import { createCard, createCodeBlock, resolveText } from "../../src/index";
 import { createDOMElem } from "domelemjs";
 import { getDrawerMenuItems } from "../page-components/menuItems";
 
@@ -74,11 +74,11 @@ createCard({
     children: [
       createDOMElem({ tag: "p", text: `Összesen ${total} komponens, mindegyikhez külön oldal példákkal és paraméter-táblázattal.`, style: { marginBottom: "1rem" } }),
       ...menuGroups.flatMap((group) => [
-        createDOMElem({ tag: "h3", text: `${group.label} (${group.children?.length})`, style: { margin: "1rem 0 0.5rem" } }),
+        createDOMElem({ tag: "h3", text: `${resolveText(group.label)} (${group.children?.length})`, style: { margin: "1rem 0 0.5rem" } }),
         createDOMElem({
           tag: "div",
           style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(10rem, 1fr))", gap: "0.5rem" },
-          children: (group.children ?? []).map((c) => ({ tag: "a", text: c.label, attrs: { class: "badge", href: c.href ?? "#" } })),
+          children: (group.children ?? []).map((c) => ({ tag: "a", text: resolveText(c.label), attrs: { class: "badge", href: c.href ?? "#" } })),
         }),
       ]),
     ],

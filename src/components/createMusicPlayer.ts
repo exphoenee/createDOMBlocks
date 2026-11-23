@@ -1,4 +1,6 @@
 import type { MusicPlayerParams, MusicPlayerState } from "../types";
+import { builtin, resolveText, tr, watchLocale } from "../i18n";
+import type { TextValue } from "../i18n";
 
 const svg = (path: string): string =>
   `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">${path}</svg>`;
@@ -39,18 +41,24 @@ function el<K extends keyof HTMLElementTagNameMap>(
  * (paused / playing / loading / error) stílushoz használható.
  */
 export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
+  // Feliratok: a paraméterből, különben a beépített (nyelvváltáskor frissülő) katalógusból
   const L = {
-    play: "Lejátszás",
-    pause: "Szünet",
-    prev: "Előző szám",
-    next: "Következő szám",
-    seek: "Pozíció",
-    volume: "Hangerő",
-    mute: "Némítás",
-    unmute: "Némítás feloldása",
-    playlist: "Lejátszási lista",
-    error: "A szám nem játszható le",
+    play: builtin("music.play", "Lejátszás") as TextValue,
+    pause: builtin("music.pause", "Szünet") as TextValue,
+    prev: builtin("music.prev", "Előző szám") as TextValue,
+    next: builtin("music.next", "Következő szám") as TextValue,
+    seek: builtin("music.seek", "Pozíció") as TextValue,
+    volume: builtin("music.volume", "Hangerő") as TextValue,
+    mute: builtin("music.mute", "Némítás") as TextValue,
+    unmute: builtin("music.unmute", "Némítás feloldása") as TextValue,
+    playlist: builtin("music.playlist", "Lejátszási lista") as TextValue,
+    error: builtin("music.error", "A szám nem játszható le") as TextValue,
     ...params.labels,
+  };
+  const LOOP = {
+    none: builtin("music.loopOff", "Ismétlés: ki") as TextValue,
+    all: builtin("music.loopAll", "Ismétlés: lista") as TextValue,
+    one: builtin("music.loopOne", "Ismétlés: szám") as TextValue,
   };
   const tracks = params.tracks;
   const multi = tracks.length > 1;
@@ -64,7 +72,6 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
 
   const root = el("div", `music-player${params.class ? ` ${params.class}` : ""}`, {
     role: "group",
-    "aria-label": "Zenelejátszó",
     "data-state": "paused",
   });
   if (params.id) root.id = params.id;
@@ -85,7 +92,7 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
   head.append(cover, meta);
 
   // --- időcsík ---
-  const seek = el("input", "music-seek", { type: "range", min: "0", max: "1000", step: "1", value: "0", "aria-label": L.seek });
+  const seek = el("input", "music-seek", { type: "range", min: "0", max: "1000", step: "1", value: "0" });
   const cur = el("span", "music-time music-current");
   cur.textContent = "0:00";
   const dur = el("span", "music-time music-duration");
@@ -94,17 +101,18 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
   progress.append(cur, seek, dur);
 
   // --- vezérlők ---
-  const btn = (cls: string, label: string, icon: string): HTMLButtonElement => {
-    const b = el("button", `music-btn ${cls}`, { type: "button", "aria-label": label });
+  // az aria-label-eket a refreshLabels() állítja (állapot- és nyelvfüggők)
+  const btn = (cls: string, _label: TextValue, icon: string): HTMLButtonElement => {
+    const b = el("button", `music-btn ${cls}`, { type: "button" });
     b.innerHTML = icon;
     return b;
   };
   const prevBtn = btn("music-prev", L.prev, ICONS.prev);
   const playBtn = btn("music-play", L.play, ICONS.play);
   const nextBtn = btn("music-next", L.next, ICONS.next);
-  const loopBtn = btn("music-loop", "Ismétlés", ICONS.repeat);
+  const loopBtn = btn("music-loop", LOOP.none, ICONS.repeat);
   const muteBtn = btn("music-mute", L.mute, ICONS.volume);
-  const vol = el("input", "music-volume", { type: "range", min: "0", max: "1", step: "0.01", "aria-label": L.volume });
+  const vol = el("input", "music-volume", { type: "range", min: "0", max: "1", step: "0.01" });
   vol.value = String(audio.volume);
 
   const transport = el("div", "music-transport");
@@ -123,17 +131,18 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
   // --- lejátszási lista ---
   let playlistEl: HTMLUListElement | null = null;
   const items: HTMLButtonElement[] = [];
+  const itemTitles: HTMLElement[] = [];
   if (multi && params.showPlaylist !== false) {
-    playlistEl = el("ul", "music-playlist", { "aria-label": L.playlist });
+    playlistEl = el("ul", "music-playlist");
     tracks.forEach((t, i) => {
       const li = el("li", "music-playlist-item");
       const b = el("button", "music-playlist-btn", { type: "button" });
       const n = el("span", "music-playlist-index");
       n.textContent = String(i + 1);
       const tt = el("span", "music-playlist-title");
-      tt.textContent = t.title || `Szám ${i + 1}`;
+      itemTitles.push(tt);
       const ar = el("span", "music-playlist-artist");
-      ar.textContent = t.artist || "";
+      ar.textContent = resolveText(t.artist);
       b.append(n, tt, ar);
       b.addEventListener("click", () => {
         setTrack(i);
@@ -146,6 +155,24 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
     root.appendChild(playlistEl);
   }
 
+  /** Minden nyelv- és állapotfüggő felirat (aria-label, hibaüzenet, számcímek) újraszámolása */
+  function refreshLabels(): void {
+    const playing = state === "playing" || state === "loading";
+    root.setAttribute("aria-label", resolveText(builtin("music.group", "Zenelejátszó")));
+    seek.setAttribute("aria-label", resolveText(L.seek));
+    vol.setAttribute("aria-label", resolveText(L.volume));
+    prevBtn.setAttribute("aria-label", resolveText(L.prev));
+    nextBtn.setAttribute("aria-label", resolveText(L.next));
+    playBtn.setAttribute("aria-label", resolveText(playing ? L.pause : L.play));
+    muteBtn.setAttribute("aria-label", resolveText(audio.muted ? L.unmute : L.mute));
+    loopBtn.setAttribute("aria-label", resolveText(LOOP[loop]));
+    playlistEl?.setAttribute("aria-label", resolveText(L.playlist));
+    status.textContent = state === "error" ? resolveText(L.error) : "";
+    itemTitles.forEach((node, i) => {
+      node.textContent = resolveText(tracks[i].title) || resolveText(tr("cdb.music.track", { n: i + 1 }, "Szám {n}"));
+    });
+  }
+
   // --- állapot ---
   const setState = (s: MusicPlayerState): void => {
     if (s === state) return;
@@ -154,16 +181,15 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
     root.setAttribute("aria-busy", String(s === "loading"));
     const playing = s === "playing" || s === "loading";
     playBtn.innerHTML = playing ? ICONS.pause : ICONS.play;
-    playBtn.setAttribute("aria-label", playing ? L.pause : L.play);
     playBtn.setAttribute("aria-pressed", String(playing));
-    status.textContent = s === "error" ? L.error : "";
+    refreshLabels();
     params.onStateChange?.(s);
   };
 
   function renderTrack(): void {
     const t = tracks[index];
-    title.textContent = t?.title || "Ismeretlen szám";
-    artist.textContent = t?.artist || "";
+    title.textContent = resolveText(t?.title) || resolveText(builtin("music.unknownTrack", "Ismeretlen szám"));
+    artist.textContent = resolveText(t?.artist);
     if (t?.cover) {
       coverImg.src = t.cover;
       cover.classList.add("has-cover");
@@ -246,7 +272,7 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
     loop = loop === "none" ? "all" : loop === "all" ? "one" : "none";
     loopBtn.innerHTML = loop === "one" ? ICONS.repeatOne : ICONS.repeat;
     loopBtn.classList.toggle("is-active", loop !== "none");
-    loopBtn.setAttribute("aria-label", `Ismétlés: ${loop === "none" ? "ki" : loop === "all" ? "lista" : "szám"}`);
+    refreshLabels();
     audio.loop = loop === "one";
     renderTrack();
   });
@@ -294,7 +320,7 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
   });
   audio.addEventListener("volumechange", () => {
     muteBtn.innerHTML = audio.muted || audio.volume === 0 ? ICONS.muted : ICONS.volume;
-    muteBtn.setAttribute("aria-label", audio.muted ? L.unmute : L.mute);
+    refreshLabels();
     if (!audio.muted) vol.value = String(audio.volume);
   });
   audio.addEventListener("ended", () => {
@@ -313,6 +339,13 @@ export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
     const parent = typeof params.parent === "string" ? document.getElementById(params.parent) : params.parent;
     parent?.appendChild(root);
   }
+
+  refreshLabels();
+  // nyelvváltáskor a feliratok és a számcímek frissülnek, a lejátszás állapota (pozíció, hangerő, lista) megmarad
+  watchLocale(root, () => {
+    refreshLabels();
+    renderTrack();
+  });
 
   if (tracks.length) {
     setTrack(index, true);

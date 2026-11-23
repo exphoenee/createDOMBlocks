@@ -1,9 +1,10 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { VideoParams, ImageState } from "../types";
 import { createSpinner } from "./createSpinner";
+import { builtin } from "../i18n";
 
-type Node_ = HTMLElement | CreateDOMElemOptions;
+type Node_ = HTMLElement | DOMOptions;
 
 function toElement(n: Node_): HTMLElement {
   return n instanceof HTMLElement ? n : createDOMElem({ ...n, append: false });
@@ -74,7 +75,7 @@ export function createVideo(params: VideoParams): HTMLElement {
     children: [video, layer],
   });
 
-  const children: Array<CreateDOMElemOptions | HTMLElement> = [frame];
+  const children: Array<DOMOptions | HTMLElement> = [frame];
   if (params.caption) {
     children.push({ tag: "figcaption", text: params.caption, attrs: { class: "image-caption" } });
   }
@@ -138,10 +139,10 @@ export function createVideo(params: VideoParams): HTMLElement {
           append: false,
           attrs: { class: "image-error", role: "alert" },
           children: [
-            { tag: "span", text: params.errorText ?? "A videó nem tölthető be" },
+            { tag: "span", text: params.errorText ?? builtin("video.error", "A videó nem tölthető be") },
             {
               tag: "button",
-              text: params.retryText ?? "Újra",
+              text: params.retryText ?? builtin("video.retry", "Újra"),
               attrs: { type: "button", class: "image-retry" },
               handleEvent: { event: "click", cb: retry },
             },

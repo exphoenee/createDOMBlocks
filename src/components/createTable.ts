@@ -1,28 +1,35 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { TableParams, TableLabels, TableElement, TableServerQuery } from "../types";
+import { builtin, getLocale, resolveText, watchLocale } from "../i18n";
+import type { TextValue } from "../i18n";
 
-type Cell = string | number;
+/** Egy cella: szám, szöveg, vagy nyelvfüggő szöveg (tr() / függvény), ami nyelvváltáskor frissül */
+type Cell = string | number | TextValue;
+
+const cellText = (c: Cell): string => (typeof c === "number" ? String(c) : resolveText(c));
 
 const DEFAULT_LABELS: Required<Omit<TableLabels, "info">> & Pick<TableLabels, "info"> = {
-  filter: "Szűrés…",
-  filterAria: "Táblázat szűrése",
-  prev: "Előző",
-  next: "Következő",
-  page: "Oldal",
-  rowsPerPage: "Sor / oldal",
-  all: "Mind",
-  noResults: "Nincs találat",
-  sortAsc: "növekvő",
-  sortDesc: "csökkenő",
+  filter: builtin("table.filter", "Szűrés…"),
+  filterAria: builtin("table.filterAria", "Táblázat szűrése"),
+  prev: builtin("table.prev", "Előző"),
+  next: builtin("table.next", "Következő"),
+  page: builtin("table.page", "Oldal"),
+  rowsPerPage: builtin("table.rowsPerPage", "Sor / oldal"),
+  all: builtin("table.all", "Mind"),
+  noResults: builtin("table.noResults", "Nincs találat"),
+  sortAsc: builtin("table.sortAsc", "növekvő"),
+  sortDesc: builtin("table.sortDesc", "csökkenő"),
   info: undefined,
 };
 
 /** Számokat számként, szöveget természetes sorrendben (magyar ábécé szerint) hasonlít össze */
 function compareCells(a: Cell, b: Cell): number {
-  const na = typeof a === "number" ? a : Number(a);
-  const nb = typeof b === "number" ? b : Number(b);
-  if (a !== "" && b !== "" && !Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
-  return String(a).localeCompare(String(b), "hu", { numeric: true, sensitivity: "base" });
+  const ta = cellText(a);
+  const tb = cellText(b);
+  const na = typeof a === "number" ? a : Number(ta);
+  const nb = typeof b === "number" ? b : Number(tb);
+  if (ta !== "" && tb !== "" && !Number.isNaN(na) && !Number.isNaN(nb)) return na - nb;
+  return ta.localeCompare(tb, getLocale(), { numeric: true, sensitivity: "base" });
 }
 
 /** Oldalszámok kompakt listája: 1 … 4 5 6 … 20 */
@@ -41,15 +48,15 @@ function pageList(current: number, total: number): (number | "…")[] {
 }
 
 export function createTable(
-  data: Record<string, string | number>[] | (string | number)[][],
+  data: Record<string, string | number | TextValue>[] | (string | number | TextValue)[][],
   params: TableParams & { serverSide: NonNullable<TableParams["serverSide"]> }
 ): TableElement;
 export function createTable(
-  data: Record<string, string | number>[] | (string | number)[][],
+  data: Record<string, string | number | TextValue>[] | (string | number | TextValue)[][],
   params: TableParams
 ): HTMLElement;
 export function createTable(
-  data: Record<string, string | number>[] | (string | number)[][],
+  data: Record<string, string | number | TextValue>[] | (string | number | TextValue)[][],
   params: TableParams
 ): HTMLElement | TableElement {
   const server = params.serverSide;
@@ -61,7 +68,12 @@ export function createTable(
     dataIsArray: Array.isArray(data[0]),
   };
 
-  const cellNames = p.cellNames ?? { sum: "Sum", total: "Total", rowNr: "Row #" };
+  const cellNames = {
+    sum: builtin("table.sum", "Sum") as TextValue,
+    total: builtin("table.total", "Total") as TextValue,
+    rowNr: builtin("table.rowNr", "Row #") as TextValue,
+    ...p.cellNames,
+  };
   const L = { ...DEFAULT_LABELS, ...params.labels };
 
   let headers: Cell[];
@@ -88,19 +100,19 @@ export function createTable(
   if (p.hasFooter && p.showFooter) {
     rawRows.forEach((row) =>
       row.forEach((cell, cellIdx) => {
-        footers[cellIdx] = footers[cellIdx] + parseFloat(String(cell));
+        footers[cellIdx] = footers[cellIdx] + parseFloat(cellText(cell));
       })
     );
   }
 
   if (p.sumRowValues) {
-    if (p.hasHeader || !p.dataIsArray) headers.push(cellNames.sum as string);
+    if (p.hasHeader || !p.dataIsArray) headers.push(cellNames.sum);
     const total = footers.reduce((acc, cell) => acc + (Number.isNaN(cell) ? 0 : cell), 0);
     footers.push(total);
   }
 
   if (p.addRowNumbers) {
-    if (p.hasHeader) headers.unshift(cellNames.rowNr as string);
+    if (p.hasHeader) headers.unshift(cellNames.rowNr);
     footers.unshift(0);
   }
 
@@ -150,7 +162,7 @@ export function createTable(
     if (server) return rows; // a szűrést / rendezést a szerver végezte
     let list = rows;
     const q = view.query.trim().toLowerCase();
-    if (q) list = list.filter((row) => row.some((cell) => String(cell).toLowerCase().includes(q)));
+    if (q) list = list.filter((row) => row.some((cell) => cellText(cell).toLowerCase().includes(q)));
     if (view.sortDir !== "none" && view.sortCol >= 0) {
       const dir = view.sortDir === "asc" ? 1 : -1;
       const c = view.sortCol;
@@ -167,7 +179,7 @@ export function createTable(
       children: row.map((col, colIdx) =>
         createDOMElem({
           tag: p.addRowNumbers && colIdx === 0 ? "th" : "td",
-          text: String(col),
+          text: typeof col === "number" ? String(col) : col,
           attrs: { class: `table-col-${colIdx}` },
         })
       ),
@@ -187,12 +199,12 @@ export function createTable(
           const th = createDOMElem({
             tag: "th",
             attrs: { class: `table-col-${index}`, ...(sortable ? { "aria-sort": "none" } : {}) },
-            ...(sortable ? {} : { text: String(col) }),
+            ...(sortable ? {} : { text: typeof col === "number" ? String(col) : col }),
           });
           if (sortable) {
             const btn = createDOMElem({
               tag: "button",
-              text: String(col),
+              text: typeof col === "number" ? String(col) : col,
               parent: th,
               attrs: { type: "button", class: "table-sort-btn" },
               handleEvent: { event: "click", cb: () => toggleSort(index) },
@@ -217,7 +229,7 @@ export function createTable(
         attrs: { class: "footer-row" },
         children: footerRow.map((col, index) => createDOMElem({
           tag: "th",
-          text: String(col),
+          text: typeof col === "number" ? String(col) : col,
           attrs: { class: `table-col-${index}` },
         })),
       })],
@@ -272,24 +284,26 @@ export function createTable(
 
   if (paged && sizeOptions.length > 0) {
     const label = createDOMElem({ tag: "label", parent: toolbar, attrs: { class: "table-size" }, children: [{ tag: "span", text: L.rowsPerPage }] });
-    const select = document.createElement("select");
-    select.className = "table-size-select";
+    const select = createDOMElem({
+      tag: "select",
+      parent: label,
+      attrs: { class: "table-size-select", "aria-label": L.rowsPerPage },
+      handleEvent: {
+        event: "change",
+        cb: (e: Event) => {
+          const v = (e.target as HTMLSelectElement).value;
+          view.pageSize = v === "all" ? "all" : Number(v);
+          view.page = 1;
+          changed();
+        },
+      },
+    }) as HTMLSelectElement;
     // ha a kezdő méret nincs a listában, megjelenik az elején, hogy a select helyes értéket mutasson
     const shown = sizeOptions.includes(view.pageSize) ? sizeOptions : [view.pageSize, ...sizeOptions];
     shown.forEach((n) => {
-      const o = document.createElement("option");
-      o.value = String(n);
-      o.textContent = n === "all" ? L.all : String(n);
-      if (n === view.pageSize) o.selected = true;
-      select.appendChild(o);
+      createDOMElem({ tag: "option", parent: select, text: n === "all" ? L.all : String(n), attrs: { value: String(n) } });
     });
-    select.setAttribute("aria-label", L.rowsPerPage);
-    select.addEventListener("change", () => {
-      view.pageSize = select.value === "all" ? "all" : Number(select.value);
-      view.page = 1;
-      changed();
-    });
-    label.appendChild(select);
+    select.value = String(view.pageSize);
   }
 
   const container = createDOMElem({
@@ -320,7 +334,7 @@ export function createTable(
       page: view.page,
       pageSize: view.pageSize,
       filter: view.query.trim(),
-      sort: active ? { column: String(headers[view.sortCol]), index: view.sortCol, direction: view.sortDir as "asc" | "desc" } : null,
+      sort: active ? { column: cellText(headers[view.sortCol]), index: view.sortCol, direction: view.sortDir as "asc" | "desc" } : null,
     };
   }
 
@@ -388,7 +402,7 @@ export function createTable(
       th.setAttribute("aria-sort", active ? (view.sortDir === "asc" ? "ascending" : "descending") : "none");
       th.classList.toggle("is-sorted", active);
       const btn = sortButtons[i];
-      if (btn) btn.setAttribute("title", active ? (view.sortDir === "asc" ? L.sortAsc : L.sortDesc) : "");
+      if (btn) btn.setAttribute("title", active ? resolveText(view.sortDir === "asc" ? L.sortAsc : L.sortDesc) : "");
     });
 
     // info + lapozó
@@ -404,19 +418,21 @@ export function createTable(
     pager.textContent = "";
     if (paged) {
       pager.hidden = pages <= 1;
-      pager.appendChild(pageButton(`‹ ${L.prev}`, view.page - 1, { disabled: view.page === 1, aria: L.prev }));
+      pager.appendChild(pageButton(`‹ ${resolveText(L.prev)}`, view.page - 1, { disabled: view.page === 1, aria: resolveText(L.prev) }));
       pageList(view.page, pages).forEach((n) => {
         if (n === "…") {
           pager.appendChild(createDOMElem({ tag: "span", append: false, text: "…", attrs: { class: "table-page-gap", "aria-hidden": "true" } }));
         } else {
-          pager.appendChild(pageButton(String(n), n, { current: n === view.page, aria: `${L.page} ${n}` }));
+          pager.appendChild(pageButton(String(n), n, { current: n === view.page, aria: `${resolveText(L.page)} ${n}` }));
         }
       });
-      pager.appendChild(pageButton(`${L.next} ›`, view.page + 1, { disabled: view.page === pages, aria: L.next }));
+      pager.appendChild(pageButton(`${resolveText(L.next)} ›`, view.page + 1, { disabled: view.page === pages, aria: resolveText(L.next) }));
     }
   }
 
   render();
+  // nyelvváltáskor a cellák, feliratok és a (nyelvfüggő) rendezés is újraszámolódik; az állapot (oldal, szűrő) megmarad
+  watchLocale(container, () => render());
 
   if (!server) return container;
 

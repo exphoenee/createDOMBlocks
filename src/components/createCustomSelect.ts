@@ -1,6 +1,7 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { CustomSelectParams, SelectOption } from "../types";
+import { resolveText, watchLocale } from "../i18n";
 
 export function createCustomSelect(params: CustomSelectParams): HTMLElement {
   let selectedValue: string | number | undefined = params.value;
@@ -12,13 +13,15 @@ export function createCustomSelect(params: CustomSelectParams): HTMLElement {
   };
   if (params.id) rootAttrs.id = params.id;
 
-  const displayLabel = params.options.find((o) => o.value === selectedValue)?.text || params.placeholder || "";
+  /** A trigger felirata: a kiválasztott opció szövege, különben a placeholder (az aktuális nyelven) */
+  const triggerText = (): string => resolveText(params.options.find((o) => o.value === selectedValue)?.text ?? params.placeholder);
+  const displayLabel = triggerText();
 
   const selectedAttrs: Record<string, string> = { class: "custom-select-trigger" };
 
   const optionsListAttrs: Record<string, string> = { class: "custom-select-options" };
 
-  const optionElements: CreateDOMElemOptions[] = params.options.map((opt: SelectOption) => {
+  const optionElements: DOMOptions[] = params.options.map((opt: SelectOption) => {
     const optAttrs: Record<string, string> = {
       class: `custom-select-option${opt.value === selectedValue ? " selected" : ""}`,
       "data-value": String(opt.value),
@@ -32,7 +35,7 @@ export function createCustomSelect(params: CustomSelectParams): HTMLElement {
         cb: () => {
           selectedValue = opt.value;
           root.setAttribute("data-value", String(opt.value));
-          triggerSpan.textContent = opt.text;
+          triggerSpan.textContent = triggerText();
           triggerSpan.classList.remove("placeholder");
 
           root.querySelectorAll(".custom-select-option").forEach((el) => {
@@ -78,7 +81,7 @@ export function createCustomSelect(params: CustomSelectParams): HTMLElement {
     attrs: rootAttrs,
     children: [
       ...(params.labelText
-        ? [{ tag: "label", text: params.labelText, attrs: { class: "custom-select-label", for: params.id } } as CreateDOMElemOptions]
+        ? [{ tag: "label", text: params.labelText, attrs: { class: "custom-select-label", for: params.id } } as DOMOptions]
         : []),
       {
         tag: "div",
@@ -105,6 +108,11 @@ export function createCustomSelect(params: CustomSelectParams): HTMLElement {
     }
   };
   document.addEventListener("click", closeHandler);
+  // nyelvváltáskor a trigger felirata az aktuális kiválasztás szerint frissül
+  watchLocale(root, () => {
+    triggerSpan.textContent = triggerText();
+    triggerSpan.classList.toggle("placeholder", !triggerSpan.textContent);
+  });
 
   return root;
 }

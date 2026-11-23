@@ -1,13 +1,35 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { getLocale } from "../i18n";
 
-export const MONTHS = [
-  "Januar", "Februar", "Marcius", "Aprilis", "Majus", "Junius",
-  "Julius", "Augusztus", "Szeptember", "October", "November", "December",
-] as const;
+/** A tömb kiszámítása az aktuális nyelven (Intl); a naptárak minden megnyitáskor / lapozáskor újraszámolják. */
+function intlNames(opts: Intl.DateTimeFormatOptions, dates: Date[]): string[] {
+  let fmt: Intl.DateTimeFormat;
+  try {
+    fmt = new Intl.DateTimeFormat(getLocale(), opts);
+  } catch {
+    fmt = new Intl.DateTimeFormat("en", opts);
+  }
+  return dates.map((d) => {
+    const name = fmt.format(d);
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  });
+}
 
-export const DAY_NAMES = ["H", "K", "S", "Cs", "P", "Szo", "V"] as const;
+/** Hónapnevek (január … december) az aktuális nyelven */
+export function monthNames(): string[] {
+  return intlNames({ month: "long" }, Array.from({ length: 12 }, (_, i) => new Date(2021, i, 1)));
+}
 
-export const MONTH_NAMES_SHORT = MONTHS.map((m) => m.slice(0, 3)) as readonly string[];
+/** Rövid hónapnevek az aktuális nyelven */
+export function monthNamesShort(): string[] {
+  return intlNames({ month: "short" }, Array.from({ length: 12 }, (_, i) => new Date(2021, i, 1)));
+}
+
+/** Hétköznapnevek hétfővel kezdve, rövidítve (max. 3 betű) az aktuális nyelven */
+export function dayNames(): string[] {
+  // 2024-01-01 hétfő
+  return intlNames({ weekday: "short" }, Array.from({ length: 7 }, (_, i) => new Date(2024, 0, 1 + i))).map((n) => n.replace(/\./g, "").slice(0, 3));
+}
 
 /** Format a date as YYYY-MM-DD */
 export function formatDateStr(year: number, month: number, day: number): string {
@@ -19,9 +41,9 @@ export function getDaysInMonth(year: number, month: number): number {
   return new Date(year, month + 1, 0).getDate();
 }
 
-/** Get the day of week (0=Sunday) for the first day of a month */
+/** A hónap első napjának helye a (hétfővel kezdődő) hétben: 0 = hétfő … 6 = vasárnap */
 export function getFirstDayOfMonth(year: number, month: number): number {
-  return new Date(year, month, 1).getDay();
+  return (new Date(year, month, 1).getDay() + 6) % 7;
 }
 
 /** Create calendar month/year header with prev/next navigation */
@@ -56,7 +78,7 @@ export function createDayNamesHeader(): ReturnType<typeof createDOMElem> {
   return createDOMElem({
     tag: "div",
     attrs: { class: "calendar-days-header" },
-    children: DAY_NAMES.map((d) =>
+    children: dayNames().map((d) =>
       createDOMElem({ tag: "span", text: d, attrs: { class: "calendar-day-name" } })
     ),
   });
@@ -111,7 +133,7 @@ export function buildMonthCalendar(
   dayCellBuilder: (day: number, dateStr: string) => ReturnType<typeof createDOMElem>,
 ): ReturnType<typeof createDOMElem>[] {
   return [
-    createCalendarHeader(`${MONTHS[month]} ${year}`, onPrev, onNext),
+    createCalendarHeader(`${monthNames()[month]} ${year}`, onPrev, onNext),
     createDayNamesHeader(),
     createDayGrid(year, month, dayCellBuilder),
   ];

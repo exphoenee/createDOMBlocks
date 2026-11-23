@@ -1,3 +1,24 @@
+// Nyelvesítés: a beépített feliratok (hu, en) regisztrálása, majd a nyilvános i18n API
+import "./locales";
+export {
+  setLocale,
+  getLocale,
+  getLocales,
+  setFallbackLocale,
+  getFallbackLocale,
+  registerMessages,
+  loadMessages,
+  onLocaleChange,
+  watchLocale,
+  t,
+  tr,
+  resolveText,
+  isReactiveText,
+} from "./i18n";
+export type { Messages, MessageParams, TextRef, TextValue } from "./i18n";
+export { hu as huMessages, en as enMessages } from "./locales";
+export type { DOMOptions } from "./dom";
+
 export { createTextInput } from "./inputs/createTextInput";
 export { createTelInput } from "./inputs/createTelInput";
 export { createUrlInput } from "./inputs/createUrlInput";

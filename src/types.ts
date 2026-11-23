@@ -1,4 +1,6 @@
-import type { CreateDOMElemOptions, EventHandler } from "domelemjs";
+import type { EventHandler } from "domelemjs";
+import type { DOMOptions } from "./dom";
+import type { TextValue } from "./i18n";
 
 export type InputType =
   | "text"
@@ -39,9 +41,9 @@ export interface BaseInputParams {
   /** Input értéke */
   value?: string | number;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /**
    * Címke megjelenése input előtt (alapértelmezett: true)
    * @default true
@@ -100,12 +102,12 @@ export interface PasswordInputParams extends BaseInputParams {
    * A gomb elérhetőségi felirata, amíg a jelszó rejtett
    * @default "Jelszó megjelenítése"
    */
-  showLabel?: string;
+  showLabel?: TextValue;
   /**
    * A gomb elérhetőségi felirata, amíg a jelszó látható
    * @default "Jelszó elrejtése"
    */
-  hideLabel?: string;
+  hideLabel?: TextValue;
 }
 
 export interface NumberInputParams extends BaseInputParams {
@@ -154,7 +156,7 @@ export interface HiddenInputParams extends BaseInputParams {
 
 export interface SelectOption {
   /** Megjelenő szöveg */
-  text: string;
+  text: TextValue;
   /** Opció értéke */
   value: string | number;
 }
@@ -166,7 +168,7 @@ export interface SelectParams extends BaseInputParams {
 
 export interface RadioOption {
   /** Megjelenő szöveg */
-  text: string;
+  text: TextValue;
   /** Opció értéke */
   value: string | number;
   /** Érték változás esemény */
@@ -198,9 +200,9 @@ export interface ButtonParams {
   /** CSS osztály */
   class?: string;
   /** Gomb szövege */
-  text?: string;
+  text?: TextValue;
   /** Gomb stílusa */
-  style?: CreateDOMElemOptions["style"];
+  style?: DOMOptions["style"];
   /** Kattintás esemény */
   click?: (e: Event) => void;
   /** Egyéb eseménykezelők */
@@ -224,14 +226,14 @@ export interface ButtonInputParams extends BaseInputParams {
    */
   type?: "button" | "submit" | "reset";
   /** Gomb szövege */
-  text?: string;
+  text?: TextValue;
 }
 
 export interface ParagraphParams {
   /** Szülő elem */
   parent: HTMLElement | string;
   /** Bekezdés szövege */
-  text?: string;
+  text?: TextValue;
   /** Bekezdés egyedi azonosítója */
   id: string;
   /** CSS osztály */
@@ -242,7 +244,7 @@ export interface TitleParams {
   /** Szülő elem */
   parent: HTMLElement | string;
   /** Címsor szövege */
-  text?: string;
+  text?: TextValue;
   /** Címsor egyedi azonosítója */
   id: string;
   /** CSS osztály */
@@ -262,34 +264,34 @@ export interface ListParams {
 
 export interface TableCellNames {
   /** Összeg oszlop fejléce */
-  sum?: string;
+  sum?: TextValue;
   /** Végösszeg oszlop fejléce */
-  total?: string;
+  total?: TextValue;
   /** Sorszám oszlop fejléce */
-  rowNr?: string;
+  rowNr?: TextValue;
 }
 
 export interface TableLabels {
   /** A szűrőmező placeholderje */
-  filter?: string;
+  filter?: TextValue;
   /** A szűrőmező elérhetőségi neve */
-  filterAria?: string;
+  filterAria?: TextValue;
   /** Előző oldal gomb */
-  prev?: string;
+  prev?: TextValue;
   /** Következő oldal gomb */
-  next?: string;
+  next?: TextValue;
   /** Oldal (elérhetőségi felirat) */
-  page?: string;
+  page?: TextValue;
   /** Oldalméret választó felirata */
-  rowsPerPage?: string;
+  rowsPerPage?: TextValue;
   /** Az "összes sor" opció felirata az oldalméret-választóban */
-  all?: string;
+  all?: TextValue;
   /** Üres találati lista szövege */
-  noResults?: string;
+  noResults?: TextValue;
   /** Növekvő rendezés jelzése */
-  sortAsc?: string;
+  sortAsc?: TextValue;
   /** Csökkenő rendezés jelzése */
-  sortDesc?: string;
+  sortDesc?: TextValue;
   /** Az összesítő sor szövege (alapból "1–10 / 53") */
   info?: (state: { from: number; to: number; total: number; all: number }) => string;
 }
@@ -332,7 +334,7 @@ export interface TableElement extends HTMLElement {
    * objektum-sorok a kezdeti adat kulcsai szerint). A `total` frissíti az összes sor számát,
    * a `page` az oldalszámot. Megszünteti a betöltés állapotot.
    */
-  setData: (rows: Record<string, string | number>[] | (string | number)[][], opts?: { total?: number; page?: number }) => void;
+  setData: (rows: Record<string, string | number | TextValue>[] | (string | number | TextValue)[][], opts?: { total?: number; page?: number }) => void;
   /** Betöltés állapot kézi állítása (pl. hiba után `setLoading(false)`) */
   setLoading: (on?: boolean) => void;
   /** Az aktuális lekérdezés (oldal, oldalméret, szűrő, rendezés) */
@@ -432,13 +434,18 @@ export interface ModalParams {
    * @default "90vw"
    */
   maxWidth?: string | number;
+  /** A gombok feliratai (nyelvfüggő szöveg is lehet); alapból a beépített "Mégse" / "OK" */
+  labels?: {
+    ok?: TextValue;
+    cancel?: TextValue;
+  };
 }
 
 export interface ModalContent {
   /** Modál címe */
-  modalTitle: string;
+  modalTitle: TextValue;
   /** Modál tartalma */
-  body: CreateDOMElemOptions | CreateDOMElemOptions[];
+  body: DOMOptions | DOMOptions[];
 }
 
 export interface ModalActions {
@@ -462,9 +469,9 @@ export interface FormInputConfig {
   /** Input értéke */
   value?: string | number;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /**
    * Címke megjelenése input előtt
    * @default true
@@ -517,11 +524,11 @@ export interface CardParams {
   /** CSS osztály */
   class?: string;
   /** Kártya címe */
-  title?: string;
+  title?: TextValue;
   /** Kártya tartalma */
-  body?: CreateDOMElemOptions | CreateDOMElemOptions[];
+  body?: DOMOptions | DOMOptions[];
   /** Kártya lábléce */
-  footer?: CreateDOMElemOptions | CreateDOMElemOptions[];
+  footer?: DOMOptions | DOMOptions[];
 }
 
 export interface ContainerParams {
@@ -532,7 +539,7 @@ export interface ContainerParams {
   /** CSS osztály */
   class?: string;
   /** Gyermek elemek */
-  children?: (CreateDOMElemOptions | HTMLElement)[];
+  children?: (DOMOptions | HTMLElement)[];
 }
 
 export interface GridParams {
@@ -552,12 +559,12 @@ export interface GridParams {
    */
   minItemWidth?: string;
   /** Rácselemek */
-  children?: (CreateDOMElemOptions | HTMLElement)[];
+  children?: (DOMOptions | HTMLElement)[];
 }
 
 export interface NavItem {
   /** Megjelenő szöveg */
-  text: string;
+  text: TextValue;
   /** Link URL */
   href?: string;
   /** Kattintás esemény */
@@ -581,7 +588,7 @@ export interface NavParams {
 
 export interface BreadcrumbItem {
   /** Megjelenő szöveg */
-  text: string;
+  text: TextValue;
   /** Link URL */
   href?: string;
   /** Kattintás esemény */
@@ -608,9 +615,9 @@ export interface TabItem {
   /** Tab egyedi azonosítója */
   id: string;
   /** Tab fejléce */
-  label: string;
+  label: TextValue;
   /** Tab tartalma */
-  content: CreateDOMElemOptions | CreateDOMElemOptions[];
+  content: DOMOptions | DOMOptions[];
 }
 
 export interface TabsParams {
@@ -625,7 +632,7 @@ export interface TabsParams {
   /** Aktív tab azonosítója */
   activeTab?: string;
   /** A tablist elérhetőségi neve (aria-label) */
-  ariaLabel?: string;
+  ariaLabel?: TextValue;
   /** Tabváltáskor hívódik, az új tab azonosítójával */
   onChange?: (tabId: string) => void;
 }
@@ -643,9 +650,9 @@ export interface AlertParams {
    */
   type?: "success" | "error" | "warning" | "info";
   /** Alert címe */
-  title?: string;
+  title?: TextValue;
   /** Alert üzenete */
-  message: string;
+  message: TextValue;
   /**
    * Bezárható-e
    * @default false
@@ -668,7 +675,7 @@ export interface ToastParams {
    */
   type?: "success" | "error" | "warning" | "info";
   /** Toast üzenete */
-  message: string;
+  message: TextValue;
   /**
    * Megjelenítés időtartama ms-ben
    * @default 3000
@@ -691,7 +698,7 @@ export interface BadgeParams {
   /** CSS osztály */
   class?: string;
   /** Badge szövege */
-  text?: string;
+  text?: TextValue;
   /**
    * Badge típusa
    * @default "neutral"
@@ -730,7 +737,7 @@ export interface ProgressBarParams {
    */
   max?: number;
   /** Címke szöveg */
-  label?: string;
+  label?: TextValue;
   /**
    * Százalék megjelenítése
    * @default false
@@ -752,9 +759,9 @@ export interface ImageParams {
   /** Kép URL */
   src: string;
   /** Alternatív szöveg */
-  alt?: string;
+  alt?: TextValue;
   /** Kép felirat */
-  caption?: string;
+  caption?: TextValue;
   /** Kép szélessége */
   width?: number | string;
   /** Kép magassága */
@@ -768,21 +775,21 @@ export interface ImageParams {
    * Betöltés alatt mutatott elem: kész elem, `createDOMElem` opciók vagy factory.
    * Alapértelmezetten a `createSpinner`. `false` esetén nem jelenik meg semmi.
    */
-  spinner?: HTMLElement | CreateDOMElemOptions | (() => HTMLElement | CreateDOMElemOptions) | false;
+  spinner?: HTMLElement | DOMOptions | (() => HTMLElement | DOMOptions) | false;
   /**
    * Hiba esetén mutatott elem. Alapértelmezetten hibaüzenet újrapróbálás gombbal.
    */
-  fallback?: HTMLElement | CreateDOMElemOptions | ((error: Error, retry: () => void) => HTMLElement | CreateDOMElemOptions);
+  fallback?: HTMLElement | DOMOptions | ((error: Error, retry: () => void) => HTMLElement | DOMOptions);
   /**
    * Az alapértelmezett hibaüzenet szövege
    * @default "A kép nem tölthető be"
    */
-  errorText?: string;
+  errorText?: TextValue;
   /**
    * Az újrapróbálás gomb szövege
    * @default "Újra"
    */
-  retryText?: string;
+  retryText?: TextValue;
   /**
    * Letöltési mód. `"image"`: `Image` objektummal tölt (cross-origin is működik).
    * `"fetch"`: `fetch()`-csel tölt, blob URL-t használ (HTTP hibák, megszakítható, CORS szükséges).
@@ -827,9 +834,9 @@ export interface VideoParams {
   /** Előnézeti kép a lejátszás megkezdéséig */
   poster?: string;
   /** Videó felirat */
-  caption?: string;
+  caption?: TextValue;
   /** Elérhetőségi felirat a lejátszónak */
-  ariaLabel?: string;
+  ariaLabel?: TextValue;
   /** Videó szélessége (a keret betöltés és hiba alatt is ekkora) */
   width?: number | string;
   /** Videó magassága (a keret betöltés és hiba alatt is ekkora) */
@@ -873,21 +880,21 @@ export interface VideoParams {
    * Betöltés alatt mutatott elem: kész elem, `createDOMElem` opciók vagy factory.
    * Alapértelmezetten a `createSpinner`. `false` esetén nem jelenik meg semmi.
    */
-  spinner?: HTMLElement | CreateDOMElemOptions | (() => HTMLElement | CreateDOMElemOptions) | false;
+  spinner?: HTMLElement | DOMOptions | (() => HTMLElement | DOMOptions) | false;
   /**
    * Hiba esetén mutatott elem. Alapértelmezetten hibaüzenet újrapróbálás gombbal.
    */
-  fallback?: HTMLElement | CreateDOMElemOptions | ((error: Error, retry: () => void) => HTMLElement | CreateDOMElemOptions);
+  fallback?: HTMLElement | DOMOptions | ((error: Error, retry: () => void) => HTMLElement | DOMOptions);
   /**
    * Az alapértelmezett hibaüzenet szövege
    * @default "A videó nem tölthető be"
    */
-  errorText?: string;
+  errorText?: TextValue;
   /**
    * Az újrapróbálás gomb szövege
    * @default "Újra"
    */
-  retryText?: string;
+  retryText?: TextValue;
   /** Időkorlát ms-ban; túllépéskor hiba */
   timeout?: number;
   /**
@@ -909,9 +916,9 @@ export interface MusicTrack {
   /** MIME típus (pl. "audio/mpeg"); opcionális */
   type?: string;
   /** Szám címe */
-  title?: string;
+  title?: TextValue;
   /** Előadó */
-  artist?: string;
+  artist?: TextValue;
   /** Borítókép URL */
   cover?: string;
 }
@@ -959,17 +966,17 @@ export interface MusicPlayerParams {
   showVolume?: boolean;
   /** Elérhetőségi feliratok (fordításhoz) */
   labels?: {
-    play?: string;
-    pause?: string;
-    prev?: string;
-    next?: string;
-    seek?: string;
-    volume?: string;
-    mute?: string;
-    unmute?: string;
-    playlist?: string;
+    play?: TextValue;
+    pause?: TextValue;
+    prev?: TextValue;
+    next?: TextValue;
+    seek?: TextValue;
+    volume?: TextValue;
+    mute?: TextValue;
+    unmute?: TextValue;
+    playlist?: TextValue;
     /** A hibaüzenet szövege, ha a szám nem játszható le */
-    error?: string;
+    error?: TextValue;
   };
   /** Lejátszás indulásakor hívódik */
   onPlay?: (track: MusicTrack, index: number) => void;
@@ -991,7 +998,7 @@ export interface LinkParams {
   /** CSS osztály */
   class?: string;
   /** Link szövege */
-  text: string;
+  text: TextValue;
   /** Link URL */
   href: string;
   /**
@@ -1029,9 +1036,9 @@ export interface BlockquoteParams {
   /** CSS osztály */
   class?: string;
   /** Idézet szövege */
-  text: string;
+  text: TextValue;
   /** Idézet szerzője */
-  author?: string;
+  author?: TextValue;
 }
 
 export interface DividerParams {
@@ -1047,9 +1054,9 @@ export interface AccordionItem {
   /** Accordion elem egyedi azonosítója */
   id: string;
   /** Accordion elem címe */
-  title: string;
+  title: TextValue;
   /** Accordion elem tartalma */
-  content: CreateDOMElemOptions | CreateDOMElemOptions[];
+  content: DOMOptions | DOMOptions[];
   /**
    * Alapértelmezetten nyitva
    * @default false
@@ -1081,7 +1088,7 @@ export interface TooltipParams {
   /** CSS osztály */
   class?: string;
   /** Tooltip szövege */
-  text: string;
+  text: TextValue;
   /**
    * Tooltip pozíciója
    * @default "top"
@@ -1129,9 +1136,9 @@ export interface CustomSelectParams {
   /** Select értéke */
   value?: string | number;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Opciók tömbje */
   options: SelectOption[];
   /** Érték változás esemény */
@@ -1152,9 +1159,9 @@ export interface CustomDatePickerParams {
   /** Maximális dátum (YYYY-MM-DD) */
   max?: string;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Érték változás esemény */
   onChange?: (value: string) => void;
 }
@@ -1173,9 +1180,9 @@ export interface CustomWeekPickerParams {
   /** Maximális hét (YYYY-Www) */
   max?: string;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Érték változás esemény */
   onChange?: (value: string) => void;
 }
@@ -1194,9 +1201,9 @@ export interface CustomMonthPickerParams {
   /** Maximális hónap (YYYY-MM) */
   max?: string;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Érték változás esemény */
   onChange?: (value: string) => void;
 }
@@ -1215,9 +1222,9 @@ export interface CustomDateTimePickerParams {
   /** Maximális dátum-idő (YYYY-MM-DDTHH:mm) */
   max?: string;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Érték változás esemény */
   onChange?: (value: string) => void;
 }
@@ -1238,9 +1245,9 @@ export interface CustomDateRangePickerParams {
   /** Maximális dátum (YYYY-MM-DD) */
   max?: string;
   /** Címke szövege */
-  labelText?: string;
+  labelText?: TextValue;
   /** Placeholder szöveg */
-  placeholder?: string;
+  placeholder?: TextValue;
   /** Érték változás esemény (start, end) */
   onChange?: (start: string, end: string) => void;
 }
@@ -1259,16 +1266,16 @@ export interface DragAndDropFileInputParams {
   /** Maximum feltölthető fájlok száma */
   maxFiles?: number;
   /** Címke szöveg */
-  labelText?: string;
+  labelText?: TextValue;
   /** Drop zóna szövege */
-  dropText?: string;
+  dropText?: TextValue;
   /** Callback a fájlok kiválasztása után */
   onFiles?: (files: File[]) => void;
 }
 
 export interface DrawerMenuItem {
   /** Megjelenő szöveg */
-  label: string;
+  label: TextValue;
   /** Link cél URL. Ha nincs megadva, szöveges fejléc lesz */
   href?: string;
   /** Almenü pontok */
@@ -1300,9 +1307,9 @@ export interface DrawerParams {
   /** Drawer egyedi azonosítója */
   id: string;
   /** Drawer címe */
-  title?: string;
+  title?: TextValue;
   /** Gyermek elemek (createMenu helyett) */
-  children?: (CreateDOMElemOptions | HTMLElement)[];
+  children?: (DOMOptions | HTMLElement)[];
   /** Menüpontok (ha nincs children, createMenu-be csomagolva jelennek meg) */
   items?: DrawerMenuItem[];
   /**
@@ -1330,13 +1337,13 @@ export interface CarouselSlide {
   /** Ikon szöveg/emoji */
   icon?: string;
   /** Slide címe */
-  title?: string;
+  title?: TextValue;
   /** Slide leírása */
-  description?: string;
+  description?: TextValue;
   /** Call-to-action gomb (href nélkül button, href-fel link) */
-  cta?: { text: string; href?: string; click?: (e: Event) => void };
+  cta?: { text: TextValue; href?: string; click?: (e: Event) => void };
   /** Egyedi tartalom a slide-ban */
-  content?: CreateDOMElemOptions | HTMLElement | (CreateDOMElemOptions | HTMLElement)[];
+  content?: DOMOptions | HTMLElement | (DOMOptions | HTMLElement)[];
 }
 
 export interface CarouselParams {
@@ -1371,10 +1378,10 @@ export interface CarouselParams {
   height?: string;
   /** Elérhetőségi feliratok (fordításhoz) */
   labels?: {
-    stage?: string;
-    nav?: string;
-    prev?: string;
-    next?: string;
+    stage?: TextValue;
+    nav?: TextValue;
+    prev?: TextValue;
+    next?: TextValue;
     /** A pötty felirata, 1-alapú sorszámmal */
     dot?: (n: number) => string;
   };
@@ -1382,15 +1389,15 @@ export interface CarouselParams {
 
 export interface TimelineItem {
   /** Időszak, pl. "2021 – jelenleg" */
-  period: string;
+  period: TextValue;
   /** Cím / pozíció */
-  title: string;
+  title: TextValue;
   /** Alcím (pl. cég) */
-  subtitle?: string;
+  subtitle?: TextValue;
   /** Leírás; kompakt nézetben rejtett */
-  description?: string;
+  description?: TextValue;
   /** Kiemelt kis jelvény, pl. "jelenlegi" */
-  badge?: string;
+  badge?: TextValue;
 }
 
 export interface TimelineParams {
@@ -1408,5 +1415,5 @@ export interface TimelineParams {
    */
   compact?: boolean;
   /** Az idővonal elérhetőségi neve (aria-label) */
-  ariaLabel?: string;
+  ariaLabel?: TextValue;
 }

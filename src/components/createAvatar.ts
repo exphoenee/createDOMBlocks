@@ -1,9 +1,9 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { AvatarParams } from "../types";
 
 export function createAvatar(params: AvatarParams): HTMLElement {
-  const children: CreateDOMElemOptions[] = [];
+  const children: DOMOptions[] = [];
 
   if (params.src) {
     children.push({

@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { ButtonParams } from "../types";
 import { toArray } from "../utils";
 

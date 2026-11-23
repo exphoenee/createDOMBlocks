@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 
 export interface AsyncImageParams {
   parent?: HTMLElement | string;

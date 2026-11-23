@@ -1,12 +1,13 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
+import type { TextValue } from "../i18n";
 import type { TimelineParams, TimelineItem } from "../types";
 
-function buildItem(item: TimelineItem): CreateDOMElemOptions {
-  const head: CreateDOMElemOptions[] = [{ tag: "span", text: item.period, attrs: { class: "timeline-period" } }];
+function buildItem(item: TimelineItem): DOMOptions {
+  const head: DOMOptions[] = [{ tag: "span", text: item.period, attrs: { class: "timeline-period" } }];
   if (item.badge) head.push({ tag: "span", text: item.badge, attrs: { class: "timeline-badge" } });
 
-  const card: CreateDOMElemOptions[] = [
+  const card: DOMOptions[] = [
     { tag: "div", attrs: { class: "timeline-head" }, children: head },
     { tag: "h3", text: item.title, attrs: { class: "timeline-title" } },
   ];
@@ -28,7 +29,7 @@ function buildItem(item: TimelineItem): CreateDOMElemOptions {
  * Kompakt nézetben a leírások rejtettek: az `is-compact` osztály kapcsolásával váltható.
  */
 export function createTimeline(params: TimelineParams): HTMLElement {
-  const attrs: Record<string, string> = {
+  const attrs: Record<string, TextValue> = {
     class: `timeline${params.compact ? " is-compact" : ""}${params.class ? ` ${params.class}` : ""}`,
     role: "list",
   };

@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { ParagraphParams } from "../types";
 
 export function createParagraph(params: ParagraphParams): HTMLElement {

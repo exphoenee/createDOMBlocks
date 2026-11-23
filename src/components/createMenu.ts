@@ -1,5 +1,5 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { MenuItem, MenuParams } from "../types";
 
 const normalize = (p: string): string => p.replace(/\/index\.html$/, "/").replace(/\/+$/, "") || "/";
@@ -21,8 +21,8 @@ function containsCurrent(item: MenuItem): boolean {
 
 let uid = 0;
 
-function buildMenuItem(item: MenuItem, collapsible: boolean): CreateDOMElemOptions {
-  const children: CreateDOMElemOptions[] = [];
+function buildMenuItem(item: MenuItem, collapsible: boolean): DOMOptions {
+  const children: DOMOptions[] = [];
   const hasChildren = !!item.children && item.children.length > 0;
   const foldable = collapsible && hasChildren;
   const open = foldable && (item.open ?? containsCurrent(item));

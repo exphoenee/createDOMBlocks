@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { GridParams } from "../types";
 
 export function createGrid(params: GridParams): HTMLElement {

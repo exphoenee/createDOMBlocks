@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
+import type { TextValue } from "../i18n";
 import type { TabsParams, TabItem } from "../types";
 
 /**
@@ -10,7 +11,7 @@ export function createTabs(params: TabsParams): HTMLElement {
   const activeId = params.tabs.some((t) => t.id === params.activeTab) ? params.activeTab : params.tabs[0]?.id;
   const base = params.id || "tabs";
 
-  const tabButtons: CreateDOMElemOptions[] = params.tabs.map((tab: TabItem) => {
+  const tabButtons: DOMOptions[] = params.tabs.map((tab: TabItem) => {
     const on = tab.id === activeId;
     return {
       tag: "button",
@@ -28,7 +29,7 @@ export function createTabs(params: TabsParams): HTMLElement {
     };
   });
 
-  const tabPanels: CreateDOMElemOptions[] = params.tabs.map((tab: TabItem) => {
+  const tabPanels: DOMOptions[] = params.tabs.map((tab: TabItem) => {
     const on = tab.id === activeId;
     const content = Array.isArray(tab.content) ? tab.content : [tab.content];
     return {
@@ -48,7 +49,7 @@ export function createTabs(params: TabsParams): HTMLElement {
   const rootAttrs: Record<string, string> = { class: `tabs${params.class ? ` ${params.class}` : ""}` };
   if (params.id) rootAttrs.id = params.id;
 
-  const listAttrs: Record<string, string> = { class: "tab-buttons", role: "tablist" };
+  const listAttrs: Record<string, TextValue> = { class: "tab-buttons", role: "tablist" };
   if (params.ariaLabel) listAttrs["aria-label"] = params.ariaLabel;
 
   const root = createDOMElem({

@@ -1,9 +1,10 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { ImageParams, ImageState } from "../types";
 import { createSpinner } from "./createSpinner";
+import { builtin } from "../i18n";
 
-type Node_ = HTMLElement | CreateDOMElemOptions;
+type Node_ = HTMLElement | DOMOptions;
 
 function toElement(n: Node_): HTMLElement {
   return n instanceof HTMLElement ? n : createDOMElem({ ...n, append: false });
@@ -51,7 +52,7 @@ export function createImage(params: ImageParams): HTMLElement {
     children: [img, layer],
   });
 
-  const children: Array<CreateDOMElemOptions | HTMLElement> = [frame];
+  const children: Array<DOMOptions | HTMLElement> = [frame];
   if (params.caption) {
     children.push({ tag: "figcaption", text: params.caption, attrs: { class: "image-caption" } });
   }
@@ -112,10 +113,10 @@ export function createImage(params: ImageParams): HTMLElement {
           append: false,
           attrs: { class: "image-error", role: "alert" },
           children: [
-            { tag: "span", text: params.errorText ?? "A kép nem tölthető be" },
+            { tag: "span", text: params.errorText ?? builtin("image.error", "A kép nem tölthető be") },
             {
               tag: "button",
-              text: params.retryText ?? "Újra",
+              text: params.retryText ?? builtin("image.retry", "Újra"),
               attrs: { type: "button", class: "image-retry" },
               handleEvent: { event: "click", cb: retry },
             },

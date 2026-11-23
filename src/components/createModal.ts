@@ -1,7 +1,8 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { ModalContent, ModalActions, ModalParams } from "../types";
 import { createButton } from "../buttons/createButton";
+import { builtin } from "../i18n";
 
 export function openModal(id: string): void {
   const portal = document.getElementById(`${id}-portal`);
@@ -111,14 +112,14 @@ export function createModal(
               parent: document.body,
               class: "modal-cancel-btn",
               click: () => { actions.cancelAction?.(); closeModal(params.id); },
-              text: "Mégse",
+              text: params.labels?.cancel ?? builtin("modal.cancel", "Mégse"),
             }),
             createButton({
               id: `${params.id}-ok-btn`,
               parent: document.body,
               class: "modal-ok-btn",
               click: () => { actions.okAction?.(); closeModal(params.id); },
-              text: "OK",
+              text: params.labels?.ok ?? builtin("modal.ok", "OK"),
             }),
           ],
         },
