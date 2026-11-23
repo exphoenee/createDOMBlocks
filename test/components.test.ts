@@ -259,3 +259,27 @@ describe("createImage", () => {
     expect(h.dataset.state).toBe("error");
   });
 });
+
+describe("createDrawer több push drawerrel", () => {
+  it("az egyik bezárásakor a tartalom eltolása megmarad, amíg másik nyitva van", async () => {
+    const { createDrawer, openDrawer, closeDrawer } = await import("../src/index");
+    createDrawer({ id: "dA", mode: "push", children: [] });
+    createDrawer({ id: "dB", mode: "push", children: [] });
+    openDrawer("dA");
+    openDrawer("dB");
+    closeDrawer("dA");
+    expect(document.body.classList.contains("drawer-push-open")).toBe(true);
+    closeDrawer("dB");
+    expect(document.body.classList.contains("drawer-push-open")).toBe(false);
+  });
+
+  it("overlay drawer bezárása nem szünteti meg a push eltolást", async () => {
+    const { createDrawer, openDrawer, closeDrawer } = await import("../src/index");
+    createDrawer({ id: "dP", mode: "push", children: [] });
+    createDrawer({ id: "dO", mode: "overlay", children: [] });
+    openDrawer("dP");
+    openDrawer("dO");
+    closeDrawer("dO");
+    expect(document.body.classList.contains("drawer-push-open")).toBe(true);
+  });
+});

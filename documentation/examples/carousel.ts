@@ -3,8 +3,6 @@ import { createCarousel } from "../../src/index";
 
 const done = initDocPage();
 
-const app = document.getElementById("app") as HTMLElement;
-
 const sections = [
   example(
     { title: "Alap Carousel", description: "Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.", component: createCarousel },

@@ -1,6 +1,7 @@
 import { initDocPage } from "../page-components/index";
 import { createCard, createCodeBlock } from "../../src/index";
 import { createDOMElem } from "domelemjs";
+import { getDrawerMenuItems } from "../page-components/menuItems";
 
 const done = initDocPage();
 
@@ -61,6 +62,9 @@ createCard({
   },
 });
 
+const menuGroups = getDrawerMenuItems().filter((g) => g.children);
+const total = menuGroups.reduce((n, g) => n + (g.children?.length ?? 0), 0);
+
 createCard({
   parent: app,
   id: "index-components",
@@ -68,30 +72,15 @@ createCard({
   body: {
     tag: "div",
     children: [
-      createDOMElem({ tag: "p", text: "Összesen 50+ komponens áll rendelkezésre: form inputok, gombok, select, radio, táblázatok, listák, navigáció, modal, alert, toast, badge, spinner, progress bar, accordion, tooltip, avatar és egyedi picker komponensek.", style: { marginBottom: "1rem" } }),
-      createDOMElem({
-        tag: "div",
-        style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem" },
-        children: [
-          { tag: "a", text: "Form Inputok (18)", attrs: { class: "badge", href: "forms.html" } },
-          { tag: "a", text: "Select / Radio (4)", attrs: { class: "badge", href: "selection.html" } },
-          { tag: "a", text: "Egyedi Inputok (6)", attrs: { class: "badge", href: "customInputs.html" } },
-          { tag: "a", text: "Gombok (4)", attrs: { class: "badge", href: "buttons.html" } },
-          { tag: "a", text: "Drag & Drop (1)", attrs: { class: "badge", href: "draganddrop.html" } },
-          { tag: "a", text: "Tartalom (11)", attrs: { class: "badge", href: "content.html" } },
-          { tag: "a", text: "Listák (2)", attrs: { class: "badge", href: "lists.html" } },
-          { tag: "a", text: "Táblázatok (2)", attrs: { class: "badge", href: "tables.html" } },
-          { tag: "a", text: "Avatar (3)", attrs: { class: "badge", href: "avatars.html" } },
-          { tag: "a", text: "Nav / Breadcrumb (3)", attrs: { class: "badge", href: "navigation.html" } },
-          { tag: "a", text: "Menu (1)", attrs: { class: "badge", href: "menu.html" } },
-          { tag: "a", text: "Drawer (4)", attrs: { class: "badge", href: "drawer.html" } },
-          { tag: "a", text: "Visszajelzés (5)", attrs: { class: "badge", href: "feedback.html" } },
-          { tag: "a", text: "Accordion / Tooltip (2)", attrs: { class: "badge", href: "interactive.html" } },
-          { tag: "a", text: "Carousel (5)", attrs: { class: "badge", href: "carousel.html" } },
-          { tag: "a", text: "Timeline (1)", attrs: { class: "badge", href: "timeline.html" } },
-          { tag: "a", text: "Modal (1)", attrs: { class: "badge", href: "modal.html" } },
-        ],
-      }),
+      createDOMElem({ tag: "p", text: `Összesen ${total} komponens, mindegyikhez külön oldal példákkal és paraméter-táblázattal.`, style: { marginBottom: "1rem" } }),
+      ...menuGroups.flatMap((group) => [
+        createDOMElem({ tag: "h3", text: `${group.label} (${group.children?.length})`, style: { margin: "1rem 0 0.5rem" } }),
+        createDOMElem({
+          tag: "div",
+          style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(10rem, 1fr))", gap: "0.5rem" },
+          children: (group.children ?? []).map((c) => ({ tag: "a", text: c.label, attrs: { class: "badge", href: c.href ?? "#" } })),
+        }),
+      ]),
     ],
   },
 });

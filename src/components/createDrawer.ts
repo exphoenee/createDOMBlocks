@@ -106,5 +106,9 @@ export function closeDrawer(id: string = "sidebar-drawer"): void {
   const overlay = document.getElementById(`${id}-overlay`);
   if (overlay) overlay.classList.remove("open");
   sidebar.classList.remove("open");
-  document.body.classList.remove("drawer-push-open");
+
+  // A tartalom eltolása csak akkor szűnik meg, ha már egyetlen push módú drawer sincs nyitva
+  if (!document.querySelector(".drawer-sidebar.drawer-push.open")) {
+    document.body.classList.remove("drawer-push-open");
+  }
 }

@@ -388,36 +388,88 @@ function getDrawerMenuItems() {
         {
             label: "Forms",
             children: [
-                { label: "Form Inputok", href: "forms.html" },
-                { label: "Select / Radio", href: "selection.html" },
-                { label: "Egyedi Inputok", href: "customInputs.html" },
-                { label: "Drop file input", href: "draganddrop.html" },
+                { label: "CustomDatePicker", href: "custom-date-picker.html" },
+                { label: "CustomWeekPicker", href: "custom-week-picker.html" },
+                { label: "CustomMonthPicker", href: "custom-month-picker.html" },
+                { label: "CustomDateTimePicker", href: "custom-date-time-picker.html" },
+                { label: "CustomDateRangePicker", href: "custom-date-range-picker.html" },
+                { label: "DragAndDropFileInput", href: "drag-and-drop-file-input.html" },
+                { label: "TextInput", href: "text-input.html" },
+                { label: "TelInput", href: "tel-input.html" },
+                { label: "UrlInput", href: "url-input.html" },
+                { label: "SearchInput", href: "search-input.html" },
+                { label: "EmailInput", href: "email-input.html" },
+                { label: "PasswordInput", href: "password-input.html" },
+                { label: "NumberInput", href: "number-input.html" },
+                { label: "DateInput", href: "date-input.html" },
+                { label: "DatetimeInput", href: "datetime-input.html" },
+                { label: "TimeInput", href: "time-input.html" },
+                { label: "MonthInput", href: "month-input.html" },
+                { label: "WeekInput", href: "week-input.html" },
+                { label: "Checkbox", href: "checkbox.html" },
+                { label: "ColorInput", href: "color-input.html" },
+                { label: "FileInput", href: "file-input.html" },
+                { label: "RangeInput", href: "range-input.html" },
+                { label: "Form", href: "form.html" },
+                { label: "Select", href: "select.html" },
+                { label: "Radio", href: "radio.html" },
+                { label: "CustomSelect", href: "custom-select.html" },
+                { label: "Textarea", href: "textarea.html" },
             ],
         },
-        { label: "Gombok", href: "buttons.html" },
+        {
+            label: "Gombok",
+            children: [
+                { label: "ButtonInput", href: "button-input.html" },
+                { label: "SubmitInput", href: "submit-input.html" },
+                { label: "ResetInput", href: "reset-input.html" },
+                { label: "Button", href: "button.html" },
+            ],
+        },
         {
             label: "Tartalom",
             children: [
-                { label: "Komponensek", href: "content.html" },
-                { label: "Listák", href: "lists.html" },
-                { label: "Táblázatok", href: "tables.html" },
-                { label: "Avatar", href: "avatars.html" },
+                { label: "Avatar", href: "avatar.html" },
+                { label: "Card", href: "card.html" },
+                { label: "Grid", href: "grid.html" },
+                { label: "Paragraph", href: "paragraph.html" },
+                { label: "Title", href: "title.html" },
+                { label: "Blockquote", href: "blockquote.html" },
+                { label: "CodeBlock", href: "code-block.html" },
+                { label: "Image", href: "image.html" },
+                { label: "Link", href: "link.html" },
+                { label: "Divider", href: "divider.html" },
+                { label: "UnorderedList", href: "unordered-list.html" },
+                { label: "OrderedList", href: "ordered-list.html" },
+                { label: "Table", href: "table.html" },
             ],
         },
         {
             label: "Navigáció",
             children: [
-                { label: "Nav / Breadcrumb", href: "navigation.html" },
-                { label: "Menu", href: "menu.html" },
                 { label: "Drawer", href: "drawer.html" },
+                { label: "Menu", href: "menu.html" },
+                { label: "Nav", href: "nav.html" },
+                { label: "Breadcrumb", href: "breadcrumb.html" },
+                { label: "Tabs", href: "tabs.html" },
             ],
         },
-        { label: "Visszajelzés", href: "feedback.html" },
+        {
+            label: "Visszajelzés",
+            children: [
+                { label: "Alert", href: "alert.html" },
+                { label: "Badge", href: "badge.html" },
+                { label: "Spinner", href: "spinner.html" },
+                { label: "ProgressBar", href: "progress-bar.html" },
+                { label: "Toast", href: "toast.html" },
+            ],
+        },
         {
             label: "Interaktív",
             children: [
-                { label: "Accordion / Tooltip", href: "interactive.html" },
                 { label: "Carousel", href: "carousel.html" },
+                { label: "Accordion", href: "accordion.html" },
+                { label: "Tooltip", href: "tooltip.html" },
                 { label: "Timeline", href: "timeline.html" },
             ],
         },
@@ -2703,7 +2755,10 @@ function closeDrawer(id = "sidebar-drawer") {
     if (overlay)
         overlay.classList.remove("open");
     sidebar.classList.remove("open");
-    document.body.classList.remove("drawer-push-open");
+    // A tartalom eltolása csak akkor szűnik meg, ha már egyetlen push módú drawer sincs nyitva
+    if (!document.querySelector(".drawer-sidebar.drawer-push.open")) {
+        document.body.classList.remove("drawer-push-open");
+    }
 }
 
 
@@ -5204,6 +5259,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _page_components_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../page-components/index */ "./documentation/page-components/index.ts");
 /* harmony import */ var _src_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../src/index */ "./src/index.ts");
 /* harmony import */ var domelemjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! domelemjs */ "./node_modules/domelemjs/dist/index.js");
+/* harmony import */ var _page_components_menuItems__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../page-components/menuItems */ "./documentation/page-components/menuItems.ts");
+
 
 
 
@@ -5260,6 +5317,8 @@ createButton({
         ],
     },
 });
+const menuGroups = (0,_page_components_menuItems__WEBPACK_IMPORTED_MODULE_3__.getDrawerMenuItems)().filter((g) => g.children);
+const total = menuGroups.reduce((n, g) => n + (g.children?.length ?? 0), 0);
 (0,_src_index__WEBPACK_IMPORTED_MODULE_1__.createCard)({
     parent: app,
     id: "index-components",
@@ -5267,30 +5326,15 @@ createButton({
     body: {
         tag: "div",
         children: [
-            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "p", text: "Összesen 50+ komponens áll rendelkezésre: form inputok, gombok, select, radio, táblázatok, listák, navigáció, modal, alert, toast, badge, spinner, progress bar, accordion, tooltip, avatar és egyedi picker komponensek.", style: { marginBottom: "1rem" } }),
-            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({
-                tag: "div",
-                style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem" },
-                children: [
-                    { tag: "a", text: "Form Inputok (18)", attrs: { class: "badge", href: "forms.html" } },
-                    { tag: "a", text: "Select / Radio (4)", attrs: { class: "badge", href: "selection.html" } },
-                    { tag: "a", text: "Egyedi Inputok (6)", attrs: { class: "badge", href: "customInputs.html" } },
-                    { tag: "a", text: "Gombok (4)", attrs: { class: "badge", href: "buttons.html" } },
-                    { tag: "a", text: "Drag & Drop (1)", attrs: { class: "badge", href: "draganddrop.html" } },
-                    { tag: "a", text: "Tartalom (11)", attrs: { class: "badge", href: "content.html" } },
-                    { tag: "a", text: "Listák (2)", attrs: { class: "badge", href: "lists.html" } },
-                    { tag: "a", text: "Táblázatok (2)", attrs: { class: "badge", href: "tables.html" } },
-                    { tag: "a", text: "Avatar (3)", attrs: { class: "badge", href: "avatars.html" } },
-                    { tag: "a", text: "Nav / Breadcrumb (3)", attrs: { class: "badge", href: "navigation.html" } },
-                    { tag: "a", text: "Menu (1)", attrs: { class: "badge", href: "menu.html" } },
-                    { tag: "a", text: "Drawer (4)", attrs: { class: "badge", href: "drawer.html" } },
-                    { tag: "a", text: "Visszajelzés (5)", attrs: { class: "badge", href: "feedback.html" } },
-                    { tag: "a", text: "Accordion / Tooltip (2)", attrs: { class: "badge", href: "interactive.html" } },
-                    { tag: "a", text: "Carousel (5)", attrs: { class: "badge", href: "carousel.html" } },
-                    { tag: "a", text: "Timeline (1)", attrs: { class: "badge", href: "timeline.html" } },
-                    { tag: "a", text: "Modal (1)", attrs: { class: "badge", href: "modal.html" } },
-                ],
-            }),
+            (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "p", text: `Összesen ${total} komponens, mindegyikhez külön oldal példákkal és paraméter-táblázattal.`, style: { marginBottom: "1rem" } }),
+            ...menuGroups.flatMap((group) => [
+                (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({ tag: "h3", text: `${group.label} (${group.children?.length})`, style: { margin: "1rem 0 0.5rem" } }),
+                (0,domelemjs__WEBPACK_IMPORTED_MODULE_2__.createDOMElem)({
+                    tag: "div",
+                    style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(10rem, 1fr))", gap: "0.5rem" },
+                    children: (group.children ?? []).map((c) => ({ tag: "a", text: c.label, attrs: { class: "badge", href: c.href ?? "#" } })),
+                }),
+            ]),
         ],
     },
 });

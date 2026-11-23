@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "build": "node scripts/gen-props.mjs && webpack",
-    "build:page": "node scripts/gen-props.mjs && webpack && node scripts/build-page.mjs",
+    "build:page": "node -e \"require('fs').rmSync('dist-page',{recursive:true,force:true})\" && node scripts/gen-props.mjs && webpack && node scripts/build-page.mjs",
     "dev": "node scripts/gen-props.mjs && webpack serve --open",
     "dev:page": "node scripts/dev-page.mjs",
     "typecheck": "tsc --noEmit",

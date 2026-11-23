@@ -1,6 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
 import { createMenu, createCard } from "../../src/index";
-import { createDOMElem } from "domelemjs";
 
 const done = initDocPage();
 
@@ -58,7 +57,6 @@ const sections = [
       });
     },
   ),
-
 ];
 
 renderSections(sections);
