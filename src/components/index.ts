@@ -10,6 +10,8 @@ export { createBadge } from "./createBadge";
 export { createSpinner } from "./createSpinner";
 export { createProgressBar } from "./createProgressBar";
 export { createImage } from "./createImage";
+export { createVideo } from "./createVideo";
+export { createMusicPlayer } from "./createMusicPlayer";
 export { createLink } from "./createLink";
 export { createCodeBlock } from "./createCodeBlock";
 export { createBlockquote } from "./createBlockquote";

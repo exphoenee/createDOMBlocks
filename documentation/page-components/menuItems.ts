@@ -54,6 +54,8 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
         { label: "Blockquote", href: "blockquote.html" },
         { label: "Code block", href: "code-block.html" },
         { label: "Image", href: "image.html" },
+        { label: "Video", href: "video.html" },
+        { label: "Music player", href: "music-player.html" },
         { label: "Link", href: "link.html" },
         { label: "Divider", href: "divider.html" },
         { label: "Unordered list", href: "unordered-list.html" },

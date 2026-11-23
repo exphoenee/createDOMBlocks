@@ -704,6 +704,183 @@ export interface ImageParams {
   onStateChange?: (state: ImageState) => void;
 }
 
+export interface VideoSource {
+  /** Videó URL (mp4, webm, ogg ...) */
+  src: string;
+  /** MIME típus (pl. "video/webm"); ha nincs megadva, a kiterjesztésből következtetjük */
+  type?: string;
+}
+
+export interface VideoParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Videó egyedi azonosítója */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /**
+   * Videó URL (mp4, webm, ogg ...), vagy több forrás tömbje; a böngésző az első lejátszhatót használja
+   */
+  src: string | VideoSource[];
+  /** Előnézeti kép a lejátszás megkezdéséig */
+  poster?: string;
+  /** Videó felirat */
+  caption?: string;
+  /** Elérhetőségi felirat a lejátszónak */
+  ariaLabel?: string;
+  /** Videó szélessége (a keret betöltés és hiba alatt is ekkora) */
+  width?: number | string;
+  /** Videó magassága (a keret betöltés és hiba alatt is ekkora) */
+  height?: number | string;
+  /**
+   * Lejátszó vezérlők megjelenítése
+   * @default true
+   */
+  controls?: boolean;
+  /**
+   * Automatikus lejátszás (a böngészők miatt némítva indul)
+   * @default false
+   */
+  autoplay?: boolean;
+  /**
+   * Végtelenített lejátszás
+   * @default false
+   */
+  loop?: boolean;
+  /**
+   * Némítás (autoplay esetén alapból igaz)
+   * @default false
+   */
+  muted?: boolean;
+  /**
+   * Inline lejátszás mobilon (nem lép teljes képernyőre)
+   * @default true
+   */
+  playsInline?: boolean;
+  /**
+   * Mennyit töltsön előre a böngésző. `"none"` esetén a videó azonnal kész állapotú, a hibát csak lejátszáskor jelzi.
+   * @default "metadata"
+   */
+  preload?: "none" | "metadata" | "auto";
+  /**
+   * A betöltés csak akkor indul, ha a videó a látótérbe kerül
+   * @default false
+   */
+  lazy?: boolean;
+  /**
+   * Betöltés alatt mutatott elem: kész elem, `createDOMElem` opciók vagy factory.
+   * Alapértelmezetten a `createSpinner`. `false` esetén nem jelenik meg semmi.
+   */
+  spinner?: HTMLElement | CreateDOMElemOptions | (() => HTMLElement | CreateDOMElemOptions) | false;
+  /**
+   * Hiba esetén mutatott elem. Alapértelmezetten hibaüzenet újrapróbálás gombbal.
+   */
+  fallback?: HTMLElement | CreateDOMElemOptions | ((error: Error, retry: () => void) => HTMLElement | CreateDOMElemOptions);
+  /**
+   * Az alapértelmezett hibaüzenet szövege
+   * @default "A videó nem tölthető be"
+   */
+  errorText?: string;
+  /**
+   * Az újrapróbálás gomb szövege
+   * @default "Újra"
+   */
+  retryText?: string;
+  /** Időkorlát ms-ban; túllépéskor hiba */
+  timeout?: number;
+  /**
+   * Automatikus újrapróbálások száma a hibaállapot előtt
+   * @default 0
+   */
+  retries?: number;
+  /** A videó betöltődésekor (metaadatok készen) hívódik */
+  onLoad?: (video: HTMLVideoElement) => void;
+  /** Végleges hiba esetén hívódik */
+  onError?: (error: Error) => void;
+  /** Állapotváltáskor hívódik */
+  onStateChange?: (state: ImageState) => void;
+}
+
+export interface MusicTrack {
+  /** Hangfájl URL (mp3, ogg, wav, m4a ...) */
+  src: string;
+  /** MIME típus (pl. "audio/mpeg"); opcionális */
+  type?: string;
+  /** Szám címe */
+  title?: string;
+  /** Előadó */
+  artist?: string;
+  /** Borítókép URL */
+  cover?: string;
+}
+
+export type MusicPlayerState = "paused" | "playing" | "loading" | "error";
+
+export interface MusicPlayerParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Lejátszó egyedi azonosítója */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /** Számok (egy szám is lehet, ekkor nincs lejátszási lista) */
+  tracks: MusicTrack[];
+  /**
+   * Kezdő szám indexe
+   * @default 0
+   */
+  startIndex?: number;
+  /**
+   * Automatikus lejátszás (a böngészők csak felhasználói művelet után engedik)
+   * @default false
+   */
+  autoplay?: boolean;
+  /**
+   * Ismétlés: `"none"` nincs, `"one"` az aktuális szám, `"all"` a teljes lista
+   * @default "none"
+   */
+  loop?: "none" | "one" | "all";
+  /**
+   * Kezdő hangerő (0–1)
+   * @default 1
+   */
+  volume?: number;
+  /**
+   * A lejátszási lista megjelenítése (több számnál)
+   * @default true
+   */
+  showPlaylist?: boolean;
+  /**
+   * Hangerő-szabályzó megjelenítése
+   * @default true
+   */
+  showVolume?: boolean;
+  /** Elérhetőségi feliratok (fordításhoz) */
+  labels?: {
+    play?: string;
+    pause?: string;
+    prev?: string;
+    next?: string;
+    seek?: string;
+    volume?: string;
+    mute?: string;
+    unmute?: string;
+    playlist?: string;
+    /** A hibaüzenet szövege, ha a szám nem játszható le */
+    error?: string;
+  };
+  /** Lejátszás indulásakor hívódik */
+  onPlay?: (track: MusicTrack, index: number) => void;
+  /** Szünetelteléskor hívódik */
+  onPause?: (track: MusicTrack, index: number) => void;
+  /** Számváltáskor hívódik, az új szám indexével */
+  onTrackChange?: (track: MusicTrack, index: number) => void;
+  /** A lista (vagy az egyetlen szám) végének elérésekor hívódik */
+  onEnded?: () => void;
+  /** Állapotváltáskor hívódik */
+  onStateChange?: (state: MusicPlayerState) => void;
+}
+
 export interface LinkParams {
   /** Szülő elem */
   parent: HTMLElement | string;

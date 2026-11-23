@@ -151,6 +151,8 @@ createCard({
 | `createParagraph(params)` | `<p>` bekezdés |
 | `createTitle(params, level)` | Címsor (h1–h6) |
 | `createImage(params)` | Ábra képpel + opcionális felirattal |
+| `createVideo(params)` | Önállóan töltő videó (mp4, webm, ogg) spinnerrel, hibakezeléssel és méretezett kerettel |
+| `createMusicPlayer(params)` | Zenelejátszó lejátszási listával, időcsíkkal, hangerővel és ismétléssel |
 | `createLink(params)` | Stilizált `<a>` link |
 | `createCodeBlock(params)` | Kódblokk szintaxis kiemeléssel |
 | `createBlockquote(params)` | Idézet szerzővel |

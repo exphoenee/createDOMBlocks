@@ -151,6 +151,8 @@ createCard({
 | `createParagraph(params)` | `<p>` element |
 | `createTitle(params, level)` | Heading (h1–h6) |
 | `createImage(params)` | Figure with image + optional caption |
+| `createVideo(params)` | Self-loading video (mp4, webm, ogg) with spinner, error fallback and sized frame |
+| `createMusicPlayer(params)` | Music player with playlist, seek bar, volume and repeat |
 | `createLink(params)` | Styled `<a>` link |
 | `createCodeBlock(params)` | Code block with syntax highlighting |
 | `createBlockquote(params)` | Blockquote with optional author |
