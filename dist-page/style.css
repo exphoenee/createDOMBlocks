@@ -197,32 +197,32 @@ textarea.textarea-input {
 }
 
 .password-toggle {
+  /* a mező belső (border nélküli) területét tölti ki a jobb oldalon, így nem lóg rá a bordere */
   position: absolute;
-  top: 50%;
-  right: 0.5rem;
-  transform: translateY(-50%);
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
   padding: 0;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0;
   background: none;
   color: var(--text-light);
   cursor: pointer;
-  transition: color var(--transition), background-color var(--transition);
+  transition: color var(--transition);
 }
 
 .password-toggle:hover {
   color: var(--text);
-  background-color: var(--bg-alt);
+  background: none;
 }
 
 .password-toggle:focus-visible {
   outline: 2px solid var(--primary);
-  outline-offset: 1px;
+  outline-offset: -2px;
 }
 
 /* Színválasztó: a szöveges mezők paddingja miatt a swatch 1px magasra esne össze */
