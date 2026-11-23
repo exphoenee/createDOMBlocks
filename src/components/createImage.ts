@@ -32,10 +32,22 @@ export function createImage(params: ImageParams): HTMLElement {
   }) as HTMLImageElement;
 
   const layer = createDOMElem({ tag: "div", append: false, attrs: { class: "image-layer" } });
+  // A keret már betöltés / hiba alatt is akkora, mint amekkora a kép lesz (ha a méret ismert)
+  const css = (v: number | string): string => (typeof v === "number" ? `${v}px` : v);
+  const frameStyle: Record<string, string> = {};
+  if (params.width) frameStyle.width = css(params.width);
+  if (params.height) frameStyle.height = css(params.height);
+  if (typeof params.width === "number" && typeof params.height === "number") {
+    // számmal megadott méretnél az arány megmarad, ha a konténer keskenyebb
+    frameStyle.aspectRatio = `${params.width} / ${params.height}`;
+    frameStyle.height = "auto";
+  }
+  const sized = !!params.width && !!params.height;
   const frame = createDOMElem({
     tag: "div",
     append: false,
     attrs: { class: "image-frame" },
+    style: frameStyle,
     children: [img, layer],
   });
 
@@ -45,7 +57,7 @@ export function createImage(params: ImageParams): HTMLElement {
   }
 
   const rootAttrs: Record<string, string> = {
-    class: `image-container${params.class ? ` ${params.class}` : ""}`,
+    class: `image-container${sized ? " has-size" : ""}${params.class ? ` ${params.class}` : ""}`,
     "data-state": "loading",
   };
   if (params.id) rootAttrs.id = params.id;

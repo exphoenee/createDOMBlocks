@@ -337,3 +337,20 @@ describe("createPasswordInput", () => {
     expect(c.querySelector(".password-toggle")).toBeNull();
   });
 });
+
+describe("createImage méret", () => {
+  it("megadott méretnél a keret betöltés / hiba alatt is akkora, mint a kép", async () => {
+    const { createImage } = await import("../src/index");
+    const fig = createImage({ parent: "root", id: "im", src: "x.png", width: 400, height: 200 });
+    const frame = fig.querySelector(".image-frame") as HTMLElement;
+    expect(fig.classList.contains("has-size")).toBe(true);
+    expect(frame.style.width).toBe("400px");
+    expect(frame.style.aspectRatio.replace(/\s/g, "")).toBe("400/200");
+  });
+
+  it("méret nélkül nincs has-size", async () => {
+    const { createImage } = await import("../src/index");
+    const fig = createImage({ parent: "root", id: "im2", src: "x.png" });
+    expect(fig.classList.contains("has-size")).toBe(false);
+  });
+});

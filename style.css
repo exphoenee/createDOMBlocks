@@ -1155,10 +1155,29 @@ input.reset-input:disabled {
   inset: 0;
   display: grid;
   place-items: center;
+  overflow: hidden;
 }
 
 .image-container[data-state="loaded"] .image-layer {
   display: none;
+}
+
+/* Ismert méretnél a keret (spinner / hibaüzenet) pontosan akkora, mint a kép */
+.image-container.has-size .image-frame {
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+}
+
+.image-container.has-size .image-element {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-container.has-size[data-state="error"] .image-frame,
+.image-container.has-size[data-state="loading"] .image-frame {
+  min-height: 0;
 }
 
 .image-container[data-state="error"] .image-frame,
