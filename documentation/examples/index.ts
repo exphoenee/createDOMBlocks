@@ -1,34 +1,28 @@
 import { initDocPage } from "../page-components/index";
-import { createCard } from "../../src/index";
+import { createCard, createCodeBlock } from "../../src/index";
 import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
 
 const done = initDocPage();
 
 const app = document.getElementById("app") as HTMLElement;
 
-createCard({
-  parent: app,
-  id: "index-install",
-  title: "Telepítés",
-  body: {
-    tag: "div",
-    children: [
-      { tag: "div", attrs: { class: "code-block" }, children: [{ tag: "div", text: "BASH", attrs: { class: "code-language" } }, { tag: "pre", attrs: { class: "code-pre" }, children: [{ tag: "code", text: "npm install createdomblocks", attrs: { class: "code-content language-bash" } }] }] } as CreateDOMElemOptions,
-      createDOMElem({ tag: "p", text: "Vagy CDN-nel:", style: { marginTop: "1rem", marginBottom: "0.5rem", fontWeight: "600" } }),
-      { tag: "div", attrs: { class: "code-block" }, children: [{ tag: "div", text: "HTML", attrs: { class: "code-language" } }, { tag: "pre", attrs: { class: "code-pre" }, children: [{ tag: "code", text: '<link rel="stylesheet" href="https://unpkg.com/createdomblocks/dist/style.css" />\n<script src="https://unpkg.com/createdomblocks/dist/index.js"></script>', attrs: { class: "code-content language-html" } }] }] } as CreateDOMElemOptions,
-    ],
-  },
-});
+const bodyOf = (id: string) => document.querySelector(`#${id} .card-body`) as HTMLElement;
 
-createCard({
-  parent: app,
-  id: "index-quickstart",
-  title: "Gyors használat",
-  body: {
-    tag: "div",
-    children: [
-      { tag: "div", attrs: { class: "code-block" }, children: [{ tag: "div", text: "TYPESCRIPT", attrs: { class: "code-language" } }, { tag: "pre", attrs: { class: "code-pre" }, children: [{ tag: "code", text: `import { createTextInput, createButton } from "createdomblocks";
+createCard({ parent: app, id: "index-install", title: "Telepítés", body: { tag: "div", attrs: { class: "card-content" } } });
+{
+  const body = bodyOf("index-install");
+  createCodeBlock({ parent: body, id: "index-install-npm", language: "bash", code: "npm install createdomblocks" });
+  createDOMElem({ tag: "p", text: "Vagy CDN-nel:", parent: body, style: { marginTop: "1rem", marginBottom: "0.5rem", fontWeight: "600" } });
+  createCodeBlock({ parent: body, id: "index-install-cdn", language: "html", code: `<link rel="stylesheet" href="https://unpkg.com/createdomblocks/dist/style.css" />
+<script src="https://unpkg.com/createdomblocks/dist/index.js"></script>` });
+}
+
+createCard({ parent: app, id: "index-quickstart", title: "Gyors használat", body: { tag: "div", attrs: { class: "card-content" } } });
+createCodeBlock({
+  parent: bodyOf("index-quickstart"),
+  id: "index-quickstart-code",
+  language: "typescript",
+  code: `import { createTextInput, createButton } from "createdomblocks";
 import "createdomblocks/style.css";
 
 const parent = document.getElementById("app");
@@ -45,9 +39,7 @@ createButton({
   id: "submitBtn",
   text: "Küldés",
   click: () => console.log("Kattintás!"),
-});`, attrs: { class: "code-content language-typescript" } }] }] } as CreateDOMElemOptions,
-    ],
-  },
+});`,
 });
 
 createCard({
@@ -95,7 +87,8 @@ createCard({
           { tag: "a", text: "Drawer (4)", attrs: { class: "badge", href: "drawer.html" } },
           { tag: "a", text: "Visszajelzés (5)", attrs: { class: "badge", href: "feedback.html" } },
           { tag: "a", text: "Accordion / Tooltip (2)", attrs: { class: "badge", href: "interactive.html" } },
-          { tag: "a", text: "Carousel (4)", attrs: { class: "badge", href: "carousel.html" } },
+          { tag: "a", text: "Carousel (5)", attrs: { class: "badge", href: "carousel.html" } },
+          { tag: "a", text: "Timeline (1)", attrs: { class: "badge", href: "timeline.html" } },
           { tag: "a", text: "Modal (1)", attrs: { class: "badge", href: "modal.html" } },
         ],
       }),

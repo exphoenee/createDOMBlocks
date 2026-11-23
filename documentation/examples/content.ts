@@ -40,6 +40,10 @@ const sections = [
     },
   ),
   example(
+    { title: "createImage – lazy és fetch", description: "`lazy`: a betöltés csak a látótérbe kerüléskor indul. `strategy: \"fetch\"`: fetch()-csel tölt (HTTP hibák, `timeout`), `onLoad` / `onError` visszahívásokkal.", component: createImage },
+    (parent) => createImage({ parent, id: "cont-img4", src: "https://picsum.photos/id/10/400/200", alt: "Lazy kép", width: 400, height: 200, lazy: true, strategy: "fetch", timeout: 8000, onLoad: () => console.log("kép betöltve") }),
+  ),
+  example(
     { title: "createLink", description: "Stilizált hivatkozás.", component: createLink },
     (parent) => createLink({ parent, id: "cont-link1", text: "Példa link", href: "https://example.com", target: "_blank" }),
   ),

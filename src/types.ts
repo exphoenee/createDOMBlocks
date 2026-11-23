@@ -190,6 +190,16 @@ export interface ButtonParams {
   click?: (e: Event) => void;
   /** Egyéb eseménykezelők */
   handleEvent?: EventHandler | EventHandler[];
+  /**
+   * Throttle (ms): a `click` azonnal lefut, majd a gomb a megadott ideig disabled,
+   * a jobb felső sarokban visszaszámláló badge-dzsel.
+   */
+  throttle?: number;
+  /**
+   * Debounce (ms): a `click` a megadott várakozás letelte után fut le; addig a gomb disabled,
+   * a jobb felső sarokban visszaszámláló badge-dzsel. Ha `throttle` is meg van adva, a `throttle` az érvényes.
+   */
+  debounce?: number;
 }
 
 export interface ButtonInputParams extends BaseInputParams {
@@ -294,6 +304,17 @@ export interface ModalParams {
   id: string;
   /** CSS osztály */
   class?: string;
+  /**
+   * A modál szélessége (CSS érték, pl. "600px", "50vw", "40rem"; a szám pixelnek számít).
+   * Keskeny képernyőn a `maxWidth` (90vw) korlátozza.
+   * @default "320px" (minimális szélesség, a tartalomhoz igazodik)
+   */
+  width?: string | number;
+  /**
+   * A modál maximális szélessége (CSS érték vagy szám pixelben)
+   * @default "90vw"
+   */
+  maxWidth?: string | number;
 }
 
 export interface ModalContent {

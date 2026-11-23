@@ -101,6 +101,30 @@ const sections = [
         showDots: true,
       }),
   ),
+  example(
+    { title: "Méret, kezdő slide, onChange, feliratok", description: "`slideWidth` és `height` a CSS változókat állítja, `startIndex` a kezdő slide, `onChange` az új indexet kapja, `labels` az elérhetőségi feliratokat fordíthatóvá teszi.", component: createCarousel },
+    (parent) => {
+      const status = document.createElement("p");
+      status.textContent = "Aktív slide: 3";
+      const carousel = createCarousel({
+        parent,
+        id: "demo-carousel-5",
+        slideWidth: "240px",
+        height: "300px",
+        startIndex: 2,
+        onChange: (i) => { status.textContent = `Aktív slide: ${i + 1}`; },
+        labels: { stage: "Diavetítés", nav: "Slide-ok", prev: "Előző", next: "Következő", dot: (n) => `${n}. slide` },
+        slides: [
+          { icon: "🌱", title: "Egy" },
+          { icon: "🌿", title: "Kettő" },
+          { icon: "🌳", title: "Három", cta: { text: "Kattints", click: () => status.textContent = "CTA kattintás" } },
+          { icon: "🍂", title: "Négy" },
+        ],
+      });
+      parent.appendChild(status);
+      return carousel;
+    },
+  ),
 ];
 
 renderSections(sections);

@@ -257,6 +257,31 @@ textarea.textarea-input {
   transform: translateY(0);
 }
 
+/* Throttle / debounce visszaszámláló */
+.btn.is-counting {
+  position: relative;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-countdown-badge {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  min-width: 1.75rem;
+  padding: 0.125rem 0.375rem;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  pointer-events: none;
+}
+
 /* ===== Button Inputs (input[type=button], input[type=submit], input[type=reset]) ===== */
 input.button-input,
 input.submit-input,

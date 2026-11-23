@@ -187,6 +187,7 @@ createCard({
 | Function | Description |
 |----------|-------------|
 | `createCarousel(params)` | 3D carousel with navigation and touch |
+| `createTimeline(params)` | Vertical timeline with alternating cards and compact view |
 | `createDragAndDropFileInput(params)` | Drag & drop file uploader |
 
 ### Common Parameters

@@ -187,6 +187,7 @@ createCard({
 | Függvény | Leírás |
 |----------|--------|
 | `createCarousel(params)` | 3D carousel navigációval és érintés támogatással |
+| `createTimeline(params)` | Függőleges idővonal váltakozó kártyákkal és kompakt nézettel |
 | `createDragAndDropFileInput(params)` | Drag & drop fájl feltöltő |
 
 ### Általános Paraméterek

@@ -24,6 +24,8 @@ export function closeModal(id: string): void {
   }
 }
 
+const toCss = (v: string | number): string => (typeof v === "number" ? `${v}px` : v);
+
 export function createModal(
   content: ModalContent,
   actions: ModalActions,
@@ -58,8 +60,9 @@ export function createModal(
         padding: "1.5rem",
         borderRadius: "1rem",
         boxShadow: "0 0.5rem 1rem rgba(0,0,0,0.5)",
-        minWidth: "320px",
-        maxWidth: "90vw",
+        minWidth: params.width !== undefined ? "0" : "320px",
+        ...(params.width !== undefined ? { width: toCss(params.width) } : {}),
+        maxWidth: toCss(params.maxWidth ?? "90vw"),
         maxHeight: "90vh",
         overflow: "auto",
       },
