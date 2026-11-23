@@ -13,7 +13,7 @@ export function initDocPage(): () => void {
   createDrawer({
     id: "sidebar-drawer",
     title: "createDOMBlocks",
-    children: [createMenu({ id: "sidebar-drawer", items })],
+    children: [createMenu({ id: "sidebar-drawer", items, collapsible: true })],
     defaultState: "open",
     hasOverlay: false,
     mode: "push",

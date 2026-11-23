@@ -979,6 +979,11 @@ export interface DrawerMenuItem {
   href?: string;
   /** Almenü pontok */
   children?: DrawerMenuItem[];
+  /**
+   * Összecsukható menünél a csoport kezdetben nyitva van-e.
+   * Alapból csak az nyitott, amelyik az aktuális oldalt tartalmazza.
+   */
+  open?: boolean;
 }
 
 /** Alias for backward compatibility – use MenuItem instead */
@@ -989,6 +994,12 @@ export interface MenuParams {
   id: string;
   /** Menüpontok tömbje */
   items: MenuItem[];
+  /**
+   * A gyermekekkel rendelkező csoportok összecsukhatók (fejlécre kattintva nyílnak/zárulnak).
+   * Az aktuális oldalt tartalmazó csoport kezdetben nyitva van.
+   * @default false
+   */
+  collapsible?: boolean;
 }
 
 export interface DrawerParams {

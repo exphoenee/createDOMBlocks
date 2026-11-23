@@ -57,6 +57,21 @@ const sections = [
       });
     },
   ),
+  example(
+    { title: "createMenu (összecsukható csoportok)", description: "A `collapsible: true` a gyermekes csoportokat összecsukhatóvá teszi (fejlécre kattintva nyílnak). A `open` mezővel a kezdőállapot állítható; alapból az aktuális oldalt tartalmazó csoport nyitott.", component: createMenu },
+    (parent) => {
+      const menu = createMenu({
+        id: "menu-ex-collapsible",
+        collapsible: true,
+        items: [
+          { label: "Kezdőlap", href: "#" },
+          { label: "Forms", open: true, children: [{ label: "Text input", href: "#" }, { label: "Select", href: "#" }] },
+          { label: "Gombok", children: [{ label: "Button", href: "#" }, { label: "Submit", href: "#" }] },
+        ],
+      });
+      createCard({ parent, id: "menu-card-collapsible", title: "Összecsukható menü", body: { tag: "div", children: [menu] } });
+    },
+  ),
 ];
 
 renderSections(sections);

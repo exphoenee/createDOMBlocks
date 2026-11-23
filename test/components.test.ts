@@ -283,3 +283,33 @@ describe("createDrawer több push drawerrel", () => {
     expect(document.body.classList.contains("drawer-push-open")).toBe(true);
   });
 });
+
+describe("createMenu collapsible", () => {
+  const items = [
+    { label: "Kezdőlap", href: "/index.html" },
+    { label: "Forms", children: [{ label: "Text", href: "text.html" }] },
+    { label: "Gombok", open: true, children: [{ label: "Button", href: "button.html" }] },
+  ];
+
+  it("a csoportok alapból zártak, az open: true nyitott, kattintásra váltanak", async () => {
+    const { createMenu } = await import("../src/index");
+    const nav = createMenu({ id: "m", items, collapsible: true });
+    document.body.appendChild(nav);
+    const groups = nav.querySelectorAll(".drawer-item.is-foldable");
+    expect(groups[0].classList.contains("is-open")).toBe(false);
+    expect(groups[1].classList.contains("is-open")).toBe(true);
+    const btn = groups[0].querySelector("button.drawer-toggle") as HTMLElement;
+    expect(btn.getAttribute("aria-expanded")).toBe("false");
+    btn.click();
+    expect(groups[0].classList.contains("is-open")).toBe(true);
+    expect(btn.getAttribute("aria-expanded")).toBe("true");
+    btn.click();
+    expect(groups[0].classList.contains("is-open")).toBe(false);
+  });
+
+  it("collapsible nélkül nincs toggle gomb", async () => {
+    const { createMenu } = await import("../src/index");
+    const nav = createMenu({ id: "m2", items });
+    expect(nav.querySelector("button.drawer-toggle")).toBeNull();
+  });
+});
