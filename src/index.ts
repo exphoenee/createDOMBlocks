@@ -7,6 +7,9 @@ export {
   setFallbackLocale,
   getFallbackLocale,
   registerMessages,
+  registerTranslations,
+  defineMessages,
+  flattenMessages,
   loadMessages,
   onLocaleChange,
   watchLocale,
@@ -15,7 +18,7 @@ export {
   resolveText,
   isReactiveText,
 } from "./i18n";
-export type { Messages, MessageParams, TextRef, TextValue } from "./i18n";
+export type { Messages, MessagesTree, MessageRefs, MessageParams, TextRef, TextValue } from "./i18n";
 export { hu as huMessages, en as enMessages } from "./locales";
 export { createDOMElem as createLocalizedElem } from "./dom";
 export type { DOMOptions } from "./dom";

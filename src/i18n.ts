@@ -35,23 +35,126 @@ const catalogs = new Map<string, Messages>();
 let locale = "hu";
 let fallbackLocale = "hu";
 
-/** Üzenetek hozzáadása egy nyelvhez (a meglévő kulcsok felülíródnak). Nem vált nyelvet. */
-export function registerMessages(lang: string, messages: Messages): void {
-  catalogs.set(lang, { ...(catalogs.get(lang) ?? {}), ...messages });
+/**
+ * Egymásba ágyazott üzenetfa: a levelek szövegek (vagy számok). A beágyazás pontokkal lapul egyetlen kulccsá
+ * (`{ form: { save: "Mentés" } }` → `form.save`). Az olyan csomópont, amelynek kulcsai csupa többes szám-kategória
+ * (`zero`, `one`, `two`, `few`, `many`, `other`, és van `other`), `kulcs_one`, `kulcs_other` … kulcsokká alakul.
+ */
+export interface MessagesTree {
+  [key: string]: string | number | MessagesTree;
+}
+
+const PLURAL_CATEGORIES = new Set(["zero", "one", "two", "few", "many", "other"]);
+
+function isPluralNode(node: MessagesTree): boolean {
+  const keys = Object.keys(node);
+  return keys.length > 0 && "other" in node && keys.every((k) => PLURAL_CATEGORIES.has(k) && typeof node[k] !== "object");
+}
+
+/**
+ * Egymásba ágyazott objektumból lapos `kulcs → szöveg` térkép (a `registerMessages` ezt automatikusan elvégzi).
+ * @example flattenMessages({ form: { name: "Név" }, items: { one: "{count} elem", other: "{count} elem" } })
+ *          // { "form.name": "Név", "items_one": "{count} elem", "items_other": "{count} elem" }
+ */
+export function flattenMessages(tree: MessagesTree, prefix = ""): Messages {
+  const out: Messages = {};
+  for (const [key, value] of Object.entries(tree)) {
+    if (value == null) continue;
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (typeof value === "object") {
+      if (isPluralNode(value)) {
+        for (const [cat, text] of Object.entries(value)) out[`${path}_${cat}`] = String(text);
+      } else {
+        Object.assign(out, flattenMessages(value, path));
+      }
+    } else {
+      out[path] = String(value);
+    }
+  }
+  return out;
+}
+
+/** Üzenetek hozzáadása egy nyelvhez (a meglévő kulcsok felülíródnak). Lapos és egymásba ágyazott objektumot is elfogad. Nem vált nyelvet. */
+export function registerMessages(lang: string, messages: Messages | MessagesTree): void {
+  catalogs.set(lang, { ...(catalogs.get(lang) ?? {}), ...flattenMessages(messages as MessagesTree) });
+}
+
+/**
+ * Több nyelv egyszerre egyetlen objektumból: `{ hu: { ... }, en: { ... } }`. A `prefix` minden kulcs elé kerül.
+ * @example registerTranslations({ hu: { form: { save: "Mentés" } }, en: { form: { save: "Save" } } });
+ */
+export function registerTranslations(translations: Record<string, MessagesTree>, options: { prefix?: string } = {}): void {
+  for (const [lang, tree] of Object.entries(translations)) {
+    registerMessages(lang, options.prefix ? flattenMessages(tree, options.prefix) : tree);
+  }
+}
+
+/** A típus-szintű fordítási hivatkozás-fa: minden levél egy `TextRef` (lásd `defineMessages`) */
+type PluralCategory = "zero" | "one" | "two" | "few" | "many" | "other";
+
+export type MessageRefs<T> = {
+  [K in keyof T]: T[K] extends string | number
+    ? TextRef
+    : T[K] extends { other: string | number }
+      ? Exclude<keyof T[K], PluralCategory> extends never
+        ? TextRef // többes számú csomópont: egyetlen kulcs, a count paraméter választ kategóriát
+        : MessageRefs<T[K]>
+      : T[K] extends MessagesTree
+        ? MessageRefs<T[K]>
+        : never;
+};
+
+function buildRefs(trees: MessagesTree[], prefix: string): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  const keys = new Set(trees.flatMap((t) => Object.keys(t)));
+  for (const key of keys) {
+    const path = prefix ? `${prefix}.${key}` : key;
+    const nodes = trees.map((t) => t[key]).filter((v) => v != null);
+    const objects = nodes.filter((v): v is MessagesTree => typeof v === "object");
+    if (objects.length && objects.every(isPluralNode)) {
+      // többes számú csomópont: egyetlen kulcs (a count paraméter választ kategóriát)
+      out[key] = tr(path);
+    } else if (objects.length) {
+      out[key] = buildRefs(objects, path);
+    } else {
+      out[key] = tr(path);
+    }
+  }
+  return out;
+}
+
+/**
+ * Egyetlen hívással: regisztrálja az összes nyelv üzeneteit, és visszaadja a kulcsokra mutató, **típusos** `tr()`
+ * hivatkozások fáját. Nem kell kulcs-stringeket gépelni, az IDE kiegészít, az elgépelés fordítási hiba.
+ *
+ * @example
+ * const m = defineMessages({
+ *   hu: { form: { name: "Név", save: "Mentés" } },
+ *   en: { form: { name: "Name", save: "Save" } },
+ * });
+ * createTextInput({ parent, id: "n", labelText: m.form.name });   // nyelvváltáskor frissül
+ * createButtonInput({ parent, id: "s", text: m.form.save });
+ */
+export function defineMessages<T extends Record<string, MessagesTree>>(
+  translations: T,
+  options: { prefix?: string } = {},
+): MessageRefs<T[keyof T]> {
+  registerTranslations(translations, options);
+  return buildRefs(Object.values(translations), options.prefix ?? "") as MessageRefs<T[keyof T]>;
 }
 
 /**
  * Üzenetek betöltése JSON URL-ről vagy aszinkron függvényből, majd regisztrálása.
  * @example await loadMessages("de", "/locales/de.json"); setLocale("de");
  */
-export async function loadMessages(lang: string, source: string | (() => Promise<Messages>), init?: RequestInit): Promise<void> {
-  let messages: Messages;
+export async function loadMessages(lang: string, source: string | (() => Promise<Messages | MessagesTree>), init?: RequestInit): Promise<void> {
+  let messages: Messages | MessagesTree;
   if (typeof source === "function") {
     messages = await source();
   } else {
     const res = await fetch(source, init);
     if (!res.ok) throw new Error(`Failed to load messages for "${lang}": HTTP ${res.status} (${source})`);
-    messages = (await res.json()) as Messages;
+    messages = (await res.json()) as MessagesTree;
   }
   registerMessages(lang, messages);
 }

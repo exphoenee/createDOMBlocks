@@ -16,6 +16,9 @@ import {
   setLocale,
   getLocale,
   registerMessages,
+  registerTranslations,
+  defineMessages,
+  flattenMessages,
   loadMessages,
   onLocaleChange,
   setFallbackLocale,
@@ -314,5 +317,70 @@ describe("minden szöveges komponens-paraméter nyelvfüggő lehet", () => {
     expect(tip.getAttribute("data-tooltip")).toBe("Mentés");
     setLocale("en");
     expect(tip.getAttribute("data-tooltip")).toBe("Save");
+  });
+});
+
+describe("üzenetek objektumból: flattenMessages / registerTranslations / defineMessages", () => {
+  it("flattenMessages: ágyazott objektum pontokkal lapul, a többes szám csomópont _one / _other kulcs lesz", () => {
+    expect(
+      flattenMessages({
+        form: { name: "Név", nested: { deep: "Mély" } },
+        count: 3,
+        items: { one: "{count} elem", other: "{count} elem" },
+        skip: null as unknown as string,
+      }),
+    ).toEqual({
+      "form.name": "Név",
+      "form.nested.deep": "Mély",
+      count: "3",
+      items_one: "{count} elem",
+      items_other: "{count} elem",
+    });
+    // az egyszerű objektum, aminek van "one" kulcsa de nincs "other": nem többes szám
+    expect(flattenMessages({ x: { one: "egy" } })).toEqual({ "x.one": "egy" });
+  });
+
+  it("registerMessages az ágyazott objektumot is elfogadja", () => {
+    registerMessages("nl", { form: { save: "Opslaan" }, "plain.key": "Gewoon" });
+    setLocale("nl");
+    expect(t("form.save")).toBe("Opslaan");
+    expect(t("plain.key")).toBe("Gewoon");
+  });
+
+  it("registerTranslations: több nyelv egy objektumból, előtaggal is", () => {
+    registerTranslations({ pt: { a: { b: "Olá" } }, sv: { a: { b: "Hej" } } }, { prefix: "pre" });
+    setLocale("pt");
+    expect(t("pre.a.b")).toBe("Olá");
+    setLocale("sv");
+    expect(t("pre.a.b")).toBe("Hej");
+  });
+
+  it("defineMessages: regisztrál, és típusos tr() hivatkozásokat ad, amik nyelvváltáskor frissülnek", () => {
+    const m = defineMessages({
+      hu: { form: { name: "Név", save: "Mentés" }, items: { one: "{count} elem", other: "{count} elem" } },
+      en: { form: { name: "Name", save: "Save" }, items: { one: "{count} item", other: "{count} items" } },
+    });
+    expect(m.form.save).toEqual({ kind: "tr", key: "form.save", params: undefined, fallback: undefined });
+    const btn = createButtonInput({ parent: "root", id: "dm", text: m.form.save }) as HTMLInputElement;
+    const label = createTextInput({ parent: "root", id: "dmi", labelText: m.form.name });
+    expect(btn.value).toBe("Mentés");
+    setLocale("en");
+    expect(btn.value).toBe("Save");
+    expect(label.querySelector("label")?.textContent).toBe("Name");
+    // a többes számú csomópont egyetlen kulcs, a count választ
+    expect(resolveText({ ...m.items, params: { count: 1 } })).toBe("1 item");
+    expect(resolveText({ ...m.items, params: { count: 4 } })).toBe("4 items");
+  });
+
+  it("defineMessages: a hiányzó nyelvi kulcsok is megkapják a hivatkozást (az unió alapján)", () => {
+    const m = defineMessages({ hu: { a: "A", only: { hu: "csak magyar" } }, en: { a: "A en" } }, { prefix: "dd" });
+    expect(m.a.key).toBe("dd.a");
+    expect((m.only as { hu: { key: string } }).hu.key).toBe("dd.only.hu");
+  });
+
+  it("loadMessages az ágyazott JSON-t is lapítja", async () => {
+    await loadMessages("fi", async () => ({ ui: { ok: "Selvä" } }));
+    setLocale("fi");
+    expect(t("ui.ok")).toBe("Selvä");
   });
 });
