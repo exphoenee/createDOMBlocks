@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createModal, openModal, createButton } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Modal", description: "Modál dialógus ablak, ami portálként a body végére kerül.", component: createModal },
+    { title: tr("Modal"), description: tr("Modál dialógus ablak, ami portálként a body végére kerül."), component: createModal },
     (parent) => {
       const modal = createModal(
         { modalTitle: "Példa Modal", body: { tag: "p", text: "Ez egy modal tartalma." } },
@@ -16,7 +17,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Modal – szélesség", description: "A `width` prop (CSS érték vagy szám pixelben) állítja a modál szélességét; a `maxWidth` korlátozza (alapból 90vw).", component: createModal },
+    { title: tr("Modal – szélesség"), description: tr("A `width` prop (CSS érték vagy szám pixelben) állítja a modál szélességét; a `maxWidth` korlátozza (alapból 90vw)."), component: createModal },
     (parent) => {
       createModal(
         { modalTitle: "Széles modal", body: { tag: "p", text: "Ez a modal 700px széles (keskeny képernyőn 90vw-re szűkül)." } },

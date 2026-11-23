@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import type { DOMOptions as CreateDOMElemOptions } from "../../src/index";
+import { tr } from "../page-components/i18n";
 import { section, div, heading, para, button, stars, avatar, stepper, img, ASSET } from "./_shared";
 
 const app = document.getElementById("app")!;
@@ -8,11 +9,11 @@ app.appendChild(page);
 
 function buildBreadcrumb(): CreateDOMElemOptions {
   return div("demo3-breadcrumb", [
-    { tag: "span", text: "F\u0151oldal", attrs: { class: "demo3-bc-link" } },
+    { tag: "span", text: tr("F\u0151oldal"), attrs: { class: "demo3-bc-link" } },
     { tag: "span", text: " \u203a " },
-    { tag: "span", text: "Cip\u0151k", attrs: { class: "demo3-bc-link" } },
+    { tag: "span", text: tr("Cip\u0151k"), attrs: { class: "demo3-bc-link" } },
     { tag: "span", text: " \u203a " },
-    { tag: "span", text: "Fut\u00f3cip\u0151" },
+    { tag: "span", text: tr("Fut\u00f3cip\u0151") },
   ]);
 }
 
@@ -22,7 +23,7 @@ function buildProduct(): CreateDOMElemOptions {
   const thumbs = images.map((file, i) =>
     ({
       tag: "img",
-      attrs: { src: `${ASSET}${file}`, alt: `Ultra Futócipő Pro – nézet ${i + 1}`, loading: "lazy", class: `demo3-gallery-thumb${i === 0 ? " demo3-gallery-thumb--active" : ""}` },
+      attrs: { src: `${ASSET}${file}`, alt: tr("Ultra Futócipő Pro – nézet {n}", { n: i + 1 }), loading: "lazy", class: `demo3-gallery-thumb${i === 0 ? " demo3-gallery-thumb--active" : ""}` },
       handleEvent: {
         event: "click",
         cb: () => {
@@ -73,7 +74,7 @@ function buildProduct(): CreateDOMElemOptions {
   return section("demo3-product", [
     div("demo3-gallery", [
       div("demo3-gallery-main", [
-        { tag: "img", attrs: { src: `${ASSET}${images[0]}`, alt: "Ultra Futócipő Pro", class: "demo3-gallery-main-img" } },
+        { tag: "img", attrs: { src: `${ASSET}${images[0]}`, alt: tr("Ultra Futócipő Pro"), class: "demo3-gallery-main-img" } },
       ]),
       div("demo3-gallery-thumbs", thumbs),
     ]),
@@ -111,9 +112,9 @@ function buildTabs(): CreateDOMElemOptions {
     ],
     [
       ...([
-        { name: "Kov\u00e1cs B\u00e9la", initials: "KB", rating: 5, date: "2024.03.15.", text: "Fantasztikus cip\u0151! A t\u00e1mogat\u00e1s kiv\u00e1l\u00f3, k\u00f6nny\u0171 \u00e9s k\u00e9nyelmes." },
-        { name: "Nagy Eszter", initials: "NE", rating: 4, date: "2024.03.10.", text: "J\u00f3 min\u0151s\u00e9g, de egy kicsit sz\u0171knek \u00e9rzem a l\u00e1bujj r\u00e9szt." },
-        { name: "Szab\u00f3 P\u00e9ter", initials: "SP", rating: 4, date: "2024.02.28.", text: "Sz\u00e9p design \u00e9s j\u00f3 tapad\u00e1s. Aj\u00e1nlom fut\u00f3knak." },
+        { name: "Kov\u00e1cs B\u00e9la", initials: "KB", rating: 5, date: "2024.03.15.", text: tr("Fantasztikus cip\u0151! A t\u00e1mogat\u00e1s kiv\u00e1l\u00f3, k\u00f6nny\u0171 \u00e9s k\u00e9nyelmes.") },
+        { name: "Nagy Eszter", initials: "NE", rating: 4, date: "2024.03.10.", text: tr("J\u00f3 min\u0151s\u00e9g, de egy kicsit sz\u0171knek \u00e9rzem a l\u00e1bujj r\u00e9szt.") },
+        { name: "Szab\u00f3 P\u00e9ter", initials: "SP", rating: 4, date: "2024.02.28.", text: tr("Sz\u00e9p design \u00e9s j\u00f3 tapad\u00e1s. Aj\u00e1nlom fut\u00f3knak.") },
       ]).map((r) =>
         div("demo3-review", [
           avatar(r.initials),
@@ -134,7 +135,7 @@ function buildTabs(): CreateDOMElemOptions {
   labels.forEach((label, i) => {
     tabItems.push({
       tag: "div",
-      text: label,
+      text: tr(label),
       attrs: { class: `demo3-tab${i === 0 ? " demo3-tab--active" : ""}` },
       handleEvent: {
         event: "click",

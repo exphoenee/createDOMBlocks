@@ -9,8 +9,9 @@
  * amit a `scripts/gen-props.mjs` generál build időben.
  */
 
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import { tr, t } from "./i18n";
+import type { DOMOptions as CreateDOMElemOptions } from "../../src/index";
 import propsData from "../generated/props.json";
 
 interface PropEntry {
@@ -138,13 +139,13 @@ function renderTypeCard(typeName: string): CreateDOMElemOptions {
         {
           tag: "div",
           attrs: { class: "card-header" },
-          children: [{ tag: "h3", text: `Paraméterek — ${typeName}` }],
+          children: [{ tag: "h3", text: () => `${t("Paraméterek")} — ${typeName}` }],
         },
         {
           tag: "div",
           attrs: { class: "card-body" },
           children: [
-            { tag: "p", text: "Nincsenek paraméterek ehhez a típushoz.", attrs: { class: "text-muted" } },
+            { tag: "p", text: tr("Nincsenek paraméterek ehhez a típushoz."), attrs: { class: "text-muted" } },
           ],
         },
       ],
@@ -169,15 +170,15 @@ function renderTypeCard(typeName: string): CreateDOMElemOptions {
         children: [renderTypeBadge(prop.type)],
       },
       // Kötelező
-      { tag: "td", attrs: { class: "props-required" }, text: prop.required ? "Igen" : "Nem" },
+      { tag: "td", attrs: { class: "props-required" }, text: prop.required ? tr("Igen") : tr("Nem") },
       // Alapérték
       {
         tag: "td",
         attrs: { class: "props-default" },
-        text: prop.default != null ? prop.default : "—",
+        text: prop.default == null ? "—" : /[áéíóöőúüűÁÉÍÓÖŐÚÜŰ]/.test(prop.default) ? tr(prop.default) : prop.default,
       },
       // Leírás
-      { tag: "td", attrs: { class: "props-desc" }, text: prop.description || "" },
+      { tag: "td", attrs: { class: "props-desc" }, text: prop.description ? tr(prop.description) : "" },
     ];
 
     return { tag: "tr", children: cells };
@@ -191,7 +192,7 @@ function renderTypeCard(typeName: string): CreateDOMElemOptions {
         tag: "div",
         attrs: { class: "card-header" },
         children: [
-          { tag: "h3", text: `Paraméterek — ${typeName}` },
+          { tag: "h3", text: () => `${t("Paraméterek")} — ${typeName}` },
         ],
       },
       {
@@ -208,11 +209,11 @@ function renderTypeCard(typeName: string): CreateDOMElemOptions {
                   {
                     tag: "tr",
                     children: [
-                      { tag: "th", text: "Paraméter" },
-                      { tag: "th", text: "Típus" },
-                      { tag: "th", text: "Kötelező" },
-                      { tag: "th", text: "Alapérték" },
-                      { tag: "th", text: "Leírás" },
+                      { tag: "th", text: tr("Paraméter") },
+                      { tag: "th", text: tr("Típus") },
+                      { tag: "th", text: tr("Kötelező") },
+                      { tag: "th", text: tr("Alapérték") },
+                      { tag: "th", text: tr("Leírás") },
                     ],
                   },
                 ],
@@ -247,13 +248,13 @@ export function propsTable(component: Function | string): HTMLElement {
         {
           tag: "div",
           attrs: { class: "card-header" },
-          children: [{ tag: "h3", text: `Paraméterek — ${typeName}` }],
+          children: [{ tag: "h3", text: () => `${t("Paraméterek")} — ${typeName}` }],
         },
         {
           tag: "div",
           attrs: { class: "card-body" },
           children: [
-            { tag: "p", text: "A paraméter-információk nem elérhetők. Futtasd a `node scripts/gen-props.mjs` szkriptet az adatok generálásához.", attrs: { class: "text-muted" } },
+            { tag: "p", text: tr("A paraméter-információk nem elérhetők. Futtasd a `node scripts/gen-props.mjs` szkriptet az adatok generálásához."), attrs: { class: "text-muted" } },
           ],
         },
       ],
@@ -264,7 +265,7 @@ export function propsTable(component: Function | string): HTMLElement {
   if (typeNames.length === 0) {
     return createDOMElem({
       tag: "p",
-      text: "Nincsenek paraméterek.",
+      text: tr("Nincsenek paraméterek."),
       attrs: { class: "text-muted", style: "margin-bottom: 1rem;" },
     });
   }

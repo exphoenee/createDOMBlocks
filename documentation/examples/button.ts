@@ -1,15 +1,16 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createButton } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Button", description: "Általános button elem szöveggel és eseménykezelővel.", component: createButton },
+    { title: tr("Button"), description: tr("Általános button elem szöveggel és eseménykezelővel."), component: createButton },
     (parent) => createButton({ parent, id: "b4", text: "Gomb", click: () => console.log("clicked") }),
   ),
   example(
-    { title: "Button – throttle", description: "A `click` azonnal lefut, majd a gomb a megadott ms-ig disabled; a jobb felső sarokban visszaszámláló badge látszik.", component: createButton },
+    { title: tr("Button – throttle"), description: tr("A `click` azonnal lefut, majd a gomb a megadott ms-ig disabled; a jobb felső sarokban visszaszámláló badge látszik."), component: createButton },
     (parent) => {
       const out = document.createElement("span");
       out.style.marginLeft = "1rem";
@@ -20,7 +21,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Button – debounce", description: "A `click` a várakozás letelte után fut le; addig a gomb disabled, a badge visszaszámlál.", component: createButton },
+    { title: tr("Button – debounce"), description: tr("A `click` a várakozás letelte után fut le; addig a gomb disabled, a badge visszaszámlál."), component: createButton },
     (parent) => {
       const out = document.createElement("span");
       out.style.marginLeft = "1rem";

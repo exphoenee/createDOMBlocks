@@ -1,5 +1,12 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import type { DOMOptions as CreateDOMElemOptions, TextValue } from "../../src/index";
+import { tr, initI18n } from "../page-components/i18n";
+
+// A demó oldalak a dokumentáció nyelvét követik (mentett választás / böngésző nyelve)
+void initI18n();
+
+/** Fix magyar szöveg → fordítható; a kész TextValue (tr() / függvény) változatlan marad */
+const ref = (v: TextValue): TextValue => (typeof v === "string" ? tr(v) : v);
 
 export type { CreateDOMElemOptions };
 
@@ -9,31 +16,31 @@ export const section = (cls: string, children: CreateDOMElemOptions[]) =>
 export const div = (cls: string, children?: CreateDOMElemOptions[]) =>
   ({ tag: "div", attrs: { class: cls }, ...(children ? { children } : {}) } as CreateDOMElemOptions);
 
-export const heading = (level: 1 | 2 | 3 | 4, text: string, cls = "") =>
-  ({ tag: `h${level}`, text, ...(cls ? { attrs: { class: cls } } : {}) } as CreateDOMElemOptions);
+export const heading = (level: 1 | 2 | 3 | 4, text: TextValue, cls = "") =>
+  ({ tag: `h${level}`, text: ref(text), ...(cls ? { attrs: { class: cls } } : {}) } as CreateDOMElemOptions);
 
-export const para = (text: string, cls = "") =>
-  ({ tag: "p", text, ...(cls ? { attrs: { class: cls } } : {}) } as CreateDOMElemOptions);
+export const para = (text: TextValue, cls = "") =>
+  ({ tag: "p", text: ref(text), ...(cls ? { attrs: { class: cls } } : {}) } as CreateDOMElemOptions);
 
-export const button = (text: string, cls = "demo-btn", onClick?: () => void) =>
+export const button = (text: TextValue, cls = "demo-btn", onClick?: () => void) =>
   ({
-    tag: "button", text, attrs: { class: cls },
+    tag: "button", text: ref(text), attrs: { class: cls },
     ...(onClick ? { handleEvent: { event: "click", cb: onClick } } : {})
   } as CreateDOMElemOptions);
 
-export const chip = (text: string) =>
-  ({ tag: "span", text, attrs: { class: "demo-chip" } } as CreateDOMElemOptions);
+export const chip = (text: TextValue) =>
+  ({ tag: "span", text: ref(text), attrs: { class: "demo-chip" } } as CreateDOMElemOptions);
 
 // Kepek: assets/demos/ az osszes demoban (a dist-page gyokerebol relativ).
 export const ASSET = "assets/demos/";
 
 export const img = (file: string, alt = "", cls = "") =>
-  ({ tag: "img", attrs: { src: `${ASSET}${file}`, alt, loading: "lazy", ...(cls ? { class: cls } : {}) } } as CreateDOMElemOptions);
+  ({ tag: "img", attrs: { src: `${ASSET}${file}`, alt: tr(alt), loading: "lazy", ...(cls ? { class: cls } : {}) } } as CreateDOMElemOptions);
 
 export const avatarImg = (file: string, alt = "", size = 40, cls = "demo-avatar-img") =>
   ({
     tag: "img",
-    attrs: { src: `${ASSET}${file}`, alt, loading: "lazy", class: cls },
+    attrs: { src: `${ASSET}${file}`, alt: tr(alt), loading: "lazy", class: cls },
     style: { width: `${size}px`, height: `${size}px`, borderRadius: "50%", objectFit: "cover", flexShrink: "0" }
   } as CreateDOMElemOptions);
 

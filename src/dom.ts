@@ -11,8 +11,10 @@ export type DOMAttrs = Record<string, AttrValue> | Array<Record<string, AttrValu
  * A `createDOMElem` opciói, kibővítve nyelvesítéssel: a `text` és az attribútumok értéke lehet
  * `tr("kulcs")` vagy függvény is, ilyenkor az elem nyelvváltáskor magától frissül.
  */
-export interface DOMOptions extends Omit<CreateDOMElemOptions, "text" | "attrs" | "children"> {
+export interface DOMOptions extends Omit<CreateDOMElemOptions, "text" | "content" | "attrs" | "children"> {
   text?: TextValue;
+  /** Nyers HTML (innerHTML); a `tr()` / függvény érték nyelvváltáskor újra beíródik. Csak megbízható szöveget adj át. */
+  content?: TextValue;
   attrs?: DOMAttrs;
   children?: Array<DOMOptions | HTMLElement>;
 }
@@ -22,6 +24,7 @@ let seq = 0;
 
 interface Binding {
   text?: TextValue;
+  content?: TextValue;
   attrs: Record<string, TextValue>;
 }
 
@@ -47,6 +50,12 @@ function prepare(opts: DOMOptions, bindings: Map<string, Binding>): CreateDOMEle
     binding = { attrs: {} };
     binding.text = opts.text;
     out.text = resolveText(opts.text);
+  }
+
+  if (opts.content !== undefined && typeof opts.content !== "string") {
+    binding ??= { attrs: {} };
+    binding.content = opts.content;
+    out.content = resolveText(opts.content);
   }
 
   if (opts.attrs) {
@@ -93,10 +102,11 @@ export function createDOMElem(options: DOMOptions): HTMLElement {
     const binding = bindings.get(el.getAttribute(TOKEN) as string);
     el.removeAttribute(TOKEN);
     if (!binding) continue;
-    const { text, attrs } = binding;
+    const { text, content, attrs } = binding;
     // a closure csak a forrás-szövegeket tartja, az elemet paraméterként kapja (gyenge hivatkozás)
     watchLocale(el, (e) => {
       if (text !== undefined) setElementText(e, resolveText(text));
+      if (content !== undefined) e.innerHTML = resolveText(content);
       for (const [name, source] of Object.entries(attrs)) e.setAttribute(name, resolveText(source));
     });
   }

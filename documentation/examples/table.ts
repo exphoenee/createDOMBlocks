@@ -1,4 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createTable } from "../../src/index";
 import type { TableServerQuery } from "../../src/index";
 
@@ -6,13 +7,13 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Table (tömb)", description: "Táblázat tömböl építve, fejléccel, sor számokkal és összeg oszloppal.", component: createTable },
+    { title: tr("Table (tömb)"), description: tr("Táblázat tömböl építve, fejléccel, sor számokkal és összeg oszloppal."), component: createTable },
     (parent) => createTable([
       ["Név", "Kor", "Város"], ["Anna", 25, "Budapest"], ["Béla", 32, "Debrecen"], ["Csaba", 18, "Szeged"],
     ], { parent, id: "tbl-array", hasHeader: true, addRowNumbers: true, sumRowValues: true }),
   ),
   example(
-    { title: "Table (objektum)", description: "Táblázat objektum tömböl, automatikus fejléccel." },
+    { title: tr("Table (objektum)"), description: tr("Táblázat objektum tömböl, automatikus fejléccel.") },
     (parent) => createTable([
       { Termék: "Laptop", Ár: 299000, Készlet: 15 },
       { Termék: "Monitor", Ár: 149000, Készlet: 23 },
@@ -20,7 +21,7 @@ const sections = [
     ], { parent, id: "tbl-object", hasHeader: true, hasFooter: true, addRowNumbers: true }),
   ),
   example(
-    { title: "Table – rendezhető", description: "A `sortable: true` a fejlécre kattintva rendez: növekvő → csökkenő → eredeti sorrend. A számok számként, a szövegek magyar ábécé szerint hasonlítódnak össze.", component: createTable },
+    { title: tr("Table – rendezhető"), description: tr("A `sortable: true` a fejlécre kattintva rendez: növekvő → csökkenő → eredeti sorrend. A számok számként, a szövegek magyar ábécé szerint hasonlítódnak össze."), component: createTable },
     (parent) => createTable([
       { Név: "Anna", Kor: 25, Város: "Budapest", Pont: 82.5 },
       { Név: "Béla", Kor: 32, Város: "Debrecen", Pont: 91 },
@@ -30,7 +31,7 @@ const sections = [
     ], { parent, id: "tbl-sortable", hasHeader: true, sortable: true }),
   ),
   example(
-    { title: "Table – szűrhető", description: "A `filterable: true` szűrőmezőt ad a táblázat fölé; a sorok bármely cellájában keres, kis- és nagybetűre érzéketlenül. Találat nélkül üzenet jelenik meg." },
+    { title: tr("Table – szűrhető"), description: tr("A `filterable: true` szűrőmezőt ad a táblázat fölé; a sorok bármely cellájában keres, kis- és nagybetűre érzéketlenül. Találat nélkül üzenet jelenik meg.") },
     (parent) => createTable([
       { Termék: "Laptop", Kategória: "Számítógép", Ár: 299000 },
       { Termék: "Monitor", Kategória: "Periféria", Ár: 149000 },
@@ -41,7 +42,7 @@ const sections = [
     ], { parent, id: "tbl-filter", hasHeader: true, filterable: true, labels: { filter: "Keresés a termékek között…" } }),
   ),
   example(
-    { title: "Table – lapozás, szűrés és rendezés együtt", description: "A `pageSize` lapoz, a `pageSizeOptions` oldalméret-választót ad. A három funkció külön-külön is, együtt is használható; a lábléc összegei az összes sorra vonatkoznak.", component: createTable },
+    { title: tr("Table – lapozás, szűrés és rendezés együtt"), description: tr("A `pageSize` lapoz, a `pageSizeOptions` oldalméret-választót ad. A három funkció külön-külön is, együtt is használható; a lábléc összegei az összes sorra vonatkoznak."), component: createTable },
     (parent) => {
       const cities = ["Budapest", "Debrecen", "Szeged", "Pécs", "Győr", "Miskolc", "Nyíregyháza"];
       const rows = Array.from({ length: 53 }, (_, i) => ({
@@ -63,7 +64,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Table – oldalméret-választó (select)", description: "A `pageSizeOptions` tömb adja a select opcióit a megadott sorrendben, pl. `[5, 10, 15]` vagy `[10, 25, 50, 100, \"all\"]`. Az `\"all\"` a Mind opció (minden sor egy oldalon). Külön `pageSize` nélkül az első szám az alapértelmezett." },
+    { title: tr("Table – oldalméret-választó (select)"), description: tr("A `pageSizeOptions` tömb adja a select opcióit a megadott sorrendben, pl. `[5, 10, 15]` vagy `[10, 25, 50, 100, \"all\"]`. Az `\"all\"` a Mind opció (minden sor egy oldalon). Külön `pageSize` nélkül az első szám az alapértelmezett.") },
     (parent) => {
       const rows = Array.from({ length: 120 }, (_, i) => ({ Sor: i + 1, Érték: ((i * 53) % 97) + 3 }));
       return createTable(rows, {
@@ -77,7 +78,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Table – szerveroldali lapozás", description: "A `serverSide` módban a táblázat nem dolgozik a sorokkal: az előző / következő gombok, az oldalszámok, az oldalméret-választó, a rendezés és a szűrés az `onChange`-et hívják (oldal, oldalméret, szűrő, rendezés). A választ a visszaadott elem `setData(rows, { total })`-jával kell megadni; addig a táblázat betöltés állapotú, a lapozó letiltott. Itt egy 600 ms késleltetésű mock szerver szolgálja ki az adatot.", component: createTable },
+    { title: tr("Table – szerveroldali lapozás"), description: tr("A `serverSide` módban a táblázat nem dolgozik a sorokkal: az előző / következő gombok, az oldalszámok, az oldalméret-választó, a rendezés és a szűrés az `onChange`-et hívják (oldal, oldalméret, szűrő, rendezés). A választ a visszaadott elem `setData(rows, { total })`-jával kell megadni; addig a táblázat betöltés állapotú, a lapozó letiltott. Itt egy 600 ms késleltetésű mock szerver szolgálja ki az adatot."), component: createTable },
     (parent) => {
       // mock szerver: 237 sor, szűrés + rendezés + lapozás késleltetéssel
       const all = Array.from({ length: 237 }, (_, i) => ({ Azonosító: i + 1, Név: `Felhasználó ${i + 1}`, Pont: ((i * 37) % 100) + 1 }));

@@ -1,4 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createTooltip } from "../../src/index";
 import { createDOMElem } from "domelemjs";
 
@@ -6,7 +7,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Tooltip", description: "Bubor\xe9k tooltip k\xfcl\xf6nb\xf6z\u0151 poz\xedci\xf3kkal. Vidd az egeret az elemek f\xf6l\xe9!", component: createTooltip },
+    { title: tr("Tooltip"), description: tr("Bubor\xe9k tooltip k\xfcl\xf6nb\xf6z\u0151 poz\xedci\xf3kkal. Vidd az egeret az elemek f\xf6l\xe9!"), component: createTooltip },
     (parent) => {
       createDOMElem({
         tag: "p",

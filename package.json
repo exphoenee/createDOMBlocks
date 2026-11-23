@@ -26,6 +26,7 @@
     "dev": "node scripts/gen-props.mjs && webpack serve --open",
     "dev:page": "node scripts/dev-page.mjs",
     "typecheck": "tsc --noEmit",
+    "check:i18n": "node scripts/check-i18n.mjs",
     "test": "node --test scripts/example-loader.test.mjs scripts/example-loader.format.test.mjs",
     "test:unit": "vitest run",
     "clean": "rm -rf dist dist-page"

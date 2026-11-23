@@ -13,18 +13,19 @@ import {
   createProgressBar,
   createTabs,
 } from "../../src/index";
-import { createDOMElem } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import { tr, trRows } from "../page-components/i18n";
 
 const done = initDocPage();
 const app = document.getElementById("app") as HTMLElement;
 
 const bodyOf = (id: string) => document.querySelector(`#${id} .card-body`) as HTMLElement;
 const card = (id: string, title: string) => {
-  createCard({ parent: app, id, title, body: { tag: "div", attrs: { class: "card-content" } } });
+  createCard({ parent: app, id, title: tr(title), body: { tag: "div", attrs: { class: "card-content" } } });
   return bodyOf(id);
 };
 const text = (parent: HTMLElement, html: string, style: Record<string, string> = {}) =>
-  createDOMElem({ tag: "p", parent, content: html, style: { margin: "0.5rem 0", ...style } });
+  createDOMElem({ tag: "p", parent, content: tr(html), style: { margin: "0.5rem 0", ...style } });
 const code = (parent: HTMLElement, id: string, language: string, src: string) =>
   createCodeBlock({ parent, id, language, code: src });
 
@@ -58,7 +59,7 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
   const body = card("theme-vars", "CSS változók");
   text(body, "Ezeket a változókat definiálja a könyvtár a <code>:root</code>-on. Bármelyik felülírható.");
   createTable(
-    [
+    trRows([
       { Változó: "--primary", Alap: "#3b82f6", Szerep: "Márkaszín: elsődleges gombok, aktív menüpont, fókusz, kijelölés" },
       { Változó: "--primary-hover", Alap: "#2563eb", Szerep: "A --primary hover / aktív állapota" },
       { Változó: "--on-primary", Alap: "#ffffff", Szerep: "Szöveg a --primary színű felületeken (olvashatóság sötétebb / világosabb márkaszínnél)" },
@@ -78,7 +79,7 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
       { Változó: "--radius-lg", Alap: "1rem", Szerep: "Nagyobb elemek lekerekítése: modál, hero" },
       { Változó: "--shadow / --shadow-md / --shadow-lg", Alap: "…", Szerep: "Három árnyékfokozat (kártya, lebegő elem, modál)" },
       { Változó: "--transition", Alap: "0.2s ease", Szerep: "Az animációk időzítése; `0s` kikapcsolja a legtöbb átmenetet" },
-    ],
+    ], ["Változó", "Alap"]),
     { parent: body, id: "theme-vars-table", hasHeader: true },
   );
 }
@@ -126,8 +127,8 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
   const picker = createSelect({
     parent: body,
     id: "theme-picker",
-    labelText: "Téma:",
-    options: themes.map((t) => ({ text: t.label, value: t.id })),
+    labelText: tr("Téma:"),
+    options: themes.map((t) => ({ text: tr(t.label), value: t.id })),
   });
   const select = picker.querySelector("select") as HTMLSelectElement;
 
@@ -147,15 +148,15 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
   (["info", "success", "warning", "error", "neutral"] as const).forEach((type) =>
     createBadge({ parent: badges, id: `td-badge-${type}`, text: type, type })
   );
-  createAlert({ parent: demo, id: "td-alert", type: "info", title: "Információ", message: "Az alert a --info és --info-bg változókból épül." });
-  createProgressBar({ parent: demo, id: "td-progress", value: 65, label: "Folyamat", showPercentage: true });
+  createAlert({ parent: demo, id: "td-alert", type: "info", title: tr("Információ"), message: tr("Az alert a --info és --info-bg változókból épül.") });
+  createProgressBar({ parent: demo, id: "td-progress", value: 65, label: tr("Folyamat"), showPercentage: true });
   createTabs({
     parent: demo,
     id: "td-tabs",
-    ariaLabel: "Demó tabok",
+    ariaLabel: tr("Demó tabok"),
     tabs: [
-      { id: "a", label: "Első", content: { tag: "p", text: "Az aktív tab a --primary színt használja." } },
-      { id: "b", label: "Második", content: { tag: "p", text: "Második tab tartalma." } },
+      { id: "a", label: tr("Első"), content: { tag: "p", text: tr("Az aktív tab a --primary színt használja.") } },
+      { id: "b", label: tr("Második"), content: { tag: "p", text: tr("Második tab tartalma.") } },
     ],
   });
   createTable(
@@ -168,7 +169,7 @@ const code = (parent: HTMLElement, id: string, language: string, src: string) =>
     const t = themes.find((x) => x.id === select.value) as Theme;
     demo.setAttribute("data-theme", t.id);
     codeHost.textContent = "";
-    createDOMElem({ tag: "p", parent: codeHost, content: "Éles használatban ezt írod a saját CSS-edbe:", style: { margin: "0.25rem 0 0.5rem" } });
+    createDOMElem({ tag: "p", parent: codeHost, content: tr("Éles használatban ezt írod a saját CSS-edbe:"), style: { margin: "0.25rem 0 0.5rem" } });
     createCodeBlock({ parent: codeHost, id: "theme-demo-code", language: "css", code: css(t, ":root") });
   };
   select.addEventListener("change", show);
@@ -251,16 +252,16 @@ input.button-input.btn-danger:hover {
 }`);
   text(body, "Gyakran használt osztályok:", { marginTop: "1rem" });
   createTable(
-    [
+    trRows([
       { Komponens: "Gomb input", Osztály: "input.button-input, input.submit-input, input.reset-input", Megjegyzés: "a háttér a --primary / --success / --error szerint" },
-      { Komponens: "Szöveges mezők", Osztály: ".text-input, .email-input, … (a konténer), .text-input input", Megjegyzés: "a konténer típusnév-input osztályt kap" },
+      { Komponens: "Szöveges mezők", Osztály: ".text-input, .email-input, …, .text-input input", Megjegyzés: "a konténer típusnév-input osztályt kap" },
       { Komponens: "Kártya", Osztály: ".card, .card-header, .card-body, .card-footer", Megjegyzés: "" },
       { Komponens: "Táblázat", Osztály: ".table, .table-container, .table-filter, .table-page-btn", Megjegyzés: "szűrés / lapozás / rendezés elemei is" },
       { Komponens: "Tabok", Osztály: ".tab-button, .tab-button.active, .tab-panel", Megjegyzés: "" },
       { Komponens: "Modál", Osztály: ".modal, .modal-title, .modal-footer", Megjegyzés: "a hátteret / árnyékot a változók adják" },
       { Komponens: "Menü / Drawer", Osztály: ".drawer-sidebar, .drawer-link, .drawer-link.active", Megjegyzés: "" },
       { Komponens: "Jelzések", Osztály: ".alert, .badge, .toast, .progress-fill", Megjegyzés: "típusonként -success / -error … módosítóval" },
-    ],
+    ], ["Osztály"]),
     { parent: body, id: "theme-fine-table", hasHeader: true },
   );
 }
@@ -270,10 +271,10 @@ input.button-input.btn-danger:hover {
   const body = card("theme-comp", "Komponens-szintű változók");
   text(body, "Néhány komponens saját változókat is használ, amelyeket paraméterből is beállíthatsz, vagy CSS-ből felülírhatsz:");
   createTable(
-    [
+    trRows([
       { Változó: "--carousel-slide-w", Komponens: "Carousel", Szerep: "Egy slide szélessége (a `slideWidth` paraméter állítja)" },
       { Változó: "--carousel-height", Komponens: "Carousel", Szerep: "A színpad magassága (a `height` paraméter állítja)" },
-    ],
+    ], ["Változó"]),
     { parent: body, id: "theme-comp-table", hasHeader: true },
   );
   code(body, "theme-comp-css", "css", `.hero-carousel {
@@ -293,7 +294,7 @@ input.button-input.btn-danger:hover {
     "<strong>Betűtípus.</strong> A könyvtár a <code>body</code>-ra állítja a rendszerfontot; ezt a saját <code>body { font-family: … }</code> szabályoddal cseréled le, a komponensek öröklik.",
     "<strong>Állapotszínek.</strong> A <code>--success</code>, <code>--error</code> stb. párok (<code>-bg</code> változattal) az alert, badge és toast alapja. Sötét témában a <code>-bg</code> párokat is sötétre kell állítani.",
     "<strong>Ismert korlát:</strong> néhány apró díszelem (pl. a paraméter-táblázat típusjelvényei, egyes alert-szövegszínek) fix színt használ. Ezeket osztályfelülírással igazíthatod a témádhoz, pl. <code>.type-badge { … }</code>.",
-  ].forEach((html) => createDOMElem({ tag: "li", parent: list, content: html }));
+  ].forEach((html) => createDOMElem({ tag: "li", parent: list, content: tr(html) }));
 }
 
 done();

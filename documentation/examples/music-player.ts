@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createMusicPlayer } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Music player", description: "Zenelejátszó lejátszási listával: lejátszás / szünet, előző / következő, léptethető időcsík, hangerő és ismétlés (ki / lista / szám).", component: createMusicPlayer },
+    { title: tr("Music player"), description: tr("Zenelejátszó lejátszási listával: lejátszás / szünet, előző / következő, léptethető időcsík, hangerő és ismétlés (ki / lista / szám)."), component: createMusicPlayer },
     (parent) => createMusicPlayer({
       parent,
       id: "music-playlist",
@@ -19,7 +20,7 @@ const sections = [
     }),
   ),
   example(
-    { title: "Music player – egy szám", description: "Egyetlen számnál nincs lejátszási lista és előző / következő gomb.", component: createMusicPlayer },
+    { title: tr("Music player – egy szám"), description: tr("Egyetlen számnál nincs lejátszási lista és előző / következő gomb."), component: createMusicPlayer },
     (parent) => createMusicPlayer({
       parent,
       id: "music-single",
@@ -28,7 +29,7 @@ const sections = [
     }),
   ),
   example(
-    { title: "Music player – visszahívások és hiba", description: "Az `onPlay`, `onPause`, `onTrackChange` és `onStateChange` követi az eseményeket; ha a szám nem játszható le, a lejátszó hibaállapotba kerül.", component: createMusicPlayer },
+    { title: tr("Music player – visszahívások és hiba"), description: tr("Az `onPlay`, `onPause`, `onTrackChange` és `onStateChange` követi az eseményeket; ha a szám nem játszható le, a lejátszó hibaállapotba kerül."), component: createMusicPlayer },
     (parent) => {
       const log = document.createElement("p");
       log.textContent = "Állapot: paused";

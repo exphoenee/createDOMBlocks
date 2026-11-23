@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import type { DOMOptions as CreateDOMElemOptions } from "../../src/index";
+import { tr } from "../page-components/i18n";
 import { div, heading, para, avatarImg } from "./_shared";
 
 const app = document.getElementById("app")!;
@@ -22,7 +23,7 @@ function buildSidebar(): CreateDOMElemOptions {
         para("\u25e7", "demo4-brand-icon"),
         para("Pulse", "demo4-brand-text"),
       ]),
-      { tag: "a", text: "\u2190 Vissza", attrs: { href: "index.html", class: "demo4-sidebar-link" } },
+      { tag: "a", text: tr("\u2190 Vissza"), attrs: { href: "index.html", class: "demo4-sidebar-link" } },
       ({
         tag: "nav",
         attrs: { class: "demo4-nav" },
@@ -72,11 +73,11 @@ function buildCharts(): CreateDOMElemOptions {
   const months = ["Jan", "Feb", "M\u00e1r", "\u00c1pr", "M\u00e1j", "J\u00fan", "J\u00fal", "Aug", "Szep", "Okt", "Nov", "Dec"];
 
   const activities = [
-    { color: "var(--d-success)", text: "\u00daj rendel\u00e9s \u00e9rkezett: #1234", time: "2 perce" },
-    { color: "var(--d-accent)", text: "Kov\u00e1cs Anna fizet\u00e9st teljes\u00edtett", time: "15 perce" },
-    { color: "var(--d-warning)", text: "\u00daj regisztr\u00e1ci\u00f3: Szab\u00f3 P\u00e9ter", time: "1 \u00f3r\u00e1ja" },
-    { color: "var(--d-success)", text: "Rendel\u00e9s kisz\u00e1ll\u00edtva: #1230", time: "2 \u00f3r\u00e1ja" },
-    { color: "var(--d-error)", text: "Fizet\u00e9s sikertelen: #1228", time: "3 \u00f3r\u00e1ja" },
+    { color: "var(--d-success)", text: tr("\u00daj rendel\u00e9s \u00e9rkezett: #1234"), time: "2 perce" },
+    { color: "var(--d-accent)", text: tr("Kov\u00e1cs Anna fizet\u00e9st teljes\u00edtett"), time: "15 perce" },
+    { color: "var(--d-warning)", text: tr("\u00daj regisztr\u00e1ci\u00f3: Szab\u00f3 P\u00e9ter"), time: "1 \u00f3r\u00e1ja" },
+    { color: "var(--d-success)", text: tr("Rendel\u00e9s kisz\u00e1ll\u00edtva: #1230"), time: "2 \u00f3r\u00e1ja" },
+    { color: "var(--d-error)", text: tr("Fizet\u00e9s sikertelen: #1228"), time: "3 \u00f3r\u00e1ja" },
   ];
 
   return div("demo4-charts", [
@@ -128,7 +129,7 @@ function buildTable(): CreateDOMElemOptions {
           children: [
             ({
               tag: "tr",
-              children: ["\u00dcgyf\u00e9l", "Term\u00e9k", "\u00d6sszeg", "St\u00e1tusz"].map((h) => ({ tag: "th", text: h })),
+              children: ["\u00dcgyf\u00e9l", "Term\u00e9k", "\u00d6sszeg", "St\u00e1tusz"].map((h) => ({ tag: "th", text: tr(h) })),
             }),
           ],
         }),
@@ -139,9 +140,9 @@ function buildTable(): CreateDOMElemOptions {
               tag: "tr",
               children: [
                 { tag: "td", children: [div("demo4-customer", [avatarImg(r.avatar, r.customer, 28), para(r.customer, "demo4-customer-name")])] },
-                { tag: "td", text: r.product },
-                { tag: "td", text: r.amount },
-                { tag: "td", children: [({ tag: "span", text: r.status, attrs: { class: `demo4-badge demo4-badge--${r.badge}` } })] },
+                { tag: "td", text: tr(r.product) },
+                { tag: "td", text: tr(r.amount) },
+                { tag: "td", children: [({ tag: "span", text: tr(r.status), attrs: { class: `demo4-badge demo4-badge--${r.badge}` } })] },
               ],
             })
           ),

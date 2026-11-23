@@ -1,4 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createAccordion } from "../../src/index";
 
 const done = initDocPage();
@@ -6,10 +7,10 @@ const done = initDocPage();
 const sections = [
   example(
     {
-      title: "Accordion \u2014 t\xf6bb nyitva (multiple: true)",
+      title: tr("Accordion \u2014 t\xf6bb nyitva (multiple: true)"),
       component: createAccordion,
       description:
-        "\xd6sszecsukhat\xf3 szekci\xf3k. A <code>multiple: true</code> opci\xf3val egyszerre t\xf6bb szekci\xf3 is nyitva lehet.",
+        tr("\xd6sszecsukhat\xf3 szekci\xf3k. A <code>multiple: true</code> opci\xf3val egyszerre t\xf6bb szekci\xf3 is nyitva lehet."),
     },
     (parent) =>
       createAccordion({
@@ -25,9 +26,9 @@ const sections = [
   ),
   example(
     {
-      title: "Accordion \u2014 csak egy nyitva (multiple: false)",
+      title: tr("Accordion \u2014 csak egy nyitva (multiple: false)"),
       description:
-        "Amikor a <code>multiple</code> false (alap\xe9rtelmezett), egy \xfaj szekci\xf3 kinyit\xe1sa automatikusan bez\xe1rja a t\xf6bbit.",
+        tr("Amikor a <code>multiple</code> false (alap\xe9rtelmezett), egy \xfaj szekci\xf3 kinyit\xe1sa automatikusan bez\xe1rja a t\xf6bbit."),
     },
     (parent) =>
       createAccordion({

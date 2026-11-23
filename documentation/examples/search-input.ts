@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createSearchInput } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Search input", description: "Keresési mezők.", component: createSearchInput },
+    { title: tr("Search input"), description: tr("Keresési mezők."), component: createSearchInput },
     (parent) => createSearchInput({ parent, id: "t4", labelText: "Keresés:", placeholder: "Keress..." }),
   ),
 ];

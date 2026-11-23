@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createGrid } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Grid – fix oszlopszám", description: "A `columns` adja az oszlopok számát (itt 3), a `gap` a cellák közti rést. Minden cella egy rácselem.", component: createGrid },
+    { title: tr("Grid – fix oszlopszám"), description: tr("A `columns` adja az oszlopok számát (itt 3), a `gap` a cellák közti rést. Minden cella egy rácselem."), component: createGrid },
     (parent) => {
       const cell = (n: number) => ({
         tag: "div",
@@ -16,7 +17,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Grid – reszponzív (minItemWidth)", description: "A `minItemWidth` az oszlopok minimális szélességét adja, az oszlopok száma a rendelkezésre álló helyhez igazodik. Húzd keskenyebbre az ablakot, és a cellák újrarendeződnek.", component: createGrid },
+    { title: tr("Grid – reszponzív (minItemWidth)"), description: tr("A `minItemWidth` az oszlopok minimális szélességét adja, az oszlopok száma a rendelkezésre álló helyhez igazodik. Húzd keskenyebbre az ablakot, és a cellák újrarendeződnek."), component: createGrid },
     (parent) => {
       const cell = (n: number) => ({
         tag: "div",
@@ -27,7 +28,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Grid – nagyobb rés, vegyes tartalom", description: "A cellák bármilyen elem lehetnek; a `gap` nagyobb értéke jól láthatóan szétválasztja őket.", component: createGrid },
+    { title: tr("Grid – nagyobb rés, vegyes tartalom"), description: tr("A cellák bármilyen elem lehetnek; a `gap` nagyobb értéke jól láthatóan szétválasztja őket."), component: createGrid },
     (parent) => createGrid({
       parent,
       id: "grid-mixed",

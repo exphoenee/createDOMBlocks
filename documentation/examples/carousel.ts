@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createCarousel } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Alap Carousel", description: "Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.", component: createCarousel },
+    { title: tr("Alap Carousel"), description: tr("Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal."), component: createCarousel },
     (parent) =>
       createCarousel({
         parent,
@@ -21,7 +22,7 @@ const sections = [
       }),
   ),
   example(
-    { title: "Carousel CTA gombokkal", description: "Carousel slide-okonCTA gombokkal és hivatkozásokkal." },
+    { title: tr("Carousel CTA gombokkal"), description: tr("Carousel slide-okonCTA gombokkal és hivatkozásokkal.") },
     (parent) =>
       createCarousel({
         parent,
@@ -51,7 +52,7 @@ const sections = [
       }),
   ),
   example(
-    { title: "Custom tartalommal", description: "Carousel egyedi tartalommal minden slide-ban." },
+    { title: tr("Custom tartalommal"), description: tr("Carousel egyedi tartalommal minden slide-ban.") },
     (parent) =>
       createCarousel({
         parent,
@@ -83,7 +84,7 @@ const sections = [
       }),
   ),
   example(
-    { title: "Nyíl nélkül", description: "Carousel csak dot indikátorokkal, nyíl nélkül." },
+    { title: tr("Nyíl nélkül"), description: tr("Carousel csak dot indikátorokkal, nyíl nélkül.") },
     (parent) =>
       createCarousel({
         parent,
@@ -100,7 +101,7 @@ const sections = [
       }),
   ),
   example(
-    { title: "Méret, kezdő slide, onChange, feliratok", description: "`slideWidth` és `height` a CSS változókat állítja, `startIndex` a kezdő slide, `onChange` az új indexet kapja, `labels` az elérhetőségi feliratokat fordíthatóvá teszi.", component: createCarousel },
+    { title: tr("Méret, kezdő slide, onChange, feliratok"), description: tr("`slideWidth` és `height` a CSS változókat állítja, `startIndex` a kezdő slide, `onChange` az új indexet kapja, `labels` az elérhetőségi feliratokat fordíthatóvá teszi."), component: createCarousel },
     (parent) => {
       const status = document.createElement("p");
       status.textContent = "Aktív slide: 3";

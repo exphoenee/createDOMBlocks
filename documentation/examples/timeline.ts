@@ -1,4 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createTimeline, createButton } from "../../src/index";
 
 const done = initDocPage();
@@ -11,11 +12,11 @@ const items = [
 
 const sections = [
   example(
-    { title: "Alap idővonal", description: "Váltakozó oldalú kártyák; keskeny képernyőn egy oszlop.", component: createTimeline },
+    { title: tr("Alap idővonal"), description: tr("Váltakozó oldalú kártyák; keskeny képernyőn egy oszlop."), component: createTimeline },
     (parent) => createTimeline({ parent, id: "demo-timeline-1", items, ariaLabel: "Munkatapasztalat" }),
   ),
   example(
-    { title: "Kompakt nézet", description: "Az `is-compact` osztály rejti a leírásokat; kapcsolóval váltható." },
+    { title: tr("Kompakt nézet"), description: tr("Az `is-compact` osztály rejti a leírásokat; kapcsolóval váltható.") },
     (parent) => {
       const timeline = createTimeline({ parent, id: "demo-timeline-2", items, compact: true });
       createButton({

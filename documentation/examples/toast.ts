@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createButton, createToast } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Toast", description: "Ideiglenes értesítés.", component: createToast },
+    { title: tr("Toast"), description: tr("Ideiglenes értesítés."), component: createToast },
     (parent) => {
       createButton({ parent, id: "fb-toast-btn", text: "Toast megjelenítése",
         click: () => createToast({ parent: document.body, id: "fb-toast", message: "Értesítés!", type: "success", duration: 3000, width: "300px" }) });

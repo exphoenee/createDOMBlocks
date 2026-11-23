@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import { initI18n, tr } from "./i18n";
 import { createDrawer, openDrawer, createMenu, createCodeBlock } from "../../src/index";
 import { createHeader } from "./createHeader";
 import { createFooter } from "./createFooter";
@@ -10,6 +11,7 @@ import { initTheme } from "./theme";
 
 export function initDocPage(): () => void {
   initTheme();
+  const i18nReady = initI18n();
   const done = createPageLoading();
   const items = getDrawerMenuItems();
   createDrawer({
@@ -22,7 +24,8 @@ export function initDocPage(): () => void {
   });
   createHeader({ onMenuClick: () => openDrawer() });
   createFooter();
-  return done;
+  // a betöltő overlay addig marad, amíg az (angol) katalógus be nem töltődött
+  return () => void i18nReady.finally(done);
 }
 
 export function addFooter(): HTMLElement {
@@ -61,7 +64,7 @@ export function renderSections(sections: DocSection[]): void {
     // Eredmény címke
     const resultLabel = createDOMElem({
       tag: "div",
-      text: "Eredm\u00E9ny:",
+      text: tr("Eredmény:"),
       attrs: { class: "doc-result-label" },
     });
     sectionEl.appendChild(resultLabel);

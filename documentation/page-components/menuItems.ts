@@ -1,10 +1,11 @@
 import type { DrawerMenuItem } from "../../src/types";
+import { tr } from "./i18n";
 
 export function getDrawerMenuItems(): DrawerMenuItem[] {
   return [
-    { label: "Kezdőlap", href: "index.html" },
-    { label: "Témázás", href: "theming.html" },
-    { label: "Nyelvesítés", href: "i18n.html" },
+    { label: tr("Kezdőlap"), href: "index.html" },
+    { label: tr("Témázás"), href: "theming.html" },
+    { label: tr("Nyelvesítés"), href: "i18n.html" },
     {
       label: "Forms",
       children: [
@@ -38,7 +39,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       ],
     },
     {
-      label: "Gombok",
+      label: tr("Gombok"),
       children: [
         { label: "Button input", href: "button-input.html" },
         { label: "Submit input", href: "submit-input.html" },
@@ -47,7 +48,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       ],
     },
     {
-      label: "Tartalom",
+      label: tr("Tartalom"),
       children: [
         { label: "Card", href: "card.html" },
         { label: "Grid", href: "grid.html" },
@@ -67,7 +68,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       ],
     },
     {
-      label: "Navigáció",
+      label: tr("Navigáció"),
       children: [
         { label: "Nav", href: "nav.html" },
         { label: "Breadcrumb", href: "breadcrumb.html" },
@@ -77,7 +78,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       ],
     },
     {
-      label: "Visszajelzés",
+      label: tr("Visszajelzés"),
       children: [
         { label: "Alert", href: "alert.html" },
         { label: "Badge", href: "badge.html" },
@@ -87,7 +88,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       ],
     },
     {
-      label: "Interaktív",
+      label: tr("Interaktív"),
       children: [
         { label: "Accordion", href: "accordion.html" },
         { label: "Tooltip", href: "tooltip.html" },
@@ -96,7 +97,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
       ],
     },
     {
-      label: "Átfedő elemek",
+      label: tr("Átfedő elemek"),
       children: [
         { label: "Modal", href: "modal.html" },
       ],

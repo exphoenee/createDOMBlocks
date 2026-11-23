@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createForm } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Form", description: "Általáns form tömbbe szedett input konfigurációkkal.", component: createForm },
+    { title: tr("Form"), description: tr("Általáns form tömbbe szedett input konfigurációkkal."), component: createForm },
     (parent) => createForm({
       parent, id: "demoForm", action: "/api/submit", method: "POST",
       inputs: [

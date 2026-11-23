@@ -1,5 +1,7 @@
-import { createDOMElem } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
 import { getTheme, setTheme, onThemeChange } from "./theme";
+import { getDocLang, setDocLang, onDocLangChange, t, tr } from "./i18n";
+import { watchLocale } from "../../src/index";
 import type { Theme } from "./theme";
 
 const SUN =
@@ -28,7 +30,7 @@ export function createHeader(params: HeaderParams = {}): HTMLElement {
               {
                 tag: "button",
                 text: "\u2630",
-                attrs: { class: "header-menu-btn", "aria-label": "Menu" },
+                attrs: { class: "header-menu-btn", "aria-label": tr("Menü") },
                 handleEvent: params.onMenuClick
                   ? { event: "click", cb: params.onMenuClick }
                   : undefined,
@@ -60,6 +62,14 @@ export function createHeader(params: HeaderParams = {}): HTMLElement {
               },
               {
                 tag: "button",
+                attrs: { class: "header-lang-btn", type: "button", id: "lang-toggle" },
+                handleEvent: {
+                  event: "click",
+                  cb: () => void setDocLang(getDocLang() === "hu" ? "en" : "hu"),
+                },
+              },
+              {
+                tag: "button",
                 attrs: { class: "header-theme-btn", type: "button", id: "theme-toggle" },
                 handleEvent: {
                   event: "click",
@@ -80,11 +90,25 @@ export function createHeader(params: HeaderParams = {}): HTMLElement {
   const render = (theme: Theme): void => {
     const dark = theme === "dark";
     btn.innerHTML = dark ? SUN : MOON;
-    btn.setAttribute("aria-label", dark ? "Váltás világos módra" : "Váltás sötét módra");
-    btn.setAttribute("title", dark ? "Világos mód" : "Sötét mód");
+    btn.setAttribute("aria-label", t(dark ? "Váltás világos módra" : "Váltás sötét módra"));
+    btn.setAttribute("title", t(dark ? "Világos mód" : "Sötét mód"));
     btn.setAttribute("aria-pressed", String(dark));
   };
   render(getTheme());
   onThemeChange(render);
+  // nyelvváltáskor a gomb feliratai is frissülnek
+  watchLocale(btn, () => render(getTheme()));
+
+  // Nyelvváltó: mindig a másik nyelv kódját mutatja (HU oldalon "EN", EN oldalon "HU")
+  const langBtn = header.querySelector("#lang-toggle") as HTMLButtonElement;
+  const renderLang = (): void => {
+    const toEn = getDocLang() === "hu";
+    langBtn.textContent = toEn ? "EN" : "HU";
+    langBtn.setAttribute("aria-label", toEn ? "Switch to English" : "Váltás magyarra");
+    langBtn.setAttribute("title", toEn ? "English" : "Magyar");
+    langBtn.setAttribute("lang", toEn ? "en" : "hu");
+  };
+  renderLang();
+  onDocLangChange(renderLang);
   return header;
 }

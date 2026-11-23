@@ -1,11 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createVideo } from "../../src/index";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "Video", description: "Videó lejátszó vezérlőkkel és felirattal. A forrás mp4, webm vagy más böngésző által támogatott formátum lehet; betöltés alatt spinner látszik.", component: createVideo },
+    { title: tr("Video"), description: tr("Videó lejátszó vezérlőkkel és felirattal. A forrás mp4, webm vagy más böngésző által támogatott formátum lehet; betöltés alatt spinner látszik."), component: createVideo },
     (parent) => createVideo({
       parent,
       id: "video-basic",
@@ -16,7 +17,7 @@ const sections = [
     }),
   ),
   example(
-    { title: "Video – több forrás", description: "A `src` tömbje több formátumot ad meg (webm, mp4); a böngésző az első lejátszhatót használja. A `type` elhagyható, ilyenkor a kiterjesztésből következtetjük." },
+    { title: tr("Video – több forrás"), description: tr("A `src` tömbje több formátumot ad meg (webm, mp4); a böngésző az első lejátszhatót használja. A `type` elhagyható, ilyenkor a kiterjesztésből következtetjük.") },
     (parent) => createVideo({
       parent,
       id: "video-sources",
@@ -31,7 +32,7 @@ const sections = [
     }),
   ),
   example(
-    { title: "Video – hiba", description: "Ha a videó nem tölthető be, a hibaüzenet és az Újra gomb pontosan akkora keretben jelenik meg, mint a videó." },
+    { title: tr("Video – hiba"), description: tr("Ha a videó nem tölthető be, a hibaüzenet és az Újra gomb pontosan akkora keretben jelenik meg, mint a videó.") },
     (parent) => createVideo({
       parent,
       id: "video-error",
@@ -42,7 +43,7 @@ const sections = [
     }),
   ),
   example(
-    { title: "Video – lazy és előnézeti kép", description: "A `lazy` csak a látótérbe kerüléskor indítja a betöltést, a `poster` az első képkockáig mutat egy képet, a `preload: \"none\"` nem tölt semmit lejátszásig." },
+    { title: tr("Video – lazy és előnézeti kép"), description: tr("A `lazy` csak a látótérbe kerüléskor indítja a betöltést, a `poster` az első képkockáig mutat egy képet, a `preload: \"none\"` nem tölt semmit lejátszásig.") },
     (parent) => createVideo({
       parent,
       id: "video-lazy",
