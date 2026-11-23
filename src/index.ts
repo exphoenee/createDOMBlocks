@@ -103,6 +103,7 @@ export type {
   TitleParams,
   ListParams,
   TableParams,
+  TableLabels,
   TableCellNames,
   ModalParams,
   ModalContent,

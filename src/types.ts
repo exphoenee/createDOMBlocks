@@ -269,6 +269,29 @@ export interface TableCellNames {
   rowNr?: string;
 }
 
+export interface TableLabels {
+  /** A szűrőmező placeholderje */
+  filter?: string;
+  /** A szűrőmező elérhetőségi neve */
+  filterAria?: string;
+  /** Előző oldal gomb */
+  prev?: string;
+  /** Következő oldal gomb */
+  next?: string;
+  /** Oldal (elérhetőségi felirat) */
+  page?: string;
+  /** Oldalméret választó felirata */
+  rowsPerPage?: string;
+  /** Üres találati lista szövege */
+  noResults?: string;
+  /** Növekvő rendezés jelzése */
+  sortAsc?: string;
+  /** Csökkenő rendezés jelzése */
+  sortDesc?: string;
+  /** Az összesítő sor szövege (alapból "1–10 / 53") */
+  info?: (state: { from: number; to: number; total: number; all: number }) => string;
+}
+
 export interface TableParams {
   /** Szülő elem */
   parent: HTMLElement | string;
@@ -310,6 +333,26 @@ export interface TableParams {
   cellNames?: TableCellNames;
   /** Tizedesjegyek száma */
   precision?: number;
+  /**
+   * Rendezhető oszlopok: a fejlécre kattintva növekvő → csökkenő → eredeti sorrend
+   * @default false
+   */
+  sortable?: boolean;
+  /**
+   * Szűrőmező a táblázat felett (a sorok bármely cellájában keres, kis- és nagybetűre érzéketlenül).
+   * Bekapcsolva a visszatérési érték egy `.table-container`, amely a `<table>`-t és a vezérlőket tartalmazza.
+   * @default false
+   */
+  filterable?: boolean;
+  /**
+   * Lapozás: ennyi sor jelenik meg egy oldalon. Bekapcsolva a visszatérési érték egy `.table-container`.
+   * A lábléc összegei az összes sorra vonatkoznak.
+   */
+  pageSize?: number;
+  /** Választható oldalméretek (a `pageSize`-zal együtt); egynél több érték esetén legördülő jelenik meg */
+  pageSizeOptions?: number[];
+  /** Feliratok (fordításhoz) */
+  labels?: TableLabels;
 }
 
 export interface ModalParams {
