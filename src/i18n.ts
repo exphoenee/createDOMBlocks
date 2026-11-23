@@ -198,12 +198,3 @@ export function setLocale(lang: string, options: { updateHtmlLang?: boolean } = 
 export function builtin(key: string, fallback: string): TextRef {
   return tr(`cdb.${key}`, undefined, fallback);
 }
-
-/** Csak teszteléshez: minden katalógus és figyelő törlése, nyelv visszaállítása */
-export function __resetI18n(): void {
-  catalogs.clear();
-  watchers.clear();
-  listeners.clear();
-  locale = "hu";
-  fallbackLocale = "hu";
-}

@@ -23,6 +23,7 @@ import {
   tr,
   resolveText,
 } from "../src/index";
+import * as api from "../src/index";
 
 beforeEach(() => {
   document.body.innerHTML = '<div id="root"></div>';
@@ -266,5 +267,52 @@ describe("komponensek szövegei nyelvváltáskor", () => {
     setLocale("hu");
     setLocale("en"); // 3 kör után elfelejtve: nem dob hibát
     expect(() => setLocale("de")).not.toThrow();
+  });
+});
+
+describe("minden szöveges komponens-paraméter nyelvfüggő lehet", () => {
+  const cases: Array<[string, () => HTMLElement, string]> = [
+    ["card title", () => (require_("createCard") as any)({ parent: "root", id: "x", title: tr("save") }), ".card-header"],
+    ["badge", () => (require_("createBadge") as any)({ parent: "root", id: "x", text: tr("save") }), ".badge"],
+    ["link", () => (require_("createLink") as any)({ parent: "root", id: "x", text: tr("save"), href: "#" }), "a"],
+    ["title", () => (require_("createTitle") as any)({ parent: "root", id: "x", text: tr("save") }, 2), "h2"],
+    ["paragraph", () => (require_("createParagraph") as any)({ parent: "root", id: "x", text: tr("save") }), "p"],
+    ["blockquote text", () => (require_("createBlockquote") as any)({ parent: "root", id: "x", text: tr("save") }), ".blockquote-text"],
+    ["blockquote author", () => (require_("createBlockquote") as any)({ parent: "root", id: "x", text: "t", author: tr("save") }), "cite"],
+    ["progress label", () => (require_("createProgressBar") as any)({ parent: "root", id: "x", value: 10, label: tr("save") }), ".progress-label, label, span"],
+    ["accordion", () => (require_("createAccordion") as any)({ parent: "root", id: "x", items: [{ id: "a", title: tr("save"), content: { tag: "p", text: "c" } }] }), ".accordion-title"],
+    ["timeline", () => (require_("createTimeline") as any)({ parent: "root", id: "x", items: [{ period: tr("save"), title: tr("save") }] }), ".timeline-title"],
+    ["breadcrumb", () => (require_("createBreadcrumb") as any)({ parent: "root", id: "x", items: [{ text: tr("save"), href: "#" }, { text: "b" }] }), "a"],
+    ["nav", () => (require_("createNav") as any)({ parent: "root", id: "x", items: [{ text: tr("save"), href: "#" }] }), "a, span"],
+    ["menu", () => (require_("createMenu") as any)({ id: "x", items: [{ label: tr("save"), href: "#" }] }), ".drawer-link"],
+    ["drag and drop", () => (require_("createDragAndDropFileInput") as any)({ parent: "root", id: "x", labelText: tr("save"), dropText: tr("save") }), ".dd-label"],
+    ["textarea label", () => (require_("createTextarea") as any)({ parent: "root", id: "x", labelText: tr("save") }), "label"],
+    ["select option", () => (require_("createSelect") as any)({ parent: "root", id: "x", options: [{ text: tr("save"), value: 1 }] }), "option"],
+    ["radio option", () => (require_("createRadio") as any)({ parent: "root", id: "x", name: "r", options: [{ text: tr("save"), value: 1 }] }), "label"],
+    ["checkbox label", () => (require_("createCheckbox") as any)({ parent: "root", id: "x", labelText: tr("save") }), "label"],
+    ["tooltip", () => (require_("createTooltip") as any)({ parent: "root", id: "x", text: tr("save") }), ".tooltip-content"],
+  ];
+
+  function require_(name: string): unknown {
+    return (api as Record<string, unknown>)[name];
+  }
+
+  for (const [label, make, selector] of cases) {
+    it(`${label}: tr() hivatkozás frissül nyelvváltáskor`, () => {
+      document.body.innerHTML = '<div id="root"></div>';
+      const el = make();
+      const texts = () => [...el.querySelectorAll(selector), ...(el.matches(selector) ? [el] : [])].map((n) => n.textContent);
+      expect(texts().some((x) => x?.includes("Mentés"))).toBe(true);
+      setLocale("en");
+      expect(texts().some((x) => x?.includes("Save"))).toBe(true);
+      expect(texts().some((x) => x?.includes("Mentés"))).toBe(false);
+    });
+  }
+
+  it("tooltip data-tooltip attribútum is frissül", () => {
+    const tip = api.createTooltip({ parent: "root", id: "tt", text: tr("save") });
+    expect(tip.getAttribute("data-tooltip")).toBe("Mentés");
+    setLocale("en");
+    expect(tip.getAttribute("data-tooltip")).toBe("Save");
   });
 });
