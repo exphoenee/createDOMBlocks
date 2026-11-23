@@ -1,8 +1,8 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { AccordionParams, AccordionItem } from "../types";
 
-function buildAccordionItem(item: AccordionItem, multiple: boolean): CreateDOMElemOptions {
+function buildAccordionItem(item: AccordionItem, multiple: boolean): DOMOptions {
   const content = Array.isArray(item.content) ? item.content : [item.content];
 
   return {

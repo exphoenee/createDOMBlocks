@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { LinkParams } from "../types";
 
 export function createLink(params: LinkParams): HTMLElement {

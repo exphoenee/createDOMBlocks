@@ -1,6 +1,6 @@
 import path from "path";
 import { fileURLToPath } from "url";
-import { copyFileSync, existsSync } from "fs";
+import { copyFileSync, existsSync, readdirSync } from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,6 +17,19 @@ function copyCssPlugin() {
       });
     },
   };
+}
+
+/** Minden documentation/examples/*.ts és documentation/demos/*.ts külön bundle (egy komponens = egy oldal). */
+function documentationEntries() {
+  const entries = {};
+  for (const dir of ["examples", "demos"]) {
+    const abs = path.resolve(__dirname, "documentation", dir);
+    if (!existsSync(abs)) continue;
+    for (const f of readdirSync(abs)) {
+      if (f.endsWith(".ts") && !f.startsWith("_")) entries[`${dir}/${f.slice(0, -3)}`] = `./documentation/${dir}/${f}`;
+    }
+  }
+  return entries;
 }
 
 const libraryConfig = {
@@ -56,29 +69,7 @@ const documentationConfig = {
   mode: "development",
   devtool: "source-map",
   name: "documentation",
-  entry: {
-    "examples/forms": "./documentation/examples/forms.ts",
-    "examples/buttons": "./documentation/examples/buttons.ts",
-    "examples/selection": "./documentation/examples/selection.ts",
-    "examples/tables": "./documentation/examples/tables.ts",
-    "examples/lists": "./documentation/examples/lists.ts",
-    "examples/navigation": "./documentation/examples/navigation.ts",
-    "examples/content": "./documentation/examples/content.ts",
-    "examples/feedback": "./documentation/examples/feedback.ts",
-    "examples/interactive": "./documentation/examples/interactive.ts",
-    "examples/modal": "./documentation/examples/modal.ts",
-    "examples/avatars": "./documentation/examples/avatars.ts",
-    "examples/customInputs": "./documentation/examples/customInputs.ts",
-    "examples/carousel": "./documentation/examples/carousel.ts",
-    "examples/drawer": "./documentation/examples/drawer.ts",
-    "examples/menu": "./documentation/examples/menu.ts",
-    "examples/draganddrop": "./documentation/examples/draganddrop.ts",
-    "examples/index": "./documentation/examples/index.ts",
-    "demos/demo1-landing": "./documentation/demos/demo1-landing.ts",
-    "demos/demo2-tech": "./documentation/demos/demo2-tech.ts",
-    "demos/demo3-dashboard": "./documentation/demos/demo3-dashboard.ts",
-    "demos/demo4-social": "./documentation/demos/demo4-social.ts",
-  },
+  entry: documentationEntries(),
   output: {
     path: path.resolve(__dirname, "dist-page"),
     filename: "[name].js",

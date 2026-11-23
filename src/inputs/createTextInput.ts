@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { TextInputParams } from "../types";
 import { createInputContainer, createInputChildren } from "../helpers";
 

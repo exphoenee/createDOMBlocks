@@ -1,3 +1,28 @@
+// Nyelvesítés: a beépített feliratok (hu, en) regisztrálása, majd a nyilvános i18n API
+import "./locales";
+export {
+  setLocale,
+  getLocale,
+  getLocales,
+  setFallbackLocale,
+  getFallbackLocale,
+  registerMessages,
+  registerTranslations,
+  defineMessages,
+  flattenMessages,
+  loadMessages,
+  onLocaleChange,
+  watchLocale,
+  t,
+  tr,
+  resolveText,
+  isReactiveText,
+} from "./i18n";
+export type { Messages, MessagesTree, MessageRefs, MessageParams, TextRef, TextValue } from "./i18n";
+export { hu as huMessages, en as enMessages } from "./locales";
+export { createDOMElem as createLocalizedElem } from "./dom";
+export type { DOMOptions } from "./dom";
+
 export { createTextInput } from "./inputs/createTextInput";
 export { createTelInput } from "./inputs/createTelInput";
 export { createUrlInput } from "./inputs/createUrlInput";
@@ -49,6 +74,8 @@ export {
   createSpinner,
   createProgressBar,
   createImage,
+  createVideo,
+  createMusicPlayer,
   createLink,
   createCodeBlock,
   createBlockquote,
@@ -68,6 +95,7 @@ export {
   closeDrawer,
   createMenu,
   createCarousel,
+  createTimeline,
 } from "./components";
 
 export type {
@@ -100,6 +128,10 @@ export type {
   TitleParams,
   ListParams,
   TableParams,
+  TableLabels,
+  TableElement,
+  TableServerQuery,
+  TableServerSide,
   TableCellNames,
   ModalParams,
   ModalContent,
@@ -122,6 +154,11 @@ export type {
   SpinnerParams,
   ProgressBarParams,
   ImageParams,
+  VideoParams,
+  VideoSource,
+  MusicPlayerParams,
+  MusicPlayerState,
+  MusicTrack,
   LinkParams,
   CodeBlockParams,
   BlockquoteParams,
@@ -141,6 +178,9 @@ export type {
 export type {
   CarouselSlide,
   CarouselParams,
+  TimelineItem,
+  TimelineParams,
+  ImageState,
 } from "./types";
 
 export type {

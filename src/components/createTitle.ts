@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { TitleParams } from "../types";
 
 const HEADINGS = ["h1", "h2", "h3", "h4", "h5", "h6"] as const;

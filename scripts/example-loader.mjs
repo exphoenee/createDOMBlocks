@@ -58,31 +58,30 @@ function hasExampleCalls(source) {
  * - Block body: strip the outer `{ }` braces, dedent the inner lines.
  */
 function normalizeBody(bodyText) {
-  const trimmed = bodyText.trim();
+  const trimmed = bodyText.replace(/\r\n/g, "\n").trim();
 
   // Not a block body — return as-is.
-  if (!trimmed.startsWith("{")) return trimmed;
+  if (!trimmed.startsWith("{")) return dedentContinuation(trimmed);
 
   // Block body — strip braces.
   const inner = trimmed.slice(1, -1).trim();
   if (!inner) return inner;
+  return dedentContinuation(inner);
+}
 
-  // Dedent: find minimum leading whitespace among non-empty lines.
-  const lines = inner.split("\n");
+/**
+ * Az első sor már trimmelt (nincs behúzása), a további sorokból a közös behúzást vonjuk le,
+ * így a szerző formázása (tördelés, belső behúzás) érintetlen marad.
+ */
+function dedentContinuation(text) {
+  const lines = text.split("\n");
+  if (lines.length < 2) return text;
   const indent = lines
+    .slice(1)
     .filter((l) => l.trim().length > 0)
-    .reduce((min, l) => {
-      const ws = l.match(/^[ \t]*/);
-      return ws ? Math.min(min, ws[0].length) : min;
-    }, Infinity);
-
-  if (indent > 0 && indent < Infinity) {
-    return lines
-      .map((l) => (l.trim().length > 0 ? l.slice(indent) : ""))
-      .join("\n");
-  }
-
-  return inner;
+    .reduce((min, l) => Math.min(min, l.match(/^[ \t]*/)[0].length), Infinity);
+  if (!(indent > 0 && indent < Infinity)) return text;
+  return [lines[0], ...lines.slice(1).map((l) => (l.trim().length > 0 ? l.slice(indent) : ""))].join("\n");
 }
 
 /**
@@ -99,116 +98,61 @@ function unescapeCode(text) {
 }
 
 /**
- * Format extracted code with proper line breaks and indentation.
- *
- * - After `({` each comma-separated property gets its own line (indented)
- * - Nested objects `{ }` are also expanded
- * - Strings and template literals are preserved as-is
+ * Egysoros kód olvashatóbbá tétele: a hívás legkülső objektum-argumentumának (`f({ ... })`)
+ * minden tulajdonsága külön sorba kerül. A beágyazott objektumok / tömbök / függvények egy sorban
+ * maradnak. A már többsoros kódot NEM formázza újra: a szerző tördelését megtartjuk.
  */
 function formatExtractedCode(code) {
+  if (code.includes("\n")) return code;
+
+  const open = findObjectArgStart(code);
+  if (open < 0) return code;
+
+  // a legkülső `{ ... }` tulajdonságainak szétvágása a mélység-1 vesszőknél
+  const parts = [];
   let depth = 0;
-  let inString = false;
-  let strChar = null;
-  let inTemplate = false;
-  let result = "";
-  let i = 0;
-
-  while (i < code.length) {
+  let quote = null;
+  let partStart = open + 1;
+  let close = -1;
+  for (let i = open; i < code.length; i++) {
     const c = code[i];
-    const n = code[i + 1];
-
-    // --- Track string / template literal state ---
-    if ((c === '"' || c === "'") && !inTemplate) {
-      const isEscaped = i > 0 && code[i - 1] === "\\";
-      if (inString && strChar === c && !isEscaped) {
-        inString = false;
-        strChar = null;
-      } else if (!inString) {
-        inString = true;
-        strChar = c;
-      }
-      result += c;
-      i++;
+    if (quote) {
+      if (c === "\\") i++;
+      else if (c === quote) quote = null;
       continue;
     }
-
-    if (c === "`" && !inString) {
-      inTemplate = !inTemplate;
-    }
-
-    if (inString || inTemplate) {
-      // Consume escape sequences whole
-      if (c === "\\" && n) {
-        result += c + n;
-        i += 2;
-      } else {
-        result += c;
-        i++;
-      }
-      continue;
-    }
-
-    // --- Formatting: `({` opens an object block ---
-    if (c === "(" && n === "{") {
-      depth++;
-      result += "({\n";
-      result += "  ".repeat(depth);
-      i += 2;
-      continue;
-    }
-
-    // --- Standalone `{` (nested object) ---
-    if (c === "{") {
-      depth++;
-      result += "{\n";
-      result += "  ".repeat(depth);
-      i++;
-      continue;
-    }
-
-    // --- Closing `})` ---
-    if (c === "}" && n === ")") {
+    if (c === '"' || c === "'" || c === "`") { quote = c; continue; }
+    if (c === "{" || c === "(" || c === "[") depth++;
+    else if (c === "}" || c === ")" || c === "]") {
       depth--;
-      result += "\n";
-      result += "  ".repeat(depth);
-      result += "})";
-      i += 2;
-      continue;
+      if (depth === 0) { close = i; break; }
+    } else if (c === "," && depth === 1) {
+      parts.push(code.slice(partStart, i));
+      partStart = i + 1;
     }
-
-    // --- Standalone `}` ---
-    if (c === "}") {
-      depth--;
-      result += "\n";
-      result += "  ".repeat(depth);
-      result += "}";
-      i++;
-      continue;
-    }
-
-    // --- Comma → inside objects: newline + indent; elsewhere: stay on same line ---
-    if (c === ",") {
-      if (depth > 0) {
-        result += ",\n";
-        result += "  ".repeat(depth);
-      } else {
-        result += ", ";
-      }
-      i++;
-      continue;
-    }
-
-    // --- Collapse consecutive spaces ---
-    if (c === " " && result.endsWith(" ")) {
-      i++;
-      continue;
-    }
-
-    result += c;
-    i++;
   }
+  if (close < 0 || code[close] !== "}") return code;
+  parts.push(code.slice(partStart, close));
 
-  return result.trim();
+  const props = parts.map((x) => x.trim()).filter(Boolean);
+  if (props.length === 0) return code;
+  return `${code.slice(0, open)}{\n${props.map((x) => `  ${x}`).join(",\n")}\n}${code.slice(close + 1)}`;
+}
+
+/** Az első `({` (hívás objektum-argumentuma) `{` jelének pozíciója stringeken kívül, vagy -1 */
+function findObjectArgStart(code) {
+  let quote = null;
+  for (let i = 0; i < code.length - 1; i++) {
+    const c = code[i];
+    if (quote) {
+      if (c === "\\") i++;
+      else if (c === quote) quote = null;
+      continue;
+    }
+    if (c === '"' || c === "'" || c === "`") { quote = c; continue; }
+    if (c === "(" && code[i + 1] === "{") return i + 1;
+  }
+  return -1;
 }
 
 /**
@@ -330,11 +274,14 @@ export default function exampleLoader(source) {
         bodyText = modifiedSource.slice(bodyNode.start, bodyNode.end);
       }
 
+      bodyText = bodyText.replace(/\r\n/g, "\n");
+
+      // Egysoros hívásnál a legkülső objektum tulajdonságai külön sorba kerülnek;
+      // a többsoros (szerző által tördelt) kód változatlan marad
+      bodyText = formatExtractedCode(bodyText);
+
       // Unescape \n, \t etc. so they render as actual line breaks / tabs
       bodyText = unescapeCode(bodyText);
-
-      // Format: expand `({ ... })` blocks to multiple lines
-      bodyText = formatExtractedCode(bodyText);
 
       modifiedSource = injectCode(modifiedSource, metaNode, bodyText, DEFAULT_LANG);
     }

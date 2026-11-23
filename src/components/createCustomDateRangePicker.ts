@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
 import type { CustomDateRangePickerParams } from "../types";
 import {
   buildMonthCalendar,
@@ -21,7 +22,7 @@ export function createCustomDateRangePicker(params: CustomDateRangePickerParams)
     tag: "input",
     attrs: {
       type: "text", readonly: "true", class: "custom-date-range-picker-input",
-      placeholder: "Kezdet...",
+      placeholder: builtin("picker.rangeStart", "Kezdet…"),
       ...(startDate ? { value: startDate } : {}),
     },
   });
@@ -30,7 +31,7 @@ export function createCustomDateRangePicker(params: CustomDateRangePickerParams)
     tag: "input",
     attrs: {
       type: "text", readonly: "true", class: "custom-date-range-picker-input",
-      placeholder: "Veg...",
+      placeholder: builtin("picker.rangeEnd", "Vég…"),
       ...(endDate ? { value: endDate } : {}),
     },
   });

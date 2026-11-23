@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { ListParams } from "../types";
 
 export function createUnorderedList(data: string[], params: ListParams): HTMLElement {

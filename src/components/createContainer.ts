@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { ContainerParams } from "../types";
 
 export function createContainer(params: ContainerParams): HTMLElement {

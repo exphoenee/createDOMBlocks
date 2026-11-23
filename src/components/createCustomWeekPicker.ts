@@ -1,7 +1,8 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin, tr } from "../i18n";
 import type { CustomWeekPickerParams } from "../types";
 import {
-  MONTHS,
+  monthNames,
   createCalendarHeader,
   setupCalendarCloseHandler,
   toggleCalendar,
@@ -24,7 +25,7 @@ export function createCustomWeekPicker(params: CustomWeekPickerParams): HTMLElem
       type: "text",
       readonly: "true",
       class: "custom-week-picker-input",
-      placeholder: params.placeholder || "Valassz hetet...",
+      placeholder: builtin("picker.week", "Válassz hetet…"),
       ...(params.id ? { id: `${params.id}-input` } : {}),
       ...(selectedWeek ? { value: selectedWeek } : {}),
     },
@@ -48,7 +49,7 @@ export function createCustomWeekPicker(params: CustomWeekPickerParams): HTMLElem
 
     return [
       createCalendarHeader(
-        `${MONTHS[currentMonth]} ${currentYear}`,
+        `${monthNames()[currentMonth]} ${currentYear}`,
         () => {
           currentMonth = currentMonth === 0 ? 11 : currentMonth - 1;
           if (currentMonth === 11) currentYear--;
@@ -68,7 +69,7 @@ export function createCustomWeekPicker(params: CustomWeekPickerParams): HTMLElem
           const isSelected = weekStr === selectedWeek;
           return createDOMElem({
             tag: "span",
-            text: `${w}. hét`,
+            text: tr("cdb.picker.week.label", { n: w }, "{n}. hét"),
             attrs: { class: `week-item${isSelected ? " selected" : ""}` },
             handleEvent: {
               event: "click",

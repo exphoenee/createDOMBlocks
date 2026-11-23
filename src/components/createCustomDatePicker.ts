@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
 import type { CustomDatePickerParams } from "../types";
 import {
   buildMonthCalendar,
@@ -20,7 +21,7 @@ export function createCustomDatePicker(params: CustomDatePickerParams): HTMLElem
       type: "text",
       readonly: "true",
       class: "custom-date-picker-input",
-      placeholder: params.placeholder || "Valassz datumot...",
+      placeholder: builtin("picker.date", "Válassz dátumot…"),
       ...(params.id ? { id: `${params.id}-input` } : {}),
       ...(selectedDate ? { value: selectedDate } : {}),
     },

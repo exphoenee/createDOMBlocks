@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin, tr } from "../i18n";
 import type { DragAndDropFileInputParams } from "../types";
 
 function formatSize(bytes: number): string {
@@ -99,14 +100,16 @@ export function createDragAndDropFileInput(params: DragAndDropFileInputParams): 
     tag: "div",
     attrs: { class: "dd-drop-text" },
     children: [
-      createDOMElem({ tag: "span", text: params.dropText || "Húzd ide a fájlokat", attrs: { class: "dd-drop-title" } }),
-      createDOMElem({ tag: "span", text: "vagy kattints a tallózáshoz", attrs: { class: "dd-drop-sub" } }),
+      createDOMElem({ tag: "span", text: params.dropText || builtin("dropzone.title", "Húzd ide a fájlokat"), attrs: { class: "dd-drop-title" } }),
+      createDOMElem({ tag: "span", text: builtin("dropzone.sub", "vagy kattints a tallózáshoz"), attrs: { class: "dd-drop-sub" } }),
     ],
   });
   const dropHint = createDOMElem({
     tag: "div",
     attrs: { class: "dd-drop-hint" },
-    text: params.accept ? `.${params.accept.join(", .")} f\u00E1jlok` : "B\u00E1rmilyen f\u00E1jl t\u00E1mogatott",
+    text: params.accept
+      ? tr("cdb.dropzone.accepted", { types: `.${params.accept.join(", .")}` }, "{types} fájlok")
+      : builtin("dropzone.any", "Bármilyen fájl támogatott"),
   });
 
   const dropzone = createDOMElem({

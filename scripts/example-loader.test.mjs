@@ -100,7 +100,8 @@ renderSections(sections);
       const result = exampleLoader(source);
       const code = getCodeFromOutput(result);
       assert.ok(code, "code should be extracted");
-      assert.equal(code, `createButton({ parent, id: "b1", text: "Button" })`);
+      // The extracted code is formatted: one property per line.
+      assert.equal(code, `createButton({\n  parent,\n  id: "b1",\n  text: "Button"\n})`);
       assert.equal(getCodeLangFromOutput(result), "typescript");
       // The render function should still be intact
       assert.ok(result.includes("(parent) => createButton({ parent, id: \"b1\", text: \"Button\" })"),
@@ -202,8 +203,10 @@ example(
       assert.ok(!code.startsWith("{"), "code should not start with opening brace");
       assert.ok(!code.endsWith("}"), "code should not end with closing brace");
       // Should contain both statements
-      assert.ok(code.includes('createAlert({ parent, id: "a1"'), "first statement present");
-      assert.ok(code.includes('createAlert({ parent, id: "a2"'), "second statement present");
+      // A szerző formázása megmarad (a sorok nem esnek szét), a közös behúzás levonva
+      assert.ok(code.includes('createAlert({ parent, id: "a1", type: "success", message: "OK" });'), "first statement present");
+      assert.ok(!code.startsWith(" "), "no leading indentation");
+      assert.ok(code.includes('createAlert({ parent, id: "a2", type: "error", message: "Hiba" });'), "second statement present");
       // Should have proper newlines between statements
       assert.ok(code.includes(");\n"), "statements should be separated by newline");
     });
@@ -276,7 +279,7 @@ example(
 `;
       const result = exampleLoader(source);
       const code = getCodeFromOutput(result);
-      assert.equal(code, "simpleFunc({ parent })");
+      assert.equal(code, "simpleFunc({\n  parent\n})");
       // Should not have double comma
       assert.ok(!result.includes(",,}"), "no erroneous double comma at end");
     });
@@ -348,9 +351,10 @@ example(
       const code = getCodeFromOutput(result);
       assert.ok(code, "code should be extracted");
       assert.ok(code.includes("createCodeBlock"), "function name present");
-      // The escaped newline in the original should be preserved
-      assert.ok(code.includes("\\\\n") || code.includes("\\n"),
-        "escaped newlines should be preserved");
+      // Escape sequences are unescaped for display: \n becomes a real newline,
+      // and the braces/quotes inside the string stay untouched.
+      assert.ok(code.includes("const x: number = 42;\nconsole.log(x);"),
+        "escaped newline should render as a real newline inside the string");
     });
   });
 

@@ -151,6 +151,8 @@ createCard({
 | `createParagraph(params)` | `<p>` element |
 | `createTitle(params, level)` | Heading (h1–h6) |
 | `createImage(params)` | Figure with image + optional caption |
+| `createVideo(params)` | Self-loading video (mp4, webm, ogg) with spinner, error fallback and sized frame |
+| `createMusicPlayer(params)` | Music player with playlist, seek bar, volume and repeat |
 | `createLink(params)` | Styled `<a>` link |
 | `createCodeBlock(params)` | Code block with syntax highlighting |
 | `createBlockquote(params)` | Blockquote with optional author |
@@ -187,6 +189,7 @@ createCard({
 | Function | Description |
 |----------|-------------|
 | `createCarousel(params)` | 3D carousel with navigation and touch |
+| `createTimeline(params)` | Vertical timeline with alternating cards and compact view |
 | `createDragAndDropFileInput(params)` | Drag & drop file uploader |
 
 ### Common Parameters
@@ -251,6 +254,39 @@ openModal("confirmModal");
 ```
 
 ---
+
+## Localization (i18n)
+
+Every text parameter of every component (labels, placeholders, button text, titles, messages, aria-labels, table cells …) accepts a plain string, a `tr("key")` reference, or a function. References and functions are **recomputed automatically when the locale changes**: the component stays the same element, so its state (typed value, active tab, page, playback) is preserved. Built-in labels (table pager, modal buttons, password toggle, calendar month names …) switch too. Hungarian (`hu`, the default) and English (`en`) catalogs are included.
+
+```ts
+import { registerMessages, setLocale, tr, createTextInput } from "createdomblocks";
+
+registerMessages("hu", { "form.name": "Név" });
+registerMessages("en", { "form.name": "Name" });
+
+createTextInput({ parent: "app", id: "name", labelText: tr("form.name") });
+setLocale("en"); // the label updates, the typed value stays
+```
+
+Also available: `loadMessages(lang, urlOrLoader)`, `t(key, params)` with `{name}` interpolation and plurals (`key_one` / `key_other`), `onLocaleChange(cb)`, `setFallbackLocale(lang)`. See the [Localization guide](https://exphoenee.github.io/createDOMBlocks/i18n.html) for a live demo, the full API and the list of built-in `cdb.*` keys.
+
+## Theming
+
+All colors, radii, shadows and the transition speed come from CSS custom properties, so you can restyle every component without touching the library. Load your own CSS **after** `style.css` and override the variables:
+
+```css
+:root {
+  --primary: #7c3aed;        /* brand color: buttons, active items, focus */
+  --primary-hover: #6d28d9;
+  --radius: 0.25rem;         /* less rounded corners everywhere */
+}
+
+/* or scope a theme to a part of the page */
+.admin-panel { --primary: #16a34a; --bg: #f0fdf4; }
+```
+
+Available variables: `--primary`, `--primary-hover`, `--on-primary`, `--secondary`, `--text`, `--text-light`, `--bg`, `--bg-alt`, `--border`, `--success|error|warning|info|neutral` (+ `-bg`), `--radius`, `--radius-lg`, `--shadow`, `--shadow-md`, `--shadow-lg`, `--transition`. See the [Theming guide](https://exphoenee.github.io/createDOMBlocks/theming.html) for a live demo, dark mode and class-level customization.
 
 ## Example
 

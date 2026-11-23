@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { TextareaParams } from "../types";
+import type { TextValue } from "../i18n";
 
 export function createTextarea(params: TextareaParams): HTMLElement {
   const events: { event: string; cb: (e: Event) => void }[] = [];
@@ -7,7 +8,7 @@ export function createTextarea(params: TextareaParams): HTMLElement {
   if (params.click) events.push({ event: "click", cb: params.click });
   if (params.handleEvent) events.push(...(Array.isArray(params.handleEvent) ? params.handleEvent : [params.handleEvent]));
 
-  const taAttrs: Record<string, string | number> = {
+  const taAttrs: Record<string, string | number | TextValue> = {
     id: params.id,
     name: params.name || params.id,
     class: `textarea-input${params.class ? ` ${params.class}` : ""}`,
