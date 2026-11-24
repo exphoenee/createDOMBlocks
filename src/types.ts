@@ -434,6 +434,21 @@ export interface ModalParams {
    * @default "90vw"
    */
   maxWidth?: string | number;
+  /**
+   * Az OK / Mégse gombok sora (lábléc); `false` esetén csak a bezáró (×) gomb marad
+   * @default true
+   */
+  footer?: boolean;
+  /**
+   * A háttérre kattintva bezárul (a `closeAction` is lefut)
+   * @default false
+   */
+  closeOnBackdrop?: boolean;
+  /**
+   * Az Esc billentyűvel bezárul (a `closeAction` is lefut)
+   * @default false
+   */
+  closeOnEscape?: boolean;
   /** A gombok feliratai (nyelvfüggő szöveg is lehet); alapból a beépített "Mégse" / "OK" */
   labels?: {
     ok?: TextValue;
@@ -1440,6 +1455,10 @@ export interface GanttMilestone {
    * @default "dot"
    */
   shape?: "dot" | "diamond";
+  /** Kártyán a felirat alatti kis sor, pl. az időpont (csak `above` / `below`) */
+  meta?: TextValue;
+  /** Kis jelvény a kártya sarkán (pl. "!" figyelmeztetés), opcionális tooltippel (csak `above` / `below`) */
+  flag?: { text: TextValue; title?: TextValue };
   /** Egyedi szín (CSS érték); alapból a sor színe */
   color?: string;
   /** Tetszőleges adat, a `onMilestoneClick` visszakapja */
@@ -1453,7 +1472,7 @@ export interface GanttRow {
   label: TextValue;
   /** Alcím a felirat alatt (pl. cég) */
   sublabel?: TextValue;
-  /** Időszak felirat; alapból a dátumokból készül (nyelvfüggően) */
+  /** Időszak felirat; alapból a dátumokból készül (nyelvfüggően); üres szöveg: nem jelenik meg */
   periodLabel?: TextValue;
   /** Csoport azonosítója (lásd `groups`) */
   group?: string;
@@ -1564,6 +1583,15 @@ export interface GanttParams {
   onSelect?: (row: GanttRow | null) => void;
   /** Mérföldkőre kattintáskor */
   onMilestoneClick?: (milestone: GanttMilestone, row: GanttRow) => void;
+  /** Mérföldkőre rámutatáskor / fókuszáláskor */
+  onMilestoneHover?: (milestone: GanttMilestone, row: GanttRow) => void;
+  /** Kezdetben kiemelt mérföldkő azonosítója (`GanttMilestone.id`) */
+  selectedMilestoneId?: string;
+  /**
+   * Egérrel megfogva, húzással is görgethető (a gombok és mérföldkövek kattinthatók maradnak)
+   * @default false
+   */
+  dragScroll?: boolean;
   /** Átrendezés után az új sorrenddel (azonosítók) */
   onReorder?: (ids: string[]) => void;
   /** Elérhetőségi név (aria-label) */
@@ -1581,6 +1609,8 @@ export interface GanttElement extends HTMLElement {
   getRows(): GanttRow[];
   /** Sor kijelölése (`null`: kijelölés törlése) */
   select(id: string | null): void;
+  /** Mérföldkő kiemelése az azonosítója alapján (`null`: kiemelés törlése) */
+  selectMilestone(id: string | null): void;
   /** A kijelölt sor azonosítója */
   getSelected(): string | null;
   /** Az azonosítók az aktuális (esetleg átrendezett) sorrendben */

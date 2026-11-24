@@ -3953,3 +3953,51 @@ button.drawer-toggle {
   text-align: center;
   color: var(--text-light);
 }
+
+.gantt-card-meta {
+  display: block;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+.gantt-flag {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--warning);
+  color: #451a03;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: help;
+  box-shadow: var(--shadow);
+}
+
+.gantt-card.is-selected {
+  z-index: 5;
+  box-shadow: 0 0 0 2px var(--gantt-surface), 0 0 0 4px var(--text), var(--shadow-md);
+}
+
+.gantt-mark.is-selected {
+  z-index: 5;
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+.gantt-mark.is-diamond.is-selected {
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.25);
+}
+
+.gantt.is-dragscroll .gantt-scroll {
+  cursor: grab;
+}
+
+.gantt.is-grabbing,
+.gantt.is-grabbing * {
+  cursor: grabbing !important;
+  user-select: none;
+}

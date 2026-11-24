@@ -43,6 +43,7 @@ interface GanttState {
   selected: string | null;
   colors: Map<string, string>;
   dragged: string | null;
+  selectedMs: string | null;
 }
 
 const states = new WeakMap<HTMLElement, GanttState>();
@@ -190,8 +191,10 @@ function buildMilestone(
   const past = !!state.params.dimPast && abs < layout.todayAbs;
   const color = ms.color;
 
-  const mark = el("button", `gantt-mark is-${ms.shape ?? "dot"}${past ? " is-past" : ""}`);
+  const picked = ms.id !== undefined && ms.id === state.selectedMs ? " is-selected" : "";
+  const mark = el("button", `gantt-mark is-${ms.shape ?? "dot"}${past ? " is-past" : ""}${picked}`);
   mark.type = "button";
+  if (ms.id !== undefined) mark.dataset.msId = ms.id;
   mark.dataset.row = row.id;
   mark.dataset.ms = String(idx);
   mark.style.left = left;
@@ -209,14 +212,21 @@ function buildMilestone(
   line.style.left = left;
   if (color) line.style.setProperty("--gantt-ms-color", color);
 
-  const card = el("button", `gantt-card is-${placement}${past ? " is-past" : ""}${ms.shape === "diamond" ? " is-final" : ""}`);
+  const card = el("button", `gantt-card is-${placement}${past ? " is-past" : ""}${ms.shape === "diamond" ? " is-final" : ""}${picked}`);
   card.type = "button";
+  if (ms.id !== undefined) card.dataset.msId = ms.id;
   card.dataset.row = row.id;
   card.dataset.ms = String(idx);
   card.style.left = left;
   if (color) card.style.setProperty("--gantt-ms-color", color);
   if (ms.caption !== undefined) card.appendChild(el("span", "gantt-card-caption", resolveText(ms.caption)));
   card.appendChild(el("span", "gantt-card-label", label));
+  if (ms.meta !== undefined) card.appendChild(el("span", "gantt-card-meta", resolveText(ms.meta)));
+  if (ms.flag) {
+    const flag = el("span", "gantt-flag", resolveText(ms.flag.text));
+    if (ms.flag.title !== undefined) flag.title = resolveText(ms.flag.title);
+    card.appendChild(flag);
+  }
   track.append(line, card, mark);
 }
 
@@ -237,11 +247,11 @@ function buildRow(state: GanttState, row: GanttRow, layout: Layout): HTMLElement
   label.tabIndex = 0;
   label.setAttribute("role", "button");
   label.setAttribute("aria-pressed", String(state.selected === row.id));
-  label.setAttribute("aria-label", `${title}, ${period}`);
+  label.setAttribute("aria-label", period ? `${title}, ${period}` : title);
   if (params.draggableRows) label.draggable = true;
   label.appendChild(el("div", "gantt-label-title", title));
   if (row.sublabel !== undefined) label.appendChild(el("div", "gantt-label-sub", resolveText(row.sublabel)));
-  label.appendChild(el("div", "gantt-label-period", period));
+  if (period) label.appendChild(el("div", "gantt-label-period", period));
 
   const track = el("div", "gantt-track");
   const startPct = Math.max(0, layout.pct(monthPos(parseDate(row.start), "start")));
@@ -252,7 +262,7 @@ function buildRow(state: GanttState, row: GanttRow, layout: Layout): HTMLElement
   bar.dataset.row = row.id;
   bar.tabIndex = 0;
   bar.setAttribute("role", "button");
-  bar.setAttribute("aria-label", `${title}, ${period}${ongoing ? `, ${resolveText(builtin("gantt.current", "folyamatban"))}` : ""}`);
+  bar.setAttribute("aria-label", `${period ? `${title}, ${period}` : title}${ongoing ? `, ${resolveText(builtin("gantt.current", "folyamatban"))}` : ""}`);
   bar.style.left = pctStr(startPct);
   bar.style.width = pctStr(Math.max(0.4, endPct - startPct));
   if (!hasCards || params.barStyle !== "thin") {
@@ -289,6 +299,7 @@ function render(root: GanttElement): void {
   const labelWidth = params.labelWidth ?? 220;
   root.classList.toggle("is-fit", layout.fit);
   root.classList.toggle("is-thin", params.barStyle === "thin");
+  root.classList.toggle("is-dragscroll", !!params.dragScroll);
   root.style.setProperty("--gantt-label-w", `${labelWidth}px`);
   root.style.setProperty("--gantt-track-w", layout.fit ? "480px" : `${layout.trackWidth}px`);
   root.textContent = "";
@@ -374,6 +385,15 @@ function select(root: GanttElement, id: string | null, notify: boolean): void {
   if (notify) state.params.onSelect?.(row);
 }
 
+function selectMilestone(root: GanttElement, id: string | null): void {
+  const state = states.get(root);
+  if (!state) return;
+  state.selectedMs = id;
+  root.querySelectorAll<HTMLElement>(".gantt-mark, .gantt-card").forEach((m) => {
+    m.classList.toggle("is-selected", id !== null && m.dataset.msId === id);
+  });
+}
+
 function moveRow(root: GanttElement, id: string, targetId: string, after: boolean): void {
   const state = states.get(root);
   if (!state || id === targetId) return;
@@ -407,6 +427,68 @@ function scrollToToday(root: GanttElement, mode: "today" | "start" | "end" = "to
 }
 
 function wire(root: GanttElement): void {
+  const lookup = (target: HTMLElement): { row: GanttRow; ms: GanttMilestone } | null => {
+    const state = states.get(root);
+    const msEl = target.closest<HTMLElement>(".gantt-mark, .gantt-card");
+    if (!state || !msEl || !root.contains(msEl)) return null;
+    const row = state.rows.find((r) => r.id === msEl.dataset.row);
+    const ms = row?.milestones?.[Number(msEl.dataset.ms)];
+    return row && ms ? { row, ms } : null;
+  };
+
+  // rámutatás / fókusz egy mérföldkőre
+  let hovered: string | null = null;
+  const hover = (e: Event): void => {
+    const state = states.get(root);
+    const hit = lookup(e.target as HTMLElement);
+    const key = hit ? `${hit.row.id}:${hit.row.milestones?.indexOf(hit.ms)}` : null;
+    if (key === hovered) return;
+    hovered = key;
+    if (hit) state?.params.onMilestoneHover?.(hit.ms, hit.row);
+  };
+  root.addEventListener("mouseover", hover);
+  root.addEventListener("focusin", hover);
+  root.addEventListener("mouseleave", () => {
+    hovered = null;
+  });
+
+  // egérrel húzható görgetés
+  let dragMoved = false;
+  root.addEventListener("mousedown", (e) => {
+    const state = states.get(root);
+    const target = e.target as HTMLElement;
+    const scroller = target.closest<HTMLElement>(".gantt-scroll");
+    if (!state?.params.dragScroll || e.button !== 0 || !scroller || target.closest("button, a, .gantt-label, .gantt-bar")) return;
+    const startX = e.clientX;
+    const startLeft = scroller.scrollLeft;
+    dragMoved = false;
+    e.preventDefault();
+    const move = (ev: MouseEvent): void => {
+      const dx = ev.clientX - startX;
+      if (!dragMoved && Math.abs(dx) < 3) return;
+      dragMoved = true;
+      root.classList.add("is-grabbing");
+      scroller.scrollLeft = startLeft - dx;
+    };
+    const up = (): void => {
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mouseup", up);
+      root.classList.remove("is-grabbing");
+    };
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mouseup", up);
+  });
+  root.addEventListener(
+    "click",
+    (e) => {
+      if (dragMoved) {
+        e.stopPropagation();
+        dragMoved = false;
+      }
+    },
+    true,
+  );
+
   root.addEventListener("click", (e) => {
     const state = states.get(root);
     if (!state) return;
@@ -518,6 +600,7 @@ export function createGantt(params: GanttParams): GanttElement {
     selected: params.selectedId ?? null,
     colors: new Map(),
     dragged: null,
+    selectedMs: params.selectedMilestoneId ?? null,
   };
   assignColors(state, state.rows);
   states.set(root, state);
@@ -530,6 +613,7 @@ export function createGantt(params: GanttParams): GanttElement {
   };
   root.getRows = () => [...state.rows];
   root.select = (id) => select(root, id, false);
+  root.selectMilestone = (id) => selectMilestone(root, id);
   root.getSelected = () => state.selected;
   root.getOrder = () => state.rows.map((r) => r.id);
   root.scrollToToday = () => scrollToToday(root, "today");

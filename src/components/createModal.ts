@@ -102,7 +102,7 @@ export function createModal(
           attrs: { class: "modal-body" },
           children: bodyChildren,
         },
-        {
+        ...(params.footer === false ? [] : [{
           tag: "div",
           attrs: { class: "modal-footer" },
           style: { display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem", borderTop: "1px solid var(--border)", paddingTop: "1rem" },
@@ -122,12 +122,32 @@ export function createModal(
               text: params.labels?.ok ?? builtin("modal.ok", "OK"),
             }),
           ],
-        },
+        }]),
       ],
     }],
   });
 
   document.body.appendChild(modal);
+
+  if (params.closeOnBackdrop) {
+    modal.addEventListener("click", (e) => {
+      if (e.target !== modal) return;
+      closeModal(params.id);
+      actions.closeAction?.();
+    });
+  }
+  if (params.closeOnEscape) {
+    const onKey = (e: KeyboardEvent): void => {
+      if (!modal.isConnected) {
+        document.removeEventListener("keydown", onKey);
+        return;
+      }
+      if (e.key !== "Escape" || modal.classList.contains("hidden") || modal.style.display === "none") return;
+      closeModal(params.id);
+      actions.closeAction?.();
+    };
+    document.addEventListener("keydown", onKey);
+  }
 
   return modal;
 }
