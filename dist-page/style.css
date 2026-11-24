@@ -3647,8 +3647,8 @@ button.drawer-toggle {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1px;
-  padding: 0.25rem 0.75rem;
+  gap: 2px;
+  padding: 0.3rem 0.75rem;
   cursor: pointer;
   overflow: hidden;
   border-left: 3px solid var(--gantt-color);
@@ -3667,9 +3667,10 @@ button.drawer-toggle {
 }
 
 .gantt-label-title {
+  flex: none;
   font-size: 0.85rem;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.35;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3677,7 +3678,9 @@ button.drawer-toggle {
 
 .gantt-label-sub,
 .gantt-label-period {
+  flex: none;
   font-size: 0.72rem;
+  line-height: 1.3;
   color: var(--text-light);
   white-space: nowrap;
   overflow: hidden;

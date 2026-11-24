@@ -1504,7 +1504,7 @@ export interface GanttParams {
   labelWidth?: number;
   /**
    * Egy sor magassága pixelben
-   * @default 54
+   * @default 60
    */
   rowHeight?: number;
   /**
