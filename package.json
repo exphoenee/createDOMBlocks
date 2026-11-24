@@ -15,6 +15,7 @@
   },
   "files": [
     "dist",
+    "assets/createDOMBlocks.schema.json",
     "style.css",
     "README.md",
     "README-hu.md",

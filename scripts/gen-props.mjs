@@ -9,7 +9,7 @@
 import { createRequire } from "module";
 import { existsSync, mkdirSync, writeFileSync, readdirSync, statSync } from "fs";
 import { resolve, dirname } from "path";
-import { writeSpecMeta } from "./spec-meta.mjs";
+import { writeSpecMeta, writeSpecSchema } from "./spec-meta.mjs";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -160,6 +160,7 @@ function main() {
   writeFileSync(outFile, JSON.stringify(result, null, 2), "utf-8");
   console.log(`[gen-props] ✅ ${outFile} (${Object.keys(result).length} típusbejegyzés)`);
   writeSpecMeta(result, PROJECT_ROOT);
+  writeSpecSchema(result, PROJECT_ROOT);
 }
 
 // ── Helper: paraméterből kinyeri a props típus infót ────────────────

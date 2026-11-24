@@ -6,6 +6,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
     { label: tr("Kezdőlap"), href: "index.html" },
     { label: tr("Témázás"), href: "theming.html" },
     { label: tr("Nyelvesítés"), href: "i18n.html" },
+    { label: tr("YAML leíró"), href: "yaml.html" },
     {
       label: "Forms",
       children: [

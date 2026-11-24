@@ -1,5 +1,6 @@
 import * as lib from "../index";
 import { SPEC_PARAMS } from "./meta.generated";
+import overrides from "./overrides.json";
 
 /**
  * A deklaratív leíró komponens-nyilvántartása: név → gyártó + a leíró számára fontos tulajdonságok.
@@ -33,49 +34,39 @@ export interface Def {
   portal?: boolean;
 }
 
-type Override = Partial<Omit<Def, "name" | "params" | "fns">> & { extra?: string[]; extraFns?: string[] };
+interface Static {
+  text?: string;
+  array?: string;
+  extra?: string[];
+  extraFns?: string[];
+  optional?: string[];
+  slots?: Record<string, string>;
+  elements?: string[];
+  items?: Record<string, string>;
+  updaters?: Record<string, string>;
+  bind?: "value" | "checked" | "radio";
+  portal?: boolean;
+}
+
+/** A leíró szerkezeti szabályai (adat: a JSON Schema generálás is ezt használja). */
+const STATIC = overrides as Record<string, Static>;
 
 const SLOT = "spec-slot";
 const slotNode = { tag: "div", attrs: { class: SLOT }, style: { display: "contents" } };
 
-const VALUE_INPUTS = [
-  "TextInput", "EmailInput", "PasswordInput", "UrlInput", "TelInput", "SearchInput", "NumberInput", "DateInput",
-  "DatetimeInput", "TimeInput", "MonthInput", "WeekInput", "ColorInput", "RangeInput", "Textarea", "Select", "HiddenInput",
-];
-
-const OVERRIDES: Record<string, Override> = {
-  Title: { text: "text", extra: ["level"], create: (p) => lib.createTitle(p as never, Number(p.level ?? 1)) },
-  UnorderedList: { array: "items", extra: ["items"], create: (p) => lib.createUnorderedList((p.items ?? []).map(String), p as never) },
-  OrderedList: { array: "items", extra: ["items"], create: (p) => lib.createOrderedList((p.items ?? []).map(String), p as never) },
-  Table: { array: "data", extra: ["data"], create: (p) => lib.createTable(p.data ?? [], p as never) },
-  Card: { text: "title", array: "body", slots: { body: ".card-body", footer: ".card-footer" } },
-  Container: { slots: { children: "" } },
-  Grid: { slots: { children: "" } },
-  Accordion: { array: "items", items: { items: "content" } },
-  Tabs: { array: "tabs", items: { tabs: "content" } },
-  Drawer: { elements: ["children"] },
-  Gantt: { updaters: { rows: "setRows" } },
-  Modal: {
-    text: "title",
-    array: "body",
-    extra: ["title", "body", "ok", "cancel", "close"],
-    extraFns: ["ok", "cancel", "close"],
-    slots: { body: `.modal-body > .${SLOT}` },
-    portal: true,
-    create: (p) =>
-      lib.createModal(
-        { modalTitle: p.title ?? p.modalTitle ?? "", body: slotNode },
-        { okAction: p.ok, cancelAction: p.cancel, closeAction: p.close },
-        p as never,
-      ),
-  },
-  Checkbox: { bind: "checked" },
-  Radio: { bind: "radio" },
+/** Szabálytalan szignatúrájú komponensek illesztői. */
+const ADAPTERS: Record<string, (p: Record<string, any>) => HTMLElement> = {
+  Title: (p) => lib.createTitle(p as never, Number(p.level ?? 1)),
+  UnorderedList: (p) => lib.createUnorderedList((p.items ?? []).map(String), p as never),
+  OrderedList: (p) => lib.createOrderedList((p.items ?? []).map(String), p as never),
+  Table: (p) => lib.createTable(p.data ?? [], p as never),
+  Modal: (p) =>
+    lib.createModal(
+      { modalTitle: p.title ?? p.modalTitle ?? "", body: slotNode },
+      { okAction: p.ok, cancelAction: p.cancel, closeAction: p.close },
+      p as never,
+    ),
 };
-VALUE_INPUTS.forEach((n) => (OVERRIDES[n] = { ...OVERRIDES[n], bind: "value" }));
-
-/** Olyan kötelező paraméterek, amelyeket az adapter más forrásból pótol. */
-const OPTIONAL_VIA_ADAPTER = new Set(["Table.data"]);
 
 const SCALAR_TARGETS = ["text", "title", "message", "label", "labelText"];
 const cache = new Map<string, Def | null>();
@@ -89,15 +80,15 @@ export function getDef(name: string): Def | undefined {
     cache.set(name, null);
     return undefined;
   }
-  const o = OVERRIDES[name] ?? {};
+  const o = STATIC[name] ?? {};
   const params = new Set([...meta.all, ...(o.extra ?? [])]);
   params.delete("parent");
   const def: Def = {
     name,
-    create: o.create ?? ((p) => fn(p)),
+    create: ADAPTERS[name] ?? ((p) => fn(p)),
     params,
     fns: new Set([...meta.fns, ...(o.extraFns ?? [])]),
-    required: meta.required.filter((r) => r !== "parent" && r !== "id" && !OPTIONAL_VIA_ADAPTER.has(`${name}.${r}`)),
+    required: meta.required.filter((r) => r !== "parent" && r !== "id" && !(o.optional ?? []).includes(r)),
     text: o.text ?? SCALAR_TARGETS.find((t) => params.has(t)),
     array: o.array,
     slots: o.slots,
