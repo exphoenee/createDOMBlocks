@@ -194,3 +194,15 @@ A dinamikus részek (Gantt-sorok, eseménypanel, naptár menü) JS-ben maradnak,
 - `npm run build:page` + `npm run check:i18n`: az új docs oldal és a fordítások rendben vannak.
 - Böngészőben a docs oldal élő szerkesztője: YAML átírása után azonnal frissül az eredmény, hibás YAML esetén a hibaüzenet a sorszámmal látszik.
 - Végpróba: a versenyoldal vázát tartalmazó `page.yaml` ugyanazt az oldalt rajzolja, mint a mostani imperatív kód (képernyőkép-összevetés világos és sötét módban, a jsdom füstteszt újrafuttatása).
+
+## 8. Megvalósítási állapot
+
+Az 5. fejezet mind az öt lépése elkészült (az ágon: `feature/yaml-descriptor`):
+
+1. **MVP:** `src/spec/parseYaml.ts` (saját YAML-részhalmaz), `registry.ts` (szerkezeti szabályok adatként: `overrides.json`, paraméterek a `meta.generated.ts`-ből), `build.ts` (`buildUI`), `mount.ts` (`mountYaml`), `errors.ts`.
+2. **Adat és szerkezet:** `$név` és `${}`, `each` (kulcsolt), `if`/`else`, `define`, `theme`, `messages`.
+3. **Állapot:** `store.ts`, `expr.ts` (eval-mentes), kötések a `build.ts`-ben; `state`, `bind`, `set`/`toggle`/`inc`/`push`/`open`/`close` (az útvonal sablon is lehet: `toggle: "active.${c.id}"`), `destroy()`. A frissítő metódussal rendelkező paraméterek (Gantt `rows`, `selectedMilestoneId`) nem építik újra a komponenst.
+4. **Eszközök:** `assets/createDOMBlocks.schema.json` generálása a típusokból (`scripts/spec-meta.mjs`, a `gen-props.mjs` hívja), docs oldal élő szerkesztővel (`documentation/examples/yaml.ts`), README.
+5. **Éles próba:** a versenyoldal teljes szerkezete és állapotkezelése YAML-ban (`2026-27-competitions-domblocks`, `feature/domblocks-rewrite`).
+
+Tanulságok, amelyek a szintaxisba is visszakerültek: az `each` elemeinek azonossága adja a frissítés finomságát (a JS oldali `derive` ezért tartja meg a változatlan elemeket); a beviteli komponensek gyökere nem azonos az `id`-t viselő `input` elemmel, ezért a nyilvántartás a leíróbeli azonosítót külön követi; a szám / logikai érték a szöveg-paraméterekben szöveggé alakul.

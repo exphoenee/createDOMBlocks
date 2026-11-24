@@ -190,6 +190,7 @@ createCard({
 |----------|-------------|
 | `createCarousel(params)` | 3D carousel with navigation and touch |
 | `createTimeline(params)` | Vertical timeline with alternating cards and compact view |
+| `createGantt(params)` | Gantt chart: rows, groups, milestones (dot / diamond / card), today line, selection, draggable rows, drag-scroll |
 | `createDragAndDropFileInput(params)` | Drag & drop file uploader |
 
 ### Common Parameters
@@ -254,6 +255,25 @@ openModal("confirmModal");
 ```
 
 ---
+
+## Declarative YAML descriptor
+
+Instead of calling `createX` one by one, the whole page can be described in YAML (or a plain JS object) and built with `mountYaml` / `buildUI`:
+
+```html
+<script type="text/yaml" id="page">
+state: { count: 0 }
+ui:
+  - Card#demo:
+      title: Counter
+      body:
+        - Paragraph: "Clicks: ${count}"
+        - Button: { text: Add, click: { inc: count } }
+</script>
+<script>CreateDOMBlocks.mountYaml("#app", "#page");</script>
+```
+
+A node is a single key: `Component#id.class` (capitalized = library component, lowercase = raw HTML element). Scalars are the main text, lists are the children. `"@name"` binds an event handler, `${...}` is a safe expression (no `eval`), `state` / `bind` / `each` / `if` / `define` give reactivity, `messages` plugs into the i18n layer, `theme` sets CSS variables. A JSON Schema (`assets/createDOMBlocks.schema.json`) gives editor autocompletion. See the "YAML descriptor" page of the documentation and `plans/yaml-leiro-terv.md`.
 
 ## Localization (i18n)
 

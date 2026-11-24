@@ -190,6 +190,7 @@ createCard({
 |----------|--------|
 | `createCarousel(params)` | 3D carousel navigációval és érintés támogatással |
 | `createTimeline(params)` | Függőleges idővonal váltakozó kártyákkal és kompakt nézettel |
+| `createGantt(params)` | Gantt-diagram: sorok, csoportok, mérföldkövek (pötty / gyémánt / kártya), mai nap vonal, kijelölés, húzható sorok, húzásos görgetés |
 | `createDragAndDropFileInput(params)` | Drag & drop fájl feltöltő |
 
 ### Általános Paraméterek
@@ -254,6 +255,25 @@ openModal("confirmModal");
 ```
 
 ---
+
+## Deklaratív YAML leíró
+
+A `createX` hívások helyett az egész oldal leírható YAML-ban (vagy sima JS objektumban), és a `mountYaml` / `buildUI` felépíti:
+
+```html
+<script type="text/yaml" id="page">
+state: { count: 0 }
+ui:
+  - Card#demo:
+      title: Számláló
+      body:
+        - Paragraph: "Kattintások: ${count}"
+        - Button: { text: Növelés, click: { inc: count } }
+</script>
+<script>CreateDOMBlocks.mountYaml("#app", "#page");</script>
+```
+
+Egy csomópont egyetlen kulcs: `Komponens#id.osztály` (nagybetű = könyvtári komponens, kisbetű = nyers HTML elem). A skalár a fő szöveg, a lista a gyerekek. A `"@név"` eseménykezelőt köt, a `${...}` biztonságos kifejezés (nincs `eval`), a `state` / `bind` / `each` / `if` / `define` adja a reaktivitást, a `messages` az i18n réteghez kapcsolódik, a `theme` CSS-változókat állít. A JSON Schema (`assets/createDOMBlocks.schema.json`) szerkesztői automatikus kiegészítést ad. Részletek: a dokumentáció „YAML leíró” oldala és a `plans/yaml-leiro-terv.md`.
 
 ## Nyelvesítés (i18n)
 
