@@ -8,6 +8,7 @@
  * Kimenet: documentation/generated/api.json
  *   [{ group, name, kind, signatures: [..], summary, members: [{ name, signature, summary }] }]
  */
+import { writeIfChanged } from "./fs-utils.mjs";
 import { writeFileSync, mkdirSync } from "fs";
 import { createRequire } from "module";
 import path from "path";
@@ -68,7 +69,7 @@ export function writeApi(root) {
 
   const dir = path.join(root, "documentation", "generated");
   mkdirSync(dir, { recursive: true });
-  writeFileSync(path.join(dir, "api.json"), JSON.stringify(out, null, 2) + "\n", "utf-8");
+  writeIfChanged(path.join(dir, "api.json"), JSON.stringify(out, null, 2) + "\n", "utf-8");
   console.log(`[gen-api] ✅ ${out.length} API-elem (${[...new Set(out.map((e) => e.group))].join(", ")})`);
   return out;
 }

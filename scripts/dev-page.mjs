@@ -117,9 +117,11 @@ compiler.watch({ ignored: /node_modules|dist-page/ }, async (err, stats) => {
 watchDir(path.join(ROOT, "documentation"), (name) => {
   if (name && /\.(html|css)$/.test(name)) rebuildStatic();
 });
-watchDir(path.join(ROOT, "assets"), rebuildStatic);
+// a generált fájlok (séma, meta) nem indítanak újabb kört: a gen-props maga írja őket
+const GENERATED = /\.generated\.ts$|createDOMBlocks\.schema\.json$/;
+watchDir(path.join(ROOT, "assets"), (name) => { if (!name || !GENERATED.test(name)) rebuildStatic(); });
 watch(path.join(ROOT, "style.css"), rebuildStatic);
 // src: a webpack újrafordít, a props.json-t külön újragenerálja
-watchDir(path.join(ROOT, "src"), (name) => { if (name && name.endsWith(".ts")) regenProps(); });
+watchDir(path.join(ROOT, "src"), (name) => { if (name && name.endsWith(".ts") && !GENERATED.test(name)) regenProps(); });
 
 server.listen(PORT, () => log(`http://localhost:${PORT}  (Ctrl+C a kilépéshez)`));

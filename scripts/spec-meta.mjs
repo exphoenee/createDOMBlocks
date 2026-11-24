@@ -2,6 +2,7 @@
  * spec-meta: a props.json-ból generálja a deklaratív leíró (src/spec) komponens-metaadatait.
  * A gen-props.mjs hívja; kimenet: src/spec/meta.generated.ts (ne szerkeszd kézzel).
  */
+import { writeIfChanged } from "./fs-utils.mjs";
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
@@ -36,7 +37,7 @@ export const SPEC_PARAMS: Record<string, { all: string[]; required: string[]; fn
 ${lines.join("\n")}
 };
 `;
-  writeFileSync(resolve(root, "src", "spec", "meta.generated.ts"), src, "utf-8");
+  writeIfChanged(resolve(root, "src", "spec", "meta.generated.ts"), src, "utf-8");
   console.log(`[spec-meta] ✅ src/spec/meta.generated.ts (${lines.length} komponens)`);
 }
 
@@ -134,6 +135,6 @@ export function writeSpecSchema(props, root) {
       },
     },
   };
-  writeFileSync(resolve(root, "assets", "createDOMBlocks.schema.json"), JSON.stringify(schema, null, 2) + "\n", "utf-8");
+  writeIfChanged(resolve(root, "assets", "createDOMBlocks.schema.json"), JSON.stringify(schema, null, 2) + "\n", "utf-8");
   console.log(`[spec-meta] ✅ assets/createDOMBlocks.schema.json (${Object.keys(comps).length} komponens)`);
 }

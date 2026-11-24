@@ -14,6 +14,7 @@
  *
  * A gen-props.mjs hívja, így minden build / dev indításkor friss.
  */
+import { writeIfChanged } from "./fs-utils.mjs";
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, existsSync, statSync } from "fs";
 import { createRequire } from "module";
 import path from "path";
@@ -86,13 +87,14 @@ export async function writeDocs(root, props = {}) {
   const pagesDir = path.join(outDir, "pages");
   mkdirSync(pagesDir, { recursive: true });
   // a már nem létező komponensek oldalai ne maradjanak
-  if (existsSync(pagesDir)) for (const f of readdirSync(pagesDir)) rmSync(path.join(pagesDir, f));
-  writeFileSync(path.join(outDir, "components.json"), JSON.stringify(manifest, null, 2) + "\n", "utf-8");
+  const wanted = new Set(manifest.map((c) => `${c.slug}.html`));
+  for (const f of readdirSync(pagesDir)) if (!wanted.has(f)) rmSync(path.join(pagesDir, f));
+  writeIfChanged(path.join(outDir, "components.json"), JSON.stringify(manifest, null, 2) + "\n", "utf-8");
   for (const c of manifest) {
     if (!existsSync(path.join(root, "documentation", "examples", `${c.slug}.ts`))) {
       console.warn(`[gen-docs] ⚠️  Nincs példafájl a(z) ${c.name} komponenshez: documentation/examples/${c.slug}.ts`);
     }
-    writeFileSync(path.join(pagesDir, `${c.slug}.html`), page(c), "utf-8");
+    writeIfChanged(path.join(pagesDir, `${c.slug}.html`), page(c), "utf-8");
   }
   console.log(`[gen-docs] ✅ ${manifest.length} komponens-oldal + components.json`);
   const { writeYamlExamples } = await import("./gen-yaml-examples.mjs");

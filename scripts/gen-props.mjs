@@ -6,6 +6,7 @@
  * Használat: node scripts/gen-props.mjs
  */
 
+import { writeIfChanged } from "./fs-utils.mjs";
 import { createRequire } from "module";
 import { existsSync, mkdirSync, writeFileSync, readdirSync, statSync } from "fs";
 import { resolve, dirname } from "path";
@@ -158,7 +159,7 @@ async function main() {
   const outDir = resolve(PROJECT_ROOT, "documentation", "generated");
   const outFile = resolve(outDir, "props.json");
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-  writeFileSync(outFile, JSON.stringify(result, null, 2), "utf-8");
+  writeIfChanged(outFile, JSON.stringify(result, null, 2));
   console.log(`[gen-props] ✅ ${outFile} (${Object.keys(result).length} típusbejegyzés)`);
   writeSpecMeta(result, PROJECT_ROOT);
   writeSpecSchema(result, PROJECT_ROOT);

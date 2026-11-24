@@ -9,6 +9,7 @@
  * A docs a kézzel írt mintát (documentation/page-components/yamlExamples.ts) részesíti előnyben,
  * a generált csak azokhoz kell, amelyekhez nincs kézi minta (pl. új komponens).
  */
+import { writeIfChanged } from "./fs-utils.mjs";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { createRequire } from "module";
 import path from "path";
@@ -163,7 +164,7 @@ export async function writeYamlExamples(root, manifest, props) {
     out[c.name] = stringifyYaml({ ui: [{ [key]: params }] });
   }
 
-  writeFileSync(path.join(root, "documentation", "generated", "yamlExamples.json"), JSON.stringify(out, null, 2) + "\n", "utf-8");
+  writeIfChanged(path.join(root, "documentation", "generated", "yamlExamples.json"), JSON.stringify(out, null, 2) + "\n", "utf-8");
   console.log(`[gen-yaml-examples] ✅ ${Object.keys(out).length} YAML minta a TS példákból` + (skipped.length ? ` (kihagyva: ${skipped.join(", ")})` : ""));
   return out;
 }
