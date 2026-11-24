@@ -80,7 +80,7 @@ const page = (c) => `<!DOCTYPE html>
 </html>
 `;
 
-export function writeDocs(root) {
+export async function writeDocs(root, props = {}) {
   const manifest = readComponentManifest(root);
   const outDir = path.join(root, "documentation", "generated");
   const pagesDir = path.join(outDir, "pages");
@@ -95,10 +95,15 @@ export function writeDocs(root) {
     writeFileSync(path.join(pagesDir, `${c.slug}.html`), page(c), "utf-8");
   }
   console.log(`[gen-docs] ✅ ${manifest.length} komponens-oldal + components.json`);
+  const { writeYamlExamples } = await import("./gen-yaml-examples.mjs");
+  await writeYamlExamples(root, manifest, props);
   return manifest;
 }
 
 // közvetlen futtatás: node scripts/gen-docs.mjs
-if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"))) {
-  writeDocs(path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1")), ".."));
+const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1"));
+if (process.argv[1] && path.resolve(process.argv[1]) === path.join(here, "gen-docs.mjs")) {
+  const root = path.resolve(here, "..");
+  const props = JSON.parse(readFileSync(path.join(root, "documentation", "generated", "props.json"), "utf-8"));
+  await writeDocs(root, props);
 }

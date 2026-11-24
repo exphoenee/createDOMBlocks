@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
+import { existsSync, readFileSync } from "fs";
 import { buildUI } from "../src/index";
 import { SPEC_PARAMS } from "../src/spec/meta.generated";
 import { YAML_EXAMPLES, yamlExample } from "../documentation/page-components/yamlExamples";
@@ -20,6 +21,25 @@ describe("a komponens-oldalak YAML mintái", () => {
       const ui = buildUI(yamlExample(name)!, { parent: "root" });
       const rendered = document.getElementById("root")!.children.length + document.body.querySelectorAll(".modal-portal, .drawer, .drawer-container").length;
       expect(rendered, `${name} nem rajzolt semmit`).toBeGreaterThan(0);
+      ui.destroy();
+    });
+  }
+});
+
+describe("a TS példákból generált YAML minták (scripts/gen-yaml-examples.mjs)", () => {
+  const file = "documentation/generated/yamlExamples.json";
+  const generated: Record<string, string> = existsSync(file) ? JSON.parse(readFileSync(file, "utf-8")) : {};
+
+  it.skipIf(!existsSync(file))("minden komponensnek van kézi vagy generált mintája", () => {
+    const missing = Object.keys(SPEC_PARAMS).filter((name) => !YAML_EXAMPLES[name] && !generated[name]);
+    expect(missing).toEqual([]);
+  });
+
+  for (const [name, source] of Object.entries(generated)) {
+    it(`${name}: a generált minta felépül`, () => {
+      document.body.innerHTML = '<div id="root"></div>';
+      const ui = buildUI(source, { parent: "root" });
+      expect(document.getElementById("root")!.children.length + document.body.querySelectorAll(".modal-portal, .drawer, [class*=toast]").length, name).toBeGreaterThan(0);
       ui.destroy();
     });
   }

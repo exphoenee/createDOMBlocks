@@ -25,6 +25,7 @@ export { buildUI } from "./spec/build";
 export type { BuildOptions, UI, Handler, HandlerContext } from "./spec/build";
 export { mountYaml } from "./spec/mount";
 export { parseYaml, YamlError } from "./spec/parseYaml";
+export { stringifyYaml } from "./spec/stringifyYaml";
 export { SpecError } from "./spec/errors";
 export { Store } from "./spec/store";
 export type { DOMOptions } from "./dom";

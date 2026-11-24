@@ -65,7 +65,7 @@ function collectTsFiles(dir, acc) {
 }
 
 // ── Főlétra ──────────────────────────────────────────────────────────
-function main() {
+async function main() {
   const srcDir = resolve(PROJECT_ROOT, "src");
   const fileNames = [];
   collectTsFiles(srcDir, fileNames);
@@ -162,7 +162,7 @@ function main() {
   console.log(`[gen-props] ✅ ${outFile} (${Object.keys(result).length} típusbejegyzés)`);
   writeSpecMeta(result, PROJECT_ROOT);
   writeSpecSchema(result, PROJECT_ROOT);
-  writeDocs(PROJECT_ROOT);
+  await writeDocs(PROJECT_ROOT, result);
 }
 
 // ── Helper: paraméterből kinyeri a props típus infót ────────────────
@@ -319,4 +319,4 @@ function findTypeSymbol(name, checker, program) {
   return null;
 }
 
-main();
+await main();

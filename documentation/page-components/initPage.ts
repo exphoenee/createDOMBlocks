@@ -8,6 +8,8 @@ import { createPageLoading } from "./createPageLoading";
 import type { DocSection } from "./example";
 import { propsTable } from "./propsTable";
 import { yamlExample } from "./yamlExamples";
+// A TS példákból generált YAML minták (scripts/gen-yaml-examples.mjs): a kézi minta hiányában ezek jelennek meg
+import generatedYaml from "../generated/yamlExamples.json";
 import { initTheme } from "./theme";
 
 export function initDocPage(): () => void {
@@ -96,7 +98,7 @@ export function renderSections(sections: DocSection[]): void {
 
 /** "YAML leíró" szakasz: a minta kódja és az ugyanabból élőben felépített eredmény. */
 function appendYamlSection(main: HTMLElement, componentName: string): void {
-  const source = yamlExample(componentName);
+  const source = yamlExample(componentName) ?? (generatedYaml as Record<string, string>)[componentName];
   if (!source) return;
   const id = `yaml-${componentName.toLowerCase()}`;
 
