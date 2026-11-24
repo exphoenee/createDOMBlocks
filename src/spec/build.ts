@@ -217,23 +217,25 @@ function runAction(action: Record<string, unknown>, scope: Vars, ctx: Ctx, path:
   const [op] = keys;
   const arg = action[op];
   const store = ctx.store;
+  /** Az útvonalak sablonok is lehetnek: `toggle: "active.${c.id}"` (az each változói elérhetők). */
+  const at = (p: unknown): string => asText(evalValue(String(p), scope, ctx, null, path));
   switch (op) {
     case "set":
       store.batch(() => {
-        for (const [k, v] of Object.entries(arg as Record<string, unknown>)) store.set(k, evalValue(v, scope, ctx, null, `${path}.set.${k}`));
+        for (const [k, v] of Object.entries(arg as Record<string, unknown>)) store.set(at(k), evalValue(v, scope, ctx, null, `${path}.set.${k}`));
       });
       return;
     case "toggle":
-      store.batch(() => (Array.isArray(arg) ? arg : [arg]).forEach((p) => store.toggle(String(p))));
+      store.batch(() => (Array.isArray(arg) ? arg : [arg]).forEach((p) => store.toggle(at(p))));
       return;
     case "inc":
       if (arg && typeof arg === "object") {
-        store.batch(() => Object.entries(arg as Record<string, unknown>).forEach(([k, by]) => store.inc(k, Number(evalValue(by, scope, ctx, null, path)))));
-      } else store.inc(String(arg));
+        store.batch(() => Object.entries(arg as Record<string, unknown>).forEach(([k, by]) => store.inc(at(k), Number(evalValue(by, scope, ctx, null, path)))));
+      } else store.inc(at(arg));
       return;
     case "push":
       store.batch(() => {
-        for (const [k, v] of Object.entries(arg as Record<string, unknown>)) store.push(k, evalValue(v, scope, ctx, null, `${path}.push.${k}`));
+        for (const [k, v] of Object.entries(arg as Record<string, unknown>)) store.push(at(k), evalValue(v, scope, ctx, null, `${path}.push.${k}`));
       });
       return;
     case "open":

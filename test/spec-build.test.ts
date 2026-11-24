@@ -465,3 +465,40 @@ describe("buildUI – egyéb", () => {
     expect(document.getElementById("p")!.textContent).toBe("külső");
   });
 });
+
+describe("buildUI – útvonal-sablonok a műveletekben", () => {
+  it("toggle / set / inc a ${} útvonallal az each változójából", () => {
+    document.body.innerHTML = '<div id="root"></div>';
+    const ui = buildUI(`
+state: { active: { a: true, b: false }, last: "", n: { a: 0 } }
+ui:
+  - each: { in: $ids, as: id }
+    do:
+      - Button#t-\${id}: { text: "\${id}", click: [ { toggle: "active.\${id}" }, { set: { last: "\${id}" } }, { inc: "n.\${id}" } ] }
+`, { parent: "root", data: { ids: ["a", "b"] } });
+    document.getElementById("t-b")!.click();
+    expect(ui.state.get("active.b")).toBe(true);
+    expect(ui.state.get("last")).toBe("b");
+    document.getElementById("t-a")!.click();
+    document.getElementById("t-a")!.click();
+    expect(ui.state.get("active.a")).toBe(true); // kétszer váltva visszaáll
+    expect(ui.state.get("n.a")).toBe(2);
+  });
+
+  it("Gantt: a selectedMilestoneId állapotfüggő paraméter a selectMilestone-t hívja", () => {
+    document.body.innerHTML = '<div id="root"></div>';
+    const ui = buildUI(`
+state: { sel: null }
+ui:
+  - Gantt#g:
+      rows:
+        - { id: r, label: Sor, start: "2024-01", end: "2024-06", milestones: [ { id: m1, date: "2024-02", label: A }, { id: m2, date: "2024-04", label: B } ] }
+      selectedMilestoneId: "\${sel}"
+      today: "2024-03-01"
+`, { parent: "root" });
+    const g = document.getElementById("g")!;
+    ui.state.set("sel", "m2");
+    expect(document.getElementById("g")).toBe(g);
+    expect([...g.querySelectorAll(".is-selected")].map((e) => (e as HTMLElement).dataset.msId)).toEqual(["m2"]);
+  });
+});

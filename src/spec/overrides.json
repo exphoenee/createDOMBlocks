@@ -9,7 +9,7 @@
   "Accordion": { "array": "items", "items": { "items": "content" } },
   "Tabs": { "array": "tabs", "items": { "tabs": "content" } },
   "Drawer": { "elements": ["children"] },
-  "Gantt": { "updaters": { "rows": "setRows" } },
+  "Gantt": { "updaters": { "rows": "setRows", "selectedMilestoneId": "selectMilestone" } },
   "Modal": {
     "text": "title",
     "array": "body",
