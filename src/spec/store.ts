@@ -23,6 +23,11 @@ function checkKeys(keys: string[]): void {
 type Listener = (path: string) => void;
 interface Sub { paths: string[]; cb: Listener }
 
+/**
+ * Útvonal-alapú állapottár a deklaratív leíróhoz (a `buildUI` által visszaadott `ui.state` is ez). Az útvonal pontokkal és indexekkel írható (`a.b`, `a[0].c`).
+ *
+ * @group yaml
+ */
 export class Store {
   private data: Record<string, unknown>;
   private subs = new Set<Sub>();

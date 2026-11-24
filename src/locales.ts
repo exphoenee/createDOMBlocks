@@ -8,6 +8,8 @@ import type { Messages } from "./i18n";
  *
  * Új nyelv hozzáadása: `registerMessages("de", { "cdb.table.noResults": "Keine Treffer", ... })`.
  * A hiányzó kulcsok a visszaeső nyelvről (alapból magyar) pótlódnak.
+
+ * @group i18n
  */
 export const hu: Messages = {
   "cdb.table.filter": "Szűrés…",
@@ -83,6 +85,11 @@ export const hu: Messages = {
   "cdb.toast.close": "Bezárás",
 };
 
+/**
+ * A könyvtár beépített angol feliratai (a `cdb.` előtagú kulcsok), a `huMessages` párja.
+ *
+ * @group i18n
+ */
 export const en: Messages = {
   "cdb.table.filter": "Filter…",
   "cdb.table.filterAria": "Filter table",

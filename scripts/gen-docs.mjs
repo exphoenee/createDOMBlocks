@@ -97,6 +97,8 @@ export async function writeDocs(root, props = {}) {
   console.log(`[gen-docs] ✅ ${manifest.length} komponens-oldal + components.json`);
   const { writeYamlExamples } = await import("./gen-yaml-examples.mjs");
   await writeYamlExamples(root, manifest, props);
+  const { writeApi } = await import("./gen-api.mjs");
+  writeApi(root);
   return manifest;
 }
 

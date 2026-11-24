@@ -1,4 +1,6 @@
-/** Hiba a deklaratív leíró feldolgozásakor, a leíró fájlbeli útvonalával (pl. `ui[2].Card.body[0]`). */
+/** Hiba a deklaratív leíró feldolgozásakor, a leíró fájlbeli útvonalával (pl. `ui[2].Card.body[0]`).
+ * @group yaml
+ */
 export class SpecError extends Error {
   constructor(message: string, public path = "") {
     super(path ? `${path}: ${message}` : message);

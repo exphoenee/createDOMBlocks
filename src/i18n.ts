@@ -55,6 +55,8 @@ function isPluralNode(node: MessagesTree): boolean {
  * Egymásba ágyazott objektumból lapos `kulcs → szöveg` térkép (a `registerMessages` ezt automatikusan elvégzi).
  * @example flattenMessages({ form: { name: "Név" }, items: { one: "{count} elem", other: "{count} elem" } })
  *          // { "form.name": "Név", "items_one": "{count} elem", "items_other": "{count} elem" }
+
+ * @group i18n
  */
 export function flattenMessages(tree: MessagesTree, prefix = ""): Messages {
   const out: Messages = {};
@@ -74,7 +76,9 @@ export function flattenMessages(tree: MessagesTree, prefix = ""): Messages {
   return out;
 }
 
-/** Üzenetek hozzáadása egy nyelvhez (a meglévő kulcsok felülíródnak). Lapos és egymásba ágyazott objektumot is elfogad. Nem vált nyelvet. */
+/** Üzenetek hozzáadása egy nyelvhez (a meglévő kulcsok felülíródnak). Lapos és egymásba ágyazott objektumot is elfogad. Nem vált nyelvet.
+ * @group i18n
+ */
 export function registerMessages(lang: string, messages: Messages | MessagesTree): void {
   catalogs.set(lang, { ...(catalogs.get(lang) ?? {}), ...flattenMessages(messages as MessagesTree) });
 }
@@ -82,6 +86,8 @@ export function registerMessages(lang: string, messages: Messages | MessagesTree
 /**
  * Több nyelv egyszerre egyetlen objektumból: `{ hu: { ... }, en: { ... } }`. A `prefix` minden kulcs elé kerül.
  * @example registerTranslations({ hu: { form: { save: "Mentés" } }, en: { form: { save: "Save" } } });
+
+ * @group i18n
  */
 export function registerTranslations(translations: Record<string, MessagesTree>, options: { prefix?: string } = {}): void {
   for (const [lang, tree] of Object.entries(translations)) {
@@ -134,6 +140,8 @@ function buildRefs(trees: MessagesTree[], prefix: string): Record<string, unknow
  * });
  * createTextInput({ parent, id: "n", labelText: m.form.name });   // nyelvváltáskor frissül
  * createButtonInput({ parent, id: "s", text: m.form.save });
+
+ * @group i18n
  */
 export function defineMessages<T extends Record<string, MessagesTree>>(
   translations: T,
@@ -146,6 +154,8 @@ export function defineMessages<T extends Record<string, MessagesTree>>(
 /**
  * Üzenetek betöltése JSON URL-ről vagy aszinkron függvényből, majd regisztrálása.
  * @example await loadMessages("de", "/locales/de.json"); setLocale("de");
+
+ * @group i18n
  */
 export async function loadMessages(lang: string, source: string | (() => Promise<Messages | MessagesTree>), init?: RequestInit): Promise<void> {
   let messages: Messages | MessagesTree;
@@ -159,21 +169,35 @@ export async function loadMessages(lang: string, source: string | (() => Promise
   registerMessages(lang, messages);
 }
 
-/** A regisztrált nyelvek kódjai */
+/** A regisztrált nyelvek kódjai
+ * @group i18n
+ */
 export function getLocales(): string[] {
   return [...catalogs.keys()];
 }
 
+/**
+ * Az aktuális nyelv kódja.
+ *
+ * @group i18n
+ */
 export function getLocale(): string {
   return locale;
 }
 
-/** Visszaeső nyelv: ennek a katalógusából pótoljuk a hiányzó kulcsokat (alapból "hu") */
+/** Visszaeső nyelv: ennek a katalógusából pótoljuk a hiányzó kulcsokat (alapból "hu")
+ * @group i18n
+ */
 export function setFallbackLocale(lang: string): void {
   fallbackLocale = lang;
   notify();
 }
 
+/**
+ * A visszaeső nyelv kódja.
+ *
+ * @group i18n
+ */
 export function getFallbackLocale(): string {
   return fallbackLocale;
 }
@@ -205,12 +229,16 @@ function interpolate(text: string, params?: MessageParams): string {
 /**
  * Azonnali fordítás az aktuális nyelven. Hiányzó kulcsnál a visszaeső nyelv, majd a `fallback`, végül a kulcs.
  * Figyelem: az eredmény sima szöveg, nyelvváltáskor nem frissül; komponens-paraméterbe `tr()`-t vagy `() => t(...)`-t adj.
+
+ * @group i18n
  */
 export function t(key: string, params?: MessageParams, fallback?: string): string {
   return interpolate(lookup(key, params) ?? fallback ?? key, params);
 }
 
-/** "Élő" fordítási hivatkozás: bármelyik komponens-szöveg paraméterbe adható, nyelvváltáskor frissül. */
+/** "Élő" fordítási hivatkozás: bármelyik komponens-szöveg paraméterbe adható, nyelvváltáskor frissül.
+ * @group i18n
+ */
 export function tr(key: string, params?: MessageParams, fallback?: string): TextRef {
   return { kind: "tr", key, params, fallback };
 }
@@ -219,12 +247,16 @@ export function isTextRef(v: unknown): v is TextRef {
   return typeof v === "object" && v !== null && (v as TextRef).kind === "tr" && typeof (v as TextRef).key === "string";
 }
 
-/** Igaz, ha az érték nyelvváltáskor újraszámolódik (TextRef vagy függvény) */
+/** Igaz, ha az érték nyelvváltáskor újraszámolódik (TextRef vagy függvény)
+ * @group i18n
+ */
 export function isReactiveText(v: unknown): v is TextRef | (() => string) {
   return typeof v === "function" || isTextRef(v);
 }
 
-/** A szöveg aktuális értéke (üres string, ha nincs megadva) */
+/** A szöveg aktuális értéke (üres string, ha nincs megadva)
+ * @group i18n
+ */
 export function resolveText(v: TextValue | undefined | null): string {
   if (v == null) return "";
   if (typeof v === "string") return v;
@@ -253,12 +285,16 @@ const weak = (el: Element): Watcher["ref"] =>
  * Egy elem frissítése nyelvváltáskor. A hivatkozás gyenge (az elem eldobható); a `run` függvény ne tartson
  * erős hivatkozást az elemre kívülről, az elemet paraméterként kapja. A DOM-ból két egymást követő
  * nyelvváltáskor is kimaradt elemeket a rendszer elfelejti.
+
+ * @group i18n
  */
 export function watchLocale<T extends Element>(el: T, run: (el: T) => void): void {
   watchers.add({ ref: weak(el), run: run as (el: Element) => void, strikes: 0 });
 }
 
-/** Nyelvváltás figyelése (pl. saját állapot frissítéséhez). Visszaadja a leiratkozó függvényt. */
+/** Nyelvváltás figyelése (pl. saját állapot frissítéséhez). Visszaadja a leiratkozó függvényt.
+ * @group i18n
+ */
 export function onLocaleChange(cb: (lang: string) => void): () => void {
   listeners.add(cb);
   return () => listeners.delete(cb);
@@ -289,6 +325,8 @@ function notify(): void {
 /**
  * Nyelv váltása: frissíti az összes szöveget, amit `tr()`-rel / függvénnyel adtál át, a beépített feliratokat,
  * és beállítja a `<html lang>` attribútumot. Ha a katalógus még nincs betöltve, előbb hívd a `loadMessages`-t.
+
+ * @group i18n
  */
 export function setLocale(lang: string, options: { updateHtmlLang?: boolean } = {}): void {
   if (lang === locale) return;

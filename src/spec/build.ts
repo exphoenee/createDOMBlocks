@@ -928,6 +928,8 @@ function applyTheme(theme: Record<string, unknown>, ownerList: Array<() => void>
  *
  * A leírás kulcsai: `ui` (a csomópontok listája), `state` (kezdőállapot), `messages` (nyelvi szövegek),
  * `theme` (CSS-változók), `define` (saját, paraméterezhető részletek).
+
+ * @group yaml
  */
 export function buildUI(spec: unknown, options: BuildOptions = {}): UI {
   const doc = typeof spec === "string" ? parseYaml(spec) : spec;

@@ -10,6 +10,8 @@ import { SpecError } from "./errors";
  * - a leírást tartalmazó `<script type="text/yaml" id="...">` elem azonosítója `#id` alakban
  *   (ez `file://` alól is működik, ellentétben a `fetch`-csel),
  * - már beolvasott objektum.
+
+ * @group yaml
  */
 export function mountYaml(target: HTMLElement | string, source: string | Record<string, unknown>, options: Omit<BuildOptions, "parent"> = {}): UI {
   let spec: unknown = source;

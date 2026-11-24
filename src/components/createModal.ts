@@ -4,6 +4,11 @@ import type { ModalContent, ModalActions, ModalParams } from "../types";
 import { createButton } from "../buttons/createButton";
 import { builtin } from "../i18n";
 
+/**
+ * Megnyit egy `createModal`-lal létrehozott modált az azonosítója alapján.
+ *
+ * @group overlays
+ */
 export function openModal(id: string): void {
   const portal = document.getElementById(`${id}-portal`);
   if (portal) {
@@ -14,6 +19,11 @@ export function openModal(id: string): void {
   }
 }
 
+/**
+ * Bezár egy modált az azonosítója alapján.
+ *
+ * @group overlays
+ */
 export function closeModal(id: string): void {
   const portal = document.getElementById(`${id}-portal`);
   if (portal) {

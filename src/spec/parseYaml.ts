@@ -1,4 +1,4 @@
-/**
+/*
  * Függőségmentes YAML-részhalmaz parser a deklaratív oldalleíróhoz.
  *
  * Támogatott: behúzásalapú térkép és lista (a lista a kulccsal azonos behúzással is), skalárok
@@ -10,6 +10,11 @@
  * tabulátor behúzás, többsoros sima (idézőjel nélküli) skalár.
  */
 
+/**
+ * A YAML-részhalmaz értelmezésének hibája; az üzenet tartalmazza a sorszámot.
+ *
+ * @group yaml
+ */
 export class YamlError extends Error {
   constructor(message: string, public line: number, public column = 1) {
     super(`YAML hiba (${line}. sor): ${message}`);
@@ -478,7 +483,9 @@ class Parser {
   }
 }
 
-/** YAML (részhalmaz) szöveg → JavaScript érték. Hiba esetén `YamlError` sorszámmal. */
+/** YAML (részhalmaz) szöveg → JavaScript érték. Hiba esetén `YamlError` sorszámmal.
+ * @group yaml
+ */
 export function parseYaml(source: string): unknown {
   return new Parser(source).parse();
 }

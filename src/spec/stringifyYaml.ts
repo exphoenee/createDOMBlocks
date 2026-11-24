@@ -132,7 +132,9 @@ function emitEntry(k: string, v: unknown, level: number, o: Required<StringifyOp
   if (Array.isArray(v) || isPlainObject(v)) emit(v, level + 1, o, out, "");
 }
 
-/** JavaScript érték → YAML szöveg (záró sortöréssel). */
+/** JavaScript érték → YAML szöveg (záró sortöréssel).
+ * @group yaml
+ */
 export function stringifyYaml(value: unknown, options: StringifyOptions = {}): string {
   const o: Required<StringifyOptions> = { flowLimit: options.flowLimit ?? 72, indent: 2 };
   const out: string[] = [];

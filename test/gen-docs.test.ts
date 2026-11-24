@@ -32,3 +32,21 @@ describe("a dokumentáció váza a forráskód JSDoc-jából", () => {
     }
   });
 });
+
+describe("az API-referencia a JSDoc-ból", () => {
+  it("minden @group-os export összefoglalóval és aláírással szerepel", async () => {
+    // @ts-expect-error a szkript sima JavaScript modul
+    const { writeApi } = await import("../scripts/gen-api.mjs");
+    const api: Array<{ group: string; name: string; signatures: string[]; summary: string }> = writeApi(process.cwd());
+    const groups = new Set(["i18n", "yaml", "overlays", "utils"]);
+    expect(api.length).toBeGreaterThan(25);
+    for (const e of api) {
+      expect(groups.has(e.group), `${e.name}: ismeretlen csoport ${e.group}`).toBe(true);
+      expect(e.summary.length, `${e.name}: nincs leírás (JSDoc)`).toBeGreaterThan(5);
+      expect(e.signatures.length, `${e.name}: nincs aláírás`).toBeGreaterThan(0);
+    }
+    for (const must of ["setLocale", "tr", "buildUI", "mountYaml", "stringifyYaml", "Store", "openModal"]) {
+      expect(api.some((e) => e.name === must), must).toBe(true);
+    }
+  });
+});

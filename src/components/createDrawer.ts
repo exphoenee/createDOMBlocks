@@ -80,6 +80,11 @@ export function createDrawer(params: DrawerParams): HTMLElement {
   return sidebar;
 }
 
+/**
+ * Megnyitja a drawert (alapból a `sidebar-drawer`).
+ *
+ * @group overlays
+ */
 export function openDrawer(id: string = "sidebar-drawer"): void {
   const sidebar = document.getElementById(`${id}-sidebar`) as HTMLElement | null;
   if (!sidebar) return;
@@ -102,6 +107,11 @@ export function openDrawer(id: string = "sidebar-drawer"): void {
   }
 }
 
+/**
+ * Bezárja a drawert (alapból a `sidebar-drawer`).
+ *
+ * @group overlays
+ */
 export function closeDrawer(id: string = "sidebar-drawer"): void {
   const sidebar = document.getElementById(`${id}-sidebar`) as HTMLElement | null;
   if (!sidebar) return;

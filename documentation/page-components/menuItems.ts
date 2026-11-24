@@ -35,6 +35,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
     { label: tr("Témázás"), href: "theming.html" },
     { label: tr("Nyelvesítés"), href: "i18n.html" },
     { label: tr("YAML leíró"), href: "yaml.html" },
+    { label: tr("API referencia"), href: "api.html" },
     ...CATEGORIES.map((cat) => ({
       label: cat.label(),
       children: components
