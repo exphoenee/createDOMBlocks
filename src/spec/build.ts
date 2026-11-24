@@ -813,8 +813,9 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
       if (e instanceof SpecError) throw e;
       throw new SpecError(`a(z) ${def.name} létrehozása nem sikerült: ${(e as Error).message}`, path);
     }
-    const portal = !!def.portal || el.parentNode !== ctx.scratch;
-    if (!portal) el.remove();
+    // portál: a komponens máshová tette magát (modál, drawer); ha sehová (pl. Menu), a szokásos módon beszúrjuk
+    const portal = !!def.portal || (el.parentNode !== null && el.parentNode !== ctx.scratch);
+    if (el.parentNode === ctx.scratch) el.remove();
 
     // élő gyerekek a tárolókba
     for (const k of slotParams) {

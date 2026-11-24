@@ -938,6 +938,7 @@
   "Trigger esemény": "Trigger event",
   "TypeScript": "TypeScript",
   "TypeScript könyvtár komplex HTML blokkok és űrlapelemek létrehozásához.": "TypeScript library for creating complex HTML blocks and form elements.",
+  "Ugyanez a komponens a YAML leíróval (buildUI / mountYaml). A YAML leíró opcionális, a createX hívások változatlanul használhatók.": "The same component with the YAML descriptor (buildUI / mountYaml). The YAML descriptor is optional, the createX calls can still be used unchanged.",
   "UI (a visszatérési érték)": "UI (the return value)",
   "UI/UX": "UI/UX",
   "Új regisztráció: Szabó Péter": "New registration: Péter Szabó",

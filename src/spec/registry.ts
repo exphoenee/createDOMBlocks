@@ -60,6 +60,12 @@ const ADAPTERS: Record<string, (p: Record<string, any>) => HTMLElement> = {
   UnorderedList: (p) => lib.createUnorderedList((p.items ?? []).map(String), p as never),
   OrderedList: (p) => lib.createOrderedList((p.items ?? []).map(String), p as never),
   Table: (p) => lib.createTable(p.data ?? [], p as never),
+  // a createMenu nem fogad szülőt (a body-ba kerülne): itt a megadott szülőbe tesszük
+  Menu: (p) => {
+    const el = lib.createMenu(p as never);
+    (p.parent as HTMLElement).appendChild(el);
+    return el;
+  },
   Modal: (p) =>
     lib.createModal(
       { modalTitle: p.title ?? p.modalTitle ?? "", body: slotNode },
