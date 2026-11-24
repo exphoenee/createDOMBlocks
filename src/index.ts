@@ -21,6 +21,12 @@ export {
 export type { Messages, MessagesTree, MessageRefs, MessageParams, TextRef, TextValue } from "./i18n";
 export { hu as huMessages, en as enMessages } from "./locales";
 export { createDOMElem as createLocalizedElem } from "./dom";
+export { buildUI } from "./spec/build";
+export type { BuildOptions, UI, Handler, HandlerContext } from "./spec/build";
+export { mountYaml } from "./spec/mount";
+export { parseYaml, YamlError } from "./spec/parseYaml";
+export { SpecError } from "./spec/errors";
+export { Store } from "./spec/store";
 export type { DOMOptions } from "./dom";
 
 export { createTextInput } from "./inputs/createTextInput";
