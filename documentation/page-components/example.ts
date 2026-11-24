@@ -14,9 +14,11 @@
  * break.
  */
 
+import type { TextValue } from "../../src/index";
+
 export interface ExampleMeta {
-  title: string;
-  description: string;
+  title: TextValue;
+  description: TextValue;
   /** Build-time injected by the webpack loader */
   code?: string;
   /** Build-time injected by the webpack loader */

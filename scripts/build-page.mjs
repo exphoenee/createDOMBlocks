@@ -67,12 +67,16 @@ function buildMetaTags(title, description, pageUrl) {
   <link rel="manifest" href="assets/site.webmanifest">`;
 }
 
+// A téma már a CSS betöltése előtt beáll (nincs világos villanás sötét módban).
+// A logika megegyezik a documentation/page-components/theme.ts-ével.
+const THEME_BOOT_SCRIPT = `  <script>(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){}})();</script>`;
+
 function injectMeta(html, filename) {
   const title = extractTitle(html);
   const description = extractDescription(html);
   const pageUrl = filename === "index.html" ? SITE_URL : `${SITE_URL}${filename}`;
   const metaTags = buildMetaTags(title, description, pageUrl);
-  return html.replace(/(<\/title>)/, `$1\n${metaTags}`);
+  return html.replace(/(<\/title>)/, `$1\n${THEME_BOOT_SCRIPT}\n${metaTags}`);
 }
 
 mkdirp(DIST_PAGE);
@@ -95,6 +99,44 @@ if (existsSync(demosDir)) {
       copyFileSync(path.join(demosDir, file), path.join(DIST_PAGE, "demos", file));
     }
   }
+}
+
+// Régi, többkomponenses oldalak címei: átirányítás az adott kategória első komponens-oldalára,
+// hogy a meglévő linkek / könyvjelzők ne adjanak 404-et.
+const LEGACY_REDIRECTS = {
+  "forms.html": "text-input.html",
+  "selection.html": "select.html",
+  "customInputs.html": "custom-date-picker.html",
+  "draganddrop.html": "drag-and-drop-file-input.html",
+  "buttons.html": "button.html",
+  "content.html": "card.html",
+  "lists.html": "unordered-list.html",
+  "tables.html": "table.html",
+  "avatars.html": "avatar.html",
+  "navigation.html": "nav.html",
+  "feedback.html": "alert.html",
+  "interactive.html": "accordion.html",
+};
+for (const [oldPage, target] of Object.entries(LEGACY_REDIRECTS)) {
+  if (!existsSync(path.join(DIST_PAGE, target))) continue;
+  writeFileSync(
+    path.join(DIST_PAGE, oldPage),
+    `<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Átirányítás | ${SITE_NAME}</title>
+  <meta http-equiv="refresh" content="0; url=${target}" />
+  <link rel="canonical" href="${SITE_URL}${target}" />
+  <meta name="robots" content="noindex" />
+</head>
+<body>
+  <p>Az oldal áthelyezve: <a href="${target}">${target}</a></p>
+  <script>location.replace(${JSON.stringify(target)} + location.hash);</script>
+</body>
+</html>
+`,
+  );
 }
 
 copyFileSync(path.resolve(PROJECT_ROOT, "style.css"), path.join(DIST_PAGE, "style.css"));

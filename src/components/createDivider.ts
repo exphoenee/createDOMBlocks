@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { DividerParams } from "../types";
 
 export function createDivider(params: DividerParams): HTMLElement {

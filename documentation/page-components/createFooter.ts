@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import { tr } from "./i18n";
 
 export interface FooterParams {
   copyright?: string;
@@ -33,7 +34,7 @@ export function createFooter(params: FooterParams = {}): HTMLElement {
             children: [
               {
                 tag: "a",
-                text: "Meet the Creator \u2192",
+                text: tr("Ismerd meg a készítőt \u2192"),
                 attrs: {
                   href: "https://viktor.bozzay.online",
                   target: "_blank",

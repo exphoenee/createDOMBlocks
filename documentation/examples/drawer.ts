@@ -1,4 +1,5 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createDrawer, openDrawer, closeDrawer, createButton, createMenu, createCard } from "../../src/index";
 import { createDOMElem } from "domelemjs";
 
@@ -6,7 +7,7 @@ const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createDrawer (overlay mód)", description: "Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.", component: createDrawer },
+    { title: tr("Drawer (overlay mód)"), description: tr("Oldalsó panel ami felülúszik a tartalmon, overlay réteggel."), component: createDrawer },
     (parent) => {
       createDrawer({
         id: "doc-overlay-drawer",
@@ -27,7 +28,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createDrawer (push mód)", description: "Oldalsó panel ami kitolja a tartalmat, overlay nélkül." },
+    { title: tr("Drawer (push mód)"), description: tr("Oldalsó panel ami kitolja a tartalmat, overlay nélkül.") },
     (parent) => {
       createDrawer({
         id: "doc-push-drawer",
@@ -54,7 +55,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createDrawer menüvel", description: "Drawer beépített menüvel, alapértelmezetten nyitva." },
+    { title: tr("Drawer menüvel"), description: tr("Drawer beépített menüvel, alapértelmezetten nyitva.") },
     (parent) => {
       createDrawer({
         id: "doc-menu-drawer",
@@ -77,7 +78,7 @@ const sections = [
     },
   ),
   example(
-    { title: "Nyitás és zárás programozottan", description: "Az openDrawer() és closeDrawer() függvényekkel irányíthatod a drawer-t.", component: createDrawer },
+    { title: tr("Nyitás és zárás programozottan"), description: tr("Az openDrawer() és closeDrawer() függvényekkel irányíthatod a drawer-t."), component: createDrawer },
     (parent) => {
       createCard({
         parent,

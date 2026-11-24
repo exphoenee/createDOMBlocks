@@ -1,8 +1,9 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
 import type { CustomMonthPickerParams } from "../types";
 import {
-  MONTHS,
-  MONTH_NAMES_SHORT,
+  monthNames,
+  monthNamesShort,
   createCalendarHeader,
   setupCalendarCloseHandler,
   toggleCalendar,
@@ -33,12 +34,12 @@ export function createCustomMonthPicker(params: CustomMonthPickerParams): HTMLEl
       createDOMElem({
         tag: "div",
         attrs: { class: "month-grid" },
-        children: MONTHS.map((m, i) => {
+        children: monthNames().map((m, i) => {
           const monthStr = `${currentYear}-${String(i + 1).padStart(2, "0")}`;
           const isSelected = monthStr === selectedMonth;
           return createDOMElem({
             tag: "span",
-            text: MONTH_NAMES_SHORT[i],
+            text: monthNamesShort()[i],
             attrs: { class: `month-item${isSelected ? " selected" : ""}` },
             handleEvent: {
               event: "click",
@@ -64,7 +65,7 @@ export function createCustomMonthPicker(params: CustomMonthPickerParams): HTMLEl
       type: "text",
       readonly: "true",
       class: "custom-month-picker-input",
-      placeholder: params.placeholder || "Valassz honapot...",
+      placeholder: builtin("picker.month", "Válassz hónapot…"),
       ...(params.id ? { id: `${params.id}-input` } : {}),
       ...(selectedMonth ? { value: selectedMonth } : {}),
     },

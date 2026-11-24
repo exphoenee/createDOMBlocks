@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { RadioParams } from "../types";
 
 export function createRadio(params: RadioParams): HTMLElement {

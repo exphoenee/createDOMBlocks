@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import type { DOMOptions as CreateDOMElemOptions } from "../../src/index";
+import { tr } from "../page-components/i18n";
 import { section, div, heading, para, button, chip, img } from "./_shared";
 
 const app = document.getElementById("app")!;
@@ -12,13 +13,13 @@ function buildNav(): CreateDOMElemOptions {
     attrs: { class: "demo2-nav" },
     children: [
       div("demo2-nav-left", [
-        { tag: "a", text: "\u2190 Vissza", attrs: { href: "index.html", class: "demo2-nav-back" } },
+        { tag: "a", text: tr("\u2190 Vissza"), attrs: { href: "index.html", class: "demo2-nav-back" } },
         div("demo2-nav-brand", [heading(3, "\u2726 Studio")]),
       ]),
       div("demo2-nav-links", [
-        { tag: "a", text: "Munk\u00e1k", attrs: { href: "#gallery" } },
-        { tag: "a", text: "R\u00f3lam", attrs: { href: "#timeline" } },
-        { tag: "a", text: "Kapcsolat", attrs: { href: "#contact" } },
+        { tag: "a", text: tr("Munk\u00e1k"), attrs: { href: "#gallery" } },
+        { tag: "a", text: tr("R\u00f3lam"), attrs: { href: "#timeline" } },
+        { tag: "a", text: tr("Kapcsolat"), attrs: { href: "#contact" } },
       ]),
     ],
   };
@@ -97,16 +98,16 @@ function buildContact(): CreateDOMElemOptions {
       attrs: { class: "demo2-contact-card" },
       children: [
         div("demo2-form-field", [
-          { tag: "label", text: "N\u00e9v", attrs: { for: "demo2-name" } },
-          { tag: "div", text: "Kov\u00e1cs Anna", attrs: { class: "demo2-form-input" } },
+          { tag: "label", text: tr("N\u00e9v"), attrs: { for: "demo2-name" } },
+          { tag: "div", text: tr("Kov\u00e1cs Anna"), attrs: { class: "demo2-form-input" } },
         ]),
         div("demo2-form-field", [
-          { tag: "label", text: "E-mail", attrs: { for: "demo2-email" } },
-          { tag: "div", text: "anna@example.com", attrs: { class: "demo2-form-input" } },
+          { tag: "label", text: tr("E-mail"), attrs: { for: "demo2-email" } },
+          { tag: "div", text: tr("anna@example.com"), attrs: { class: "demo2-form-input" } },
         ]),
         div("demo2-form-field", [
-          { tag: "label", text: "\u00dczenet", attrs: { for: "demo2-msg" } },
-          { tag: "div", text: "Szeretn\u00e9k \u00e9rdekl\u0151dni a k\u00f6z\u00f6s munka lehet\u0151s\u00e9g\u00e9r\u0151l...", attrs: { class: "demo2-form-textarea" } },
+          { tag: "label", text: tr("\u00dczenet"), attrs: { for: "demo2-msg" } },
+          { tag: "div", text: tr("Szeretn\u00e9k \u00e9rdekl\u0151dni a k\u00f6z\u00f6s munka lehet\u0151s\u00e9g\u00e9r\u0151l..."), attrs: { class: "demo2-form-textarea" } },
         ]),
         button("K\u00fcld\u00e9s"),
       ],

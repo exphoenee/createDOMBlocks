@@ -1,11 +1,12 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "./dom";
 import type { EventHandler } from "domelemjs";
 import type { BaseInputParams } from "./types";
+import type { TextValue } from "./i18n";
 
 export function createInputElem(
   elemType: string,
   params: BaseInputParams
-): { tag: string; text?: string; attrs: Record<string, string | number | boolean>; handleEvent?: EventHandler[] } {
+): { tag: string; text?: string; attrs: Record<string, string | number | boolean | TextValue>; handleEvent?: EventHandler[] } {
   const events: EventHandler[] = [];
   if (params.onChange) events.push({ event: "change", cb: params.onChange });
   if (params.click) events.push({ event: "click", cb: params.click });
@@ -15,7 +16,7 @@ export function createInputElem(
     );
   }
 
-  const attrs: Record<string, string | number | boolean> = {
+  const attrs: Record<string, string | number | boolean | TextValue> = {
     name: params.name || params.id,
     class: `${params.type || elemType}-input${params.class ? ` ${params.class}` : ""}`,
   };

@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { SelectParams } from "../types";
+import type { DOMOptions } from "../dom";
 
 export function createSelect(params: SelectParams): HTMLElement {
   const optionChildren = params.options.map((opt) => {
@@ -27,14 +28,14 @@ export function createSelect(params: SelectParams): HTMLElement {
     handleEvent: events.length > 0 ? events : undefined,
   };
 
-  const selectChildren: (typeof selectElem | { tag: string; text: string; attrs: Record<string, string> })[] =
+  const selectChildren: DOMOptions[] =
     params.labelText
       ? [{
           tag: "label",
           text: params.labelText,
           attrs: { for: params.id, class: `select-label${params.class ? ` ${params.class}` : ""}` },
-        }, selectElem]
-      : [selectElem];
+        }, selectElem as DOMOptions]
+      : [selectElem as DOMOptions];
 
   if (params.labelfirst === false) selectChildren.reverse();
 

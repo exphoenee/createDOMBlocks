@@ -151,6 +151,8 @@ createCard({
 | `createParagraph(params)` | `<p>` bekezdés |
 | `createTitle(params, level)` | Címsor (h1–h6) |
 | `createImage(params)` | Ábra képpel + opcionális felirattal |
+| `createVideo(params)` | Önállóan töltő videó (mp4, webm, ogg) spinnerrel, hibakezeléssel és méretezett kerettel |
+| `createMusicPlayer(params)` | Zenelejátszó lejátszási listával, időcsíkkal, hangerővel és ismétléssel |
 | `createLink(params)` | Stilizált `<a>` link |
 | `createCodeBlock(params)` | Kódblokk szintaxis kiemeléssel |
 | `createBlockquote(params)` | Idézet szerzővel |
@@ -187,6 +189,7 @@ createCard({
 | Függvény | Leírás |
 |----------|--------|
 | `createCarousel(params)` | 3D carousel navigációval és érintés támogatással |
+| `createTimeline(params)` | Függőleges idővonal váltakozó kártyákkal és kompakt nézettel |
 | `createDragAndDropFileInput(params)` | Drag & drop fájl feltöltő |
 
 ### Általános Paraméterek
@@ -251,6 +254,39 @@ openModal("confirmModal");
 ```
 
 ---
+
+## Nyelvesítés (i18n)
+
+Minden komponens minden szöveges paramétere (címke, placeholder, gomb felirat, cím, üzenet, aria-label, táblázat cella …) elfogad sima szöveget, `tr("kulcs")` hivatkozást vagy függvényt. A hivatkozások és függvények **nyelvváltáskor automatikusan újraszámolódnak**: a komponens ugyanaz az elem marad, ezért az állapota (begépelt érték, aktív fül, oldal, lejátszás) megmarad. A beépített feliratok (táblázat lapozó, modál gombok, jelszó szem gomb, naptár hónapnevei …) is átváltanak. A könyvtár magyar (`hu`, alapértelmezett) és angol (`en`) katalógust tartalmaz.
+
+```ts
+import { registerMessages, setLocale, tr, createTextInput } from "createdomblocks";
+
+registerMessages("hu", { "form.name": "Név" });
+registerMessages("en", { "form.name": "Name" });
+
+createTextInput({ parent: "app", id: "name", labelText: tr("form.name") });
+setLocale("en"); // a címke frissül, a begépelt érték megmarad
+```
+
+Továbbá: `loadMessages(lang, urlVagyBetöltő)`, `t(kulcs, paraméterek)` `{név}` behelyettesítéssel és többes számmal (`kulcs_one` / `kulcs_other`), `onLocaleChange(cb)`, `setFallbackLocale(lang)`. Élő demót, a teljes API-t és a beépített `cdb.*` kulcsok listáját a [Nyelvesítés útmutatóban](https://exphoenee.github.io/createDOMBlocks/i18n.html) találod.
+
+## Témázás
+
+A színeket, lekerekítést, árnyékot és az animáció sebességét CSS változók adják, így a komponensek megjelenése a könyvtár módosítása nélkül testre szabható. Töltsd be a saját CSS-ed a `style.css` **után**, és írd felül a változókat:
+
+```css
+:root {
+  --primary: #7c3aed;        /* márkaszín: gombok, aktív elemek, fókusz */
+  --primary-hover: #6d28d9;
+  --radius: 0.25rem;         /* kisebb lekerekítés mindenhol */
+}
+
+/* vagy az oldal egy részére szűkítve */
+.admin-panel { --primary: #16a34a; --bg: #f0fdf4; }
+```
+
+Elérhető változók: `--primary`, `--primary-hover`, `--on-primary`, `--secondary`, `--text`, `--text-light`, `--bg`, `--bg-alt`, `--border`, `--success|error|warning|info|neutral` (+ `-bg`), `--radius`, `--radius-lg`, `--shadow`, `--shadow-md`, `--shadow-lg`, `--transition`. Élő demót, sötét módot és osztályszintű testreszabást a [Témázás útmutatóban](https://exphoenee.github.io/createDOMBlocks/theming.html) találsz.
 
 ## Példa
 

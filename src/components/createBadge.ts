@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { BadgeParams } from "../types";
 
 export function createBadge(params: BadgeParams): HTMLElement {
