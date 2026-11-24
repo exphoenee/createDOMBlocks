@@ -3488,7 +3488,7 @@ button.drawer-toggle {
 .gantt {
   --gantt-label-w: 220px;
   --gantt-track-w: 1680px;
-  --gantt-row-h: 54px;
+  --gantt-row-h: 60px;
   --gantt-head-h: 44px;
   --gantt-today: #ef4444;
   --gantt-surface: var(--bg);

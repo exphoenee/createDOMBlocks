@@ -223,7 +223,7 @@ function buildMilestone(
 function buildRow(state: GanttState, row: GanttRow, layout: Layout): HTMLElement {
   const { params } = state;
   const hasCards = (row.milestones ?? []).some((m) => m.placement === "above" || m.placement === "below");
-  const height = hasCards ? params.cardRowHeight ?? 128 : params.rowHeight ?? 54;
+  const height = hasCards ? params.cardRowHeight ?? 128 : params.rowHeight ?? 60;
   const color = row.color ?? state.colors.get(row.id) ?? DEFAULT_COLORS[0];
   const period = periodText(row);
   const title = resolveText(row.label);
@@ -510,7 +510,7 @@ export function createGantt(params: GanttParams): GanttElement {
   root.id = params.id;
   root.setAttribute("role", "group");
   if (params.ariaLabel !== undefined) root.setAttribute("aria-label", resolveText(params.ariaLabel));
-  root.style.setProperty("--gantt-row-h", `${params.rowHeight ?? 54}px`);
+  root.style.setProperty("--gantt-row-h", `${params.rowHeight ?? 60}px`);
 
   const state: GanttState = {
     params,
