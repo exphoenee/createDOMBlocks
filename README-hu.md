@@ -273,7 +273,7 @@ ui:
 <script>CreateDOMBlocks.mountYaml("#app", "#page");</script>
 ```
 
-Egy csomópont egyetlen kulcs: `Komponens#id.osztály` (nagybetű = könyvtári komponens, kisbetű = nyers HTML elem). A skalár a fő szöveg, a lista a gyerekek. A `"@név"` eseménykezelőt köt, a `${...}` biztonságos kifejezés (nincs `eval`), a `state` / `bind` / `each` / `if` / `define` adja a reaktivitást, a `messages` az i18n réteghez kapcsolódik, a `theme` CSS-változókat állít. A JSON Schema (`assets/createDOMBlocks.schema.json`) szerkesztői automatikus kiegészítést ad. Részletek: a dokumentáció „YAML leíró” oldala és a `plans/yaml-leiro-terv.md`.
+Egy csomópont egyetlen kulcs: `Komponens#id.osztály` (nagybetű = könyvtári komponens, kisbetű = nyers HTML elem). A skalár a fő szöveg, a lista a gyerekek. A `"@név"` eseménykezelőt köt, a `${...}` biztonságos kifejezés (nincs `eval`), a `state` / `bind` / `each` / `if` / `define` adja a reaktivitást, a `messages` az i18n réteghez kapcsolódik, a `theme` CSS-változókat állít. A JSON Schema (`assets/createDOMBlocks.schema.json`) szerkesztői automatikus kiegészítést ad. Részletek: a dokumentáció „YAML leíró” oldala és a `plans/yaml-leiro-terv.md`. A `yaml-page` Claude Code skill (`.claude/skills/yaml-page`) szöveges oldalleírásból megírja és ellenőrzi a leírót (`node scripts/validate-spec.mjs page.yaml`, `node scripts/spec-catalog.mjs Card`).
 
 ## Nyelvesítés (i18n)
 

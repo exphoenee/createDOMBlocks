@@ -273,7 +273,7 @@ ui:
 <script>CreateDOMBlocks.mountYaml("#app", "#page");</script>
 ```
 
-A node is a single key: `Component#id.class` (capitalized = library component, lowercase = raw HTML element). Scalars are the main text, lists are the children. `"@name"` binds an event handler, `${...}` is a safe expression (no `eval`), `state` / `bind` / `each` / `if` / `define` give reactivity, `messages` plugs into the i18n layer, `theme` sets CSS variables. A JSON Schema (`assets/createDOMBlocks.schema.json`) gives editor autocompletion. See the "YAML descriptor" page of the documentation and `plans/yaml-leiro-terv.md`.
+A node is a single key: `Component#id.class` (capitalized = library component, lowercase = raw HTML element). Scalars are the main text, lists are the children. `"@name"` binds an event handler, `${...}` is a safe expression (no `eval`), `state` / `bind` / `each` / `if` / `define` give reactivity, `messages` plugs into the i18n layer, `theme` sets CSS variables. A JSON Schema (`assets/createDOMBlocks.schema.json`) gives editor autocompletion. See the "YAML descriptor" page of the documentation and `plans/yaml-leiro-terv.md`. The `yaml-page` Claude Code skill (`.claude/skills/yaml-page`) writes and validates such a descriptor from a plain-language page description (`node scripts/validate-spec.mjs page.yaml`, `node scripts/spec-catalog.mjs Card`).
 
 ## Localization (i18n)
 
