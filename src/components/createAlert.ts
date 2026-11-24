@@ -3,6 +3,14 @@ import type { DOMOptions } from "../dom";
 import type { AlertParams } from "../types";
 import { builtin } from "../i18n";
 
+/**
+ * Figyelmeztető üzenet típusonként: success, error, warning, info.
+ *
+ * @category feedback
+ * @menu Alert
+ * @order 1
+ * @summary Figyelmeztető üzenet típusonként: success, error, warning, info.
+ */
 export function createAlert(params: AlertParams): HTMLElement {
   const children: DOMOptions[] = [];
 

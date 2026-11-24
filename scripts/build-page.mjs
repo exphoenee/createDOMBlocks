@@ -81,12 +81,17 @@ function injectMeta(html, filename) {
 
 mkdirp(DIST_PAGE);
 
+// Kézzel írt oldalak (documentation/*.html) és a kódból generált komponens-oldalak
+// (documentation/generated/pages/*.html, lásd scripts/gen-docs.mjs)
 const docDir = path.resolve(PROJECT_ROOT, "documentation");
-for (const file of readdirSync(docDir)) {
-  if (file.endsWith(".html")) {
-    const src = readFileSync(path.join(docDir, file), "utf-8");
-    const out = injectMeta(src, file);
-    writeFileSync(path.join(DIST_PAGE, file), out);
+const generatedPagesDir = path.join(docDir, "generated", "pages");
+for (const dir of [docDir, generatedPagesDir]) {
+  if (!existsSync(dir)) continue;
+  for (const file of readdirSync(dir)) {
+    if (file.endsWith(".html")) {
+      const src = readFileSync(path.join(dir, file), "utf-8");
+      writeFileSync(path.join(DIST_PAGE, file), injectMeta(src, file));
+    }
   }
 }
 

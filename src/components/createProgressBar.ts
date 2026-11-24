@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { DOMOptions } from "../dom";
 import type { ProgressBarParams } from "../types";
 
+/**
+ * Folyamatjelző egyéni színnel és százalék kijelzéssel.
+ *
+ * @category feedback
+ * @menu Progress bar
+ * @order 4
+ * @summary Folyamatjelző egyéni színnel és százalék kijelzéssel.
+ */
 export function createProgressBar(params: ProgressBarParams): HTMLElement {
   const max = params.max || 100;
   const percentage = Math.min(Math.max((params.value / max) * 100, 0), 100);

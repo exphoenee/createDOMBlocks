@@ -6,6 +6,14 @@ import {
   setupCalendarCloseHandler,
 } from "./calendar-helper";
 
+/**
+ * Egyéni dátumtartomány kiválasztó.
+ *
+ * @category forms
+ * @menu Custom date range picker
+ * @order 26
+ * @summary Egyéni dátumtartomány kiválasztó.
+ */
 export function createCustomDateRangePicker(params: CustomDateRangePickerParams): HTMLElement {
   let startDate = params.startValue || "";
   let endDate = params.endValue || "";

@@ -47,6 +47,14 @@ function pageList(current: number, total: number): (number | "…")[] {
   return out;
 }
 
+/**
+ * Táblázat tömböl építve, fejléccel, sor számokkal és összeg oszloppal.
+ *
+ * @category content
+ * @menu Table
+ * @order 14
+ * @summary Táblázat tömböl építve, fejléccel, sor számokkal és összeg oszloppal.
+ */
 export function createTable(
   data: Record<string, string | number | TextValue>[] | (string | number | TextValue)[][],
   params: TableParams & { serverSide: NonNullable<TableParams["serverSide"]> }

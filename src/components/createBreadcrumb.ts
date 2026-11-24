@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { DOMOptions } from "../dom";
 import type { BreadcrumbParams, BreadcrumbItem } from "../types";
 
+/**
+ * Morzsa menü a navigációs út vonatkozásában.
+ *
+ * @category navigation
+ * @menu Breadcrumb
+ * @order 2
+ * @summary Morzsa menü a navigációs út vonatkozásában.
+ */
 export function createBreadcrumb(params: BreadcrumbParams): HTMLElement {
   const separator = params.separator || "/";
   const children: DOMOptions[] = [];

@@ -54,6 +54,14 @@ function buildAccordionItem(item: AccordionItem, multiple: boolean): DOMOptions 
   };
 }
 
+/**
+ * Összecsukható szekciók. A multiple: true opcióval egyszerre több szekció is nyitva lehet.
+ *
+ * @category interactive
+ * @menu Accordion
+ * @order 1
+ * @summary Összecsukható szekciók. A multiple: true opcióval egyszerre több szekció is nyitva lehet.
+ */
 export function createAccordion(params: AccordionParams): HTMLElement {
   const rootAttrs: Record<string, string> = { class: `accordion${params.class ? ` ${params.class}` : ""}` };
   if (params.id) rootAttrs.id = params.id;

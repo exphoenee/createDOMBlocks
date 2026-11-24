@@ -4,6 +4,14 @@ import type { DrawerParams } from "../types";
 import { builtin } from "../i18n";
 import { createMenu } from "./createMenu";
 
+/**
+ * Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.
+ *
+ * @category navigation
+ * @menu Drawer
+ * @order 5
+ * @summary Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.
+ */
 export function createDrawer(params: DrawerParams): HTMLElement {
   const id = params.id;
   const defaultState = params.defaultState || "closed";

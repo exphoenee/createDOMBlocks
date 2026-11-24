@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { ButtonInputParams } from "../types";
 import { createInputElem } from "../helpers";
 
+/**
+ * Submit gomb, form-ok küldéséhez.
+ *
+ * @category buttons
+ * @menu Submit input
+ * @order 2
+ * @summary Submit gomb, form-ok küldéséhez.
+ */
 export function createSubmitInput(
   params: ButtonInputParams
 ): HTMLElement {

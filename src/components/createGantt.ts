@@ -586,6 +586,11 @@ function wire(root: GanttElement): void {
  * mérföldkövekkel (pötty, gyémánt vagy kártya), mai nap vonallal, csoportokkal, kijelöléssel és
  * húzással átrendezhető sorokkal. Nyelvváltáskor a feliratok, hónapnevek és időszakok frissülnek,
  * a kijelölés, a sorrend és a görgetés megmarad.
+ *
+ * @category interactive
+ * @menu Gantt
+ * @order 5
+ * @summary Gantt-diagram: idősávok, mérföldkövek, csoportok, mai nap vonal, kijelölés és átrendezhető sorok.
  */
 export function createGantt(params: GanttParams): GanttElement {
   const root = el("div", `gantt${params.class ? ` ${params.class}` : ""}`) as unknown as GanttElement;

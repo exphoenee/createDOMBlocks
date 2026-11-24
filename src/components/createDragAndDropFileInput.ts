@@ -21,6 +21,14 @@ function getFileIcon(name: string): string {
   return iconMap[ext] || "\uD83D\uDCC1";
 }
 
+/**
+ * Egyszerű fájl feltöltő mező, drag-and-drop támogatással és tallózás gombbal.
+ *
+ * @category forms
+ * @menu Drag and drop file input
+ * @order 27
+ * @summary Egyszerű fájl feltöltő mező, drag-and-drop támogatással és tallózás gombbal.
+ */
 export function createDragAndDropFileInput(params: DragAndDropFileInputParams): HTMLElement {
   let files: File[] = [];
 

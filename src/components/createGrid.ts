@@ -1,6 +1,14 @@
 import { createDOMElem } from "../dom";
 import type { GridParams } from "../types";
 
+/**
+ * Rács elrendezés oszlopokkal.
+ *
+ * @category content
+ * @menu Grid
+ * @order 2
+ * @summary Rács elrendezés oszlopokkal.
+ */
 export function createGrid(params: GridParams): HTMLElement {
   const style: Record<string, string> = { display: "grid", gap: params.gap || "1rem" };
   if (params.columns) {

@@ -14,6 +14,11 @@ function toElement(n: Node_): HTMLElement {
  * Önállóan töltő kép: betöltés alatt spinner (injektálható), siker esetén a kép,
  * hiba esetén fallback újrapróbálás gombbal. A figure `data-state` attribútuma
  * (loading / loaded / error) stílushoz használható.
+ *
+ * @category content
+ * @menu Image
+ * @order 7
+ * @summary Kép captionnal.
  */
 export function createImage(params: ImageParams): HTMLElement {
   const strategy = params.strategy ?? "image";

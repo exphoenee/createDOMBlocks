@@ -27,6 +27,11 @@ function buildItem(item: TimelineItem): DOMOptions {
 /**
  * Függőleges idővonal, váltakozó oldalú kártyákkal (keskeny képernyőn egy oszlop).
  * Kompakt nézetben a leírások rejtettek: az `is-compact` osztály kapcsolásával váltható.
+ *
+ * @category interactive
+ * @menu Timeline
+ * @order 4
+ * @summary Váltakozó oldalú kártyák; keskeny képernyőn egy oszlop.
  */
 export function createTimeline(params: TimelineParams): HTMLElement {
   const attrs: Record<string, TextValue> = {

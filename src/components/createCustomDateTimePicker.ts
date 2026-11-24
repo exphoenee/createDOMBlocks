@@ -7,6 +7,14 @@ import {
   toggleCalendar,
 } from "./calendar-helper";
 
+/**
+ * Egyéni dátum + idő kiválasztó.
+ *
+ * @category forms
+ * @menu Custom date time picker
+ * @order 25
+ * @summary Egyéni dátum + idő kiválasztó.
+ */
 export function createCustomDateTimePicker(params: CustomDateTimePickerParams): HTMLElement {
   let selectedDate = params.value || "";
   let currentYear = new Date().getFullYear();

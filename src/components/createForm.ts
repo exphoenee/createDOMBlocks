@@ -63,6 +63,14 @@ function getInputFactory(type: string): InputFactory | null {
   return map[type] || null;
 }
 
+/**
+ * Általáns form tömbbe szedett input konfigurációkkal.
+ *
+ * @category forms
+ * @menu Form
+ * @order 17
+ * @summary Általáns form tömbbe szedett input konfigurációkkal.
+ */
 export function createForm(params: FormConfig): HTMLElement {
   const formAttrs: Record<string, string> = {};
   if (params.id) formAttrs.id = params.id;

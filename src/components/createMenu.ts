@@ -86,6 +86,14 @@ function buildMenuItem(item: MenuItem, collapsible: boolean): DOMOptions {
   };
 }
 
+/**
+ * Egyszerű menü linkekkel, drawer-ben használható navigációs listaként.
+ *
+ * @category navigation
+ * @menu Menu
+ * @order 4
+ * @summary Egyszerű menü linkekkel, drawer-ben használható navigációs listaként.
+ */
 export function createMenu(params: MenuParams): HTMLElement {
   const collapsible = params.collapsible ?? false;
   return createDOMElem({

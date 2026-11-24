@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { ButtonInputParams } from "../types";
 import { createInputElem } from "../helpers";
 
+/**
+ * Input gomb a submit/reset mellett.
+ *
+ * @category buttons
+ * @menu Button input
+ * @order 1
+ * @summary Input gomb a submit/reset mellett.
+ */
 export function createButtonInput(
   params: ButtonInputParams
 ): HTMLElement {

@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { TextareaParams } from "../types";
 import type { TextValue } from "../i18n";
 
+/**
+ * Szövegdoboz sorokkal és oszlopokkal.
+ *
+ * @category forms
+ * @menu Textarea
+ * @order 21
+ * @summary Szövegdoboz sorokkal és oszlopokkal.
+ */
 export function createTextarea(params: TextareaParams): HTMLElement {
   const events: { event: string; cb: (e: Event) => void }[] = [];
   if (params.onChange) events.push({ event: "change", cb: params.onChange });

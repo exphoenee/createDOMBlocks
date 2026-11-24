@@ -39,6 +39,11 @@ function el<K extends keyof HTMLElementTagNameMap>(
  * Egyedi zenelejátszó: lejátszás / szünet, előző / következő, léptethető időcsík,
  * hangerő, ismétlés és lejátszási lista. A gyökérelem `data-state` attribútuma
  * (paused / playing / loading / error) stílushoz használható.
+ *
+ * @category content
+ * @menu Music player
+ * @order 9
+ * @summary Zenelejátszó lejátszási listával, időcsíkkal, hangerővel és ismétléssel.
  */
 export function createMusicPlayer(params: MusicPlayerParams): HTMLElement {
   // Feliratok: a paraméterből, különben a beépített (nyelvváltáskor frissülő) katalógusból

@@ -43,6 +43,14 @@ function buildNavItem(item: NavItem): DOMOptions {
   };
 }
 
+/**
+ * Navigációs sáv menüpontokkal és almenüvel.
+ *
+ * @category navigation
+ * @menu Nav
+ * @order 1
+ * @summary Navigációs sáv menüpontokkal és almenüvel.
+ */
 export function createNav(params: NavParams): HTMLElement {
   const navAttrs: Record<string, string> = { class: `nav${params.class ? ` ${params.class}` : ""}` };
   if (params.id) navAttrs.id = params.id;

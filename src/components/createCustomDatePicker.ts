@@ -7,6 +7,14 @@ import {
   toggleCalendar,
 } from "./calendar-helper";
 
+/**
+ * Egyéni dátum kiválasztó naptár popup-pal.
+ *
+ * @category forms
+ * @menu Custom date picker
+ * @order 22
+ * @summary Egyéni dátum kiválasztó naptár popup-pal.
+ */
 export function createCustomDatePicker(params: CustomDatePickerParams): HTMLElement {
   let selectedDate = params.value || "";
 

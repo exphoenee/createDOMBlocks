@@ -33,6 +33,14 @@ function removeToast(toast: HTMLElement): void {
   }, 300);
 }
 
+/**
+ * Ideiglenes értesítés.
+ *
+ * @category feedback
+ * @menu Toast
+ * @order 5
+ * @summary Ideiglenes értesítés.
+ */
 export function createToast(params: ToastParams): HTMLElement {
   const duration = params.duration || 3000;
   const position = params.position || "top-right";

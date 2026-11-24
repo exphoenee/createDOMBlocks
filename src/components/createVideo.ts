@@ -29,6 +29,11 @@ function guessType(src: string): string | undefined {
  * siker esetén a lejátszó, hiba esetén fallback újrapróbálás gombbal. Ugyanúgy viselkedik,
  * mint a `createImage`: a keret a megadott méretű már betöltés és hiba alatt is.
  * A figure `data-state` attribútuma (loading / loaded / error) stílushoz használható.
+ *
+ * @category content
+ * @menu Video
+ * @order 8
+ * @summary Videó lejátszó (mp4, webm, ogg) betöltés-jelzővel, hibakezeléssel és megadott méretű kerettel.
  */
 export function createVideo(params: VideoParams): HTMLElement {
   const retries = params.retries ?? 0;

@@ -1,6 +1,14 @@
 import { createDOMElem } from "../dom";
 import type { ListParams } from "../types";
 
+/**
+ * Rendezetlen lista (ul) elemekből.
+ *
+ * @category content
+ * @menu Unordered list
+ * @order 12
+ * @summary Rendezetlen lista (ul) elemekből.
+ */
 export function createUnorderedList(data: string[], params: ListParams): HTMLElement {
   const attrs: Record<string, string> = {
     class: `unsorted-list${params.class ? ` ${params.class}` : ""}`,
@@ -19,6 +27,14 @@ export function createUnorderedList(data: string[], params: ListParams): HTMLEle
   });
 }
 
+/**
+ * Rendezett lista (ol) indulásos számmal.
+ *
+ * @category content
+ * @menu Ordered list
+ * @order 13
+ * @summary Rendezett lista (ol) indulásos számmal.
+ */
 export function createOrderedList(data: string[], params: ListParams): HTMLElement {
   const attrs: Record<string, string | number> = {
     class: `ordered-list${params.class ? ` ${params.class}` : ""}`,

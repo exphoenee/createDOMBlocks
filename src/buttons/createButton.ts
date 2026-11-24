@@ -28,6 +28,14 @@ function startCountdown(button: HTMLButtonElement, ms: number, onDone?: () => vo
   }, TICK_MS);
 }
 
+/**
+ * Általános button elem szöveggel és eseménykezelővel.
+ *
+ * @category buttons
+ * @menu Button
+ * @order 4
+ * @summary Általános button elem szöveggel és eseménykezelővel.
+ */
 export function createButton(params: ButtonParams): HTMLElement {
   const handleEvent: { event: string; cb: (e: Event) => void }[] = [];
 

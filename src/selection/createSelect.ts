@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { SelectParams } from "../types";
 import type { DOMOptions } from "../dom";
 
+/**
+ * Legördülő menü opciókkal.
+ *
+ * @category forms
+ * @menu Select
+ * @order 18
+ * @summary Legördülő menü opciókkal.
+ */
 export function createSelect(params: SelectParams): HTMLElement {
   const optionChildren = params.options.map((opt) => {
     const optAttrs: Record<string, string | number | boolean> = { value: opt.value };

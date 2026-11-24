@@ -1,6 +1,14 @@
 import { createDOMElem } from "../dom";
 import type { RadioParams } from "../types";
 
+/**
+ * Radio gomb csoport opciókkal.
+ *
+ * @category forms
+ * @menu Radio
+ * @order 19
+ * @summary Radio gomb csoport opciókkal.
+ */
 export function createRadio(params: RadioParams): HTMLElement {
   const radioOptions = params.options.map((option, index) => {
     const checked = typeof params.value === "string"

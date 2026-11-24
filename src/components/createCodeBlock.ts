@@ -4,6 +4,14 @@ import type { CodeBlockParams } from "../types";
 import { highlightCode } from "./highlighter";
 import { builtin, resolveText } from "../i18n";
 
+/**
+ * Kódblokk nyelv megadásával és syntax highlighting-gel.
+ *
+ * @category content
+ * @menu Code block
+ * @order 6
+ * @summary Kódblokk nyelv megadásával és syntax highlighting-gel.
+ */
 export function createCodeBlock(params: CodeBlockParams): HTMLElement {
   const children: DOMOptions[] = [];
 

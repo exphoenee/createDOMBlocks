@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { ButtonInputParams } from "../types";
 import { createInputElem } from "../helpers";
 
+/**
+ * Reset gomb, form visszaállításhoz.
+ *
+ * @category buttons
+ * @menu Reset input
+ * @order 3
+ * @summary Reset gomb, form visszaállításhoz.
+ */
 export function createResetInput(
   params: ButtonInputParams
 ): HTMLElement {

@@ -46,6 +46,14 @@ function buildSlide(slide: CarouselSlide): DOMOptions {
   };
 }
 
+/**
+ * Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.
+ *
+ * @category interactive
+ * @menu Carousel
+ * @order 3
+ * @summary Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.
+ */
 export function createCarousel(params: CarouselParams): HTMLElement {
   const labels = params.labels ?? {};
   const rootAttrs: Record<string, TextValue> = {

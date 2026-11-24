@@ -6,6 +6,11 @@ import type { TabsParams, TabItem } from "../types";
 /**
  * Tabok a WAI-ARIA tabs minta szerint: roving tabindex, nyilak (körbeér), Home / End,
  * a fókusz aktivál.
+ *
+ * @category navigation
+ * @menu Tabs
+ * @order 3
+ * @summary Lapozható tabok külön tartalommal.
  */
 export function createTabs(params: TabsParams): HTMLElement {
   const activeId = params.tabs.some((t) => t.id === params.activeTab) ? params.activeTab : params.tabs[0]?.id;

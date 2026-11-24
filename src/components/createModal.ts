@@ -27,6 +27,14 @@ export function closeModal(id: string): void {
 
 const toCss = (v: string | number): string => (typeof v === "number" ? `${v}px` : v);
 
+/**
+ * Modál dialógus ablak, ami portálként a body végére kerül.
+ *
+ * @category overlays
+ * @menu Modal
+ * @order 1
+ * @summary Modál dialógus ablak, ami portálként a body végére kerül.
+ */
 export function createModal(
   content: ModalContent,
   actions: ModalActions,

@@ -9,6 +9,14 @@ import {
   getWeeksInMonth,
 } from "./calendar-helper";
 
+/**
+ * Egyéni hét kiválasztó.
+ *
+ * @category forms
+ * @menu Custom week picker
+ * @order 23
+ * @summary Egyéni hét kiválasztó.
+ */
 export function createCustomWeekPicker(params: CustomWeekPickerParams): HTMLElement {
   let selectedWeek = params.value || "";
   let currentYear = new Date().getFullYear();

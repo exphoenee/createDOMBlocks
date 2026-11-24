@@ -2,6 +2,14 @@ import { createDOMElem } from "../dom";
 import type { DOMOptions } from "../dom";
 import type { CardParams } from "../types";
 
+/**
+ * Kártya komponens címmel, testtel és lábléccel.
+ *
+ * @category content
+ * @menu Card
+ * @order 1
+ * @summary Kártya komponens címmel, testtel és lábléccel.
+ */
 export function createCard(params: CardParams): HTMLElement {
   const children: (DOMOptions | HTMLElement)[] = [];
 

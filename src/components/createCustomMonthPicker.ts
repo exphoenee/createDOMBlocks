@@ -9,6 +9,14 @@ import {
   toggleCalendar,
 } from "./calendar-helper";
 
+/**
+ * Egyéni hónap kiválasztó.
+ *
+ * @category forms
+ * @menu Custom month picker
+ * @order 24
+ * @summary Egyéni hónap kiválasztó.
+ */
 export function createCustomMonthPicker(params: CustomMonthPickerParams): HTMLElement {
   let selectedMonth = params.value || "";
   let currentYear = new Date().getFullYear();

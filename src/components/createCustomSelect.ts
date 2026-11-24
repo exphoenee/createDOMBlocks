@@ -3,6 +3,14 @@ import type { DOMOptions } from "../dom";
 import type { CustomSelectParams, SelectOption } from "../types";
 import { resolveText, watchLocale } from "../i18n";
 
+/**
+ * Custom legördülő egyéni stílussal.
+ *
+ * @category forms
+ * @menu Custom select
+ * @order 20
+ * @summary Custom legördülő egyéni stílussal.
+ */
 export function createCustomSelect(params: CustomSelectParams): HTMLElement {
   let selectedValue: string | number | undefined = params.value;
   let isOpen = false;

@@ -3,6 +3,14 @@ import { resolveText } from "../i18n";
 import type { DOMOptions } from "../dom";
 import type { BlockquoteParams } from "../types";
 
+/**
+ * Idézet szerzővel.
+ *
+ * @category content
+ * @menu Blockquote
+ * @order 5
+ * @summary Idézet szerzővel.
+ */
 export function createBlockquote(params: BlockquoteParams): HTMLElement {
   const children: DOMOptions[] = [];
 
