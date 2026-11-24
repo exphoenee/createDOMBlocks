@@ -302,10 +302,9 @@ function render(root: GanttElement): void {
   root.classList.toggle("is-dragscroll", !!params.dragScroll);
   root.style.setProperty("--gantt-label-w", `${labelWidth}px`);
   root.style.setProperty("--gantt-track-w", layout.fit ? "480px" : `${layout.trackWidth}px`);
-  root.textContent = "";
 
   if (state.rows.length === 0) {
-    root.appendChild(el("div", "gantt-empty", resolveText(params.emptyText ?? builtin("gantt.empty", "Nincs megjeleníthető sor"))));
+    root.replaceChildren(el("div", "gantt-empty", resolveText(params.emptyText ?? builtin("gantt.empty", "Nincs megjeleníthető sor"))));
     return;
   }
 
@@ -360,7 +359,8 @@ function render(root: GanttElement): void {
   chart.appendChild(overlay);
 
   scroll.appendChild(chart);
-  root.appendChild(scroll);
+  // az új tartalom egyben cserél: ha a felépítés közben hiba van, a korábbi tartalom megmarad
+  root.replaceChildren(scroll);
   if (prevScroll !== undefined) scroll.scrollLeft = prevScroll;
 }
 
