@@ -97,6 +97,9 @@ function child(scope: Vars, vars: Vars): Vars {
   return Object.assign(Object.create(null), scope, vars);
 }
 
+/** Szöveg-paraméterek: a szám / logikai érték itt szöveggé alakul (a komponensek csak szöveget írnak ki). */
+const TEXT_PARAMS = new Set(["text", "title", "message", "label", "labelText", "placeholder", "caption", "author", "ariaLabel", "alt", "name"]);
+
 const DATA_REF = /^\$([A-Za-z_]\w*(?:\.\w+|\[\w+\])*)$/;
 
 const templateCache = new Map<string, Template | null>();
@@ -671,7 +674,7 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
     id = el.id;
     if (id) register(ctx, id, el, path, true);
   }
-  if (params.children !== undefined) renderNodes(params.children, env, el, null, `${path}.children`);
+  const kids: Mounted[] = params.children !== undefined ? renderNodes(params.children, env, el, null, `${path}.children`) : [];
   if (params.bind !== undefined) {
     const kind = el instanceof HTMLInputElement && (el.type === "checkbox") ? "checked" : "value";
     setupBind(el, kind, String(params.bind), ctx, owner, `${path}.bind`);
@@ -683,6 +686,7 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
     first: el,
     last: el,
     dispose: () => {
+      kids.forEach((k) => k.dispose());
       if (id) ctx.byId.delete(id);
       el.parentNode?.removeChild(el);
     },
@@ -692,6 +696,8 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
 /* ----- komponens ----- */
 
 interface Built {
+  /** a leíróbeli azonosító (beviteli komponenseknél nem egyezik a gyökérelem id-jával) */
+  id: string;
   el: HTMLElement;
   params: Record<string, unknown>;
   deps: Set<string>;
@@ -747,17 +753,20 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(raw)) {
       if (special.has(k) || def.fns.has(k) || slotParams.includes(k) || def.elements?.includes(k) || def.items?.[k]) continue;
-      out[k] = evalValue(v, scope, ctx, deps, `${path}.${k}`);
+      const value = evalValue(v, scope, ctx, deps, `${path}.${k}`);
+      out[k] = TEXT_PARAMS.has(k) && (typeof value === "number" || typeof value === "boolean") ? String(value) : value;
     }
     return out;
   };
 
   /** Statikus gyerek-elemek: elemlista-paraméterek és tartalmas elemek. */
-  const staticChildren = (): Record<string, unknown> => {
+  const staticChildren = (kidSink: Mounted[]): Record<string, unknown> => {
     const out: Record<string, unknown> = {};
+    const staticKids = kidSink;
     const toElements = (nodes: unknown, where: string): HTMLElement[] => {
       const holder = document.createElement("div");
-      renderNodes(nodes, staticOwner(), holder, null, where);
+      const kids = renderNodes(nodes, staticOwner(), holder, null, where);
+      staticKids.push(...kids);
       return Array.from(holder.children) as HTMLElement[];
     };
     for (const k of def.elements ?? []) if (raw[k] !== undefined) out[k] = toElements(raw[k], `${path}.${k}`);
@@ -776,7 +785,9 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
 
   const construct = (values: Record<string, unknown>, deps: Set<string>, reuseId?: string): Built => {
     const owner = new Owner();
-    const params: Record<string, unknown> = { ...values, ...staticChildren() };
+    const staticKids: Mounted[] = [];
+    owner.add(() => staticKids.forEach((m) => m.dispose()));
+    const params: Record<string, unknown> = { ...values, ...staticChildren(staticKids) };
     // id és osztály
     let id: string | undefined;
     const explicit = sel.id !== undefined;
@@ -810,21 +821,21 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
       const selector = def.slots![k];
       const container = selector === "" ? el : el.querySelector(selector);
       if (!container) throw new SpecError(`a(z) ${def.name} komponensben nincs "${selector}" tároló a(z) ${k} számára`, `${path}.${k}`);
-      renderNodes(raw[k], { ctx, scope, owner, isStatic: env.isStatic }, container, null, `${path}.${k}`);
+      const mountedKids = renderNodes(raw[k], { ctx, scope, owner, isStatic: env.isStatic }, container, null, `${path}.${k}`);
+      owner.add(() => mountedKids.forEach((m) => m.dispose()));
     }
     if (raw.bind !== undefined) {
       if (!def.bind) throw new SpecError(`a(z) ${def.name} komponensen nem használható a bind`, `${path}.bind`);
       setupBind(el, def.bind, String(raw.bind), ctx, owner, `${path}.bind`);
     }
     register(ctx, finalId, el, path, explicit || typeof raw.id === "string");
-    return { el, params: values, deps, owner, portal };
+    return { id: finalId, el, params: values, deps, owner, portal };
   };
 
   const deps0 = new Set<string>();
   let built = construct(evaluate(deps0), deps0);
   if (!built.portal) parent.insertBefore(built.el, ref);
 
-  const id = built.el.id;
   let unsub: (() => void) | null = null;
   const subscribe = (deps: Set<string>): void => {
     unsub?.();
@@ -866,8 +877,8 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
     const hadFocus = active && built.el.contains(active) ? (active as HTMLElement).id : "";
     built.owner.dispose();
     const old = built.el;
-    ctx.byId.delete(old.id);
-    const next = construct(values, deps, old.id);
+    ctx.byId.delete(built.id);
+    const next = construct(values, deps, built.id);
     if (old.parentNode && !next.portal) old.parentNode.replaceChild(next.el, old);
     else if (old.parentNode) old.parentNode.removeChild(old);
     built = next;
@@ -886,7 +897,7 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
     dispose: () => {
       unsub?.();
       built.owner.dispose();
-      ctx.byId.delete(built.el.id);
+      ctx.byId.delete(built.id);
       built.el.parentNode?.removeChild(built.el);
     },
   } as Mounted;

@@ -502,3 +502,29 @@ ui:
     expect([...g.querySelectorAll(".is-selected")].map((e) => (e as HTMLElement).dataset.msId)).toEqual(["m2"]);
   });
 });
+
+describe("buildUI – beágyazott azonosítók újraépítéskor", () => {
+  it("each elem cseréjekor a beágyazott komponensek azonosítói nem ütköznek", () => {
+    document.body.innerHTML = '<div id="root"></div>';
+    const ui = buildUI(`
+state: { items: [ { id: a, n: 1 }, { id: b, n: 2 } ] }
+ui:
+  - each: { in: "\${items}", as: it, key: it.id }
+    do:
+      - div:
+          children:
+            - Card#card-\${it.id}:
+                title: "\${it.n}"
+                body:
+                  - Checkbox#sw-\${it.id}: { labelText: x }
+`, { parent: "root" });
+    ui.state.set("items.0", { id: "a", n: 10 });
+    ui.state.set("items", [{ id: "a", n: 11 }, { id: "b", n: 2 }]);
+    expect(document.querySelectorAll("#sw-a")).toHaveLength(1);
+    expect(document.querySelector("#card-a h3")!.textContent).toBe("11");
+    expect(ui.get("sw-a")!.contains(document.getElementById("sw-a"))).toBe(true); // a beviteli komponens gyökere a doboz
+    ui.state.set("items", []);
+    expect(ui.get("sw-a")).toBeUndefined();
+    expect(ui.get("card-b")).toBeUndefined();
+  });
+});
