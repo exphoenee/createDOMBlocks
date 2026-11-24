@@ -96,6 +96,7 @@ export {
   createMenu,
   createCarousel,
   createTimeline,
+  createGantt,
 } from "./components";
 
 export type {
@@ -180,6 +181,12 @@ export type {
   CarouselParams,
   TimelineItem,
   TimelineParams,
+  GanttDate,
+  GanttMilestone,
+  GanttRow,
+  GanttGroup,
+  GanttParams,
+  GanttElement,
   ImageState,
 } from "./types";
 

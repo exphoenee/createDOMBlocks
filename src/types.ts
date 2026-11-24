@@ -1417,3 +1417,174 @@ export interface TimelineParams {
   /** Az idővonal elérhetőségi neve (aria-label) */
   ariaLabel?: TextValue;
 }
+
+/** Gantt dátum: "2024-03" (hónap), "2024-03-15" (nap) vagy Date */
+export type GanttDate = string | Date;
+
+export interface GanttMilestone {
+  /** Egyedi azonosító (opcionális) */
+  id?: string;
+  /** A mérföldkő dátuma */
+  date: GanttDate;
+  /** Felirat: a `inside` pötty tooltipje, kártyánál a fő szöveg */
+  label: TextValue;
+  /** Kártyán a felirat fölötti sor, pl. a dátum (csak `above` / `below`) */
+  caption?: TextValue;
+  /**
+   * Elhelyezés: `inside` – pötty a sávon (tooltippel), `above` / `below` – kártya a sáv fölött / alatt
+   * @default "inside"
+   */
+  placement?: "inside" | "above" | "below";
+  /**
+   * Alak: `dot` – kör, `diamond` – gyémánt (kiemelt, pl. döntő)
+   * @default "dot"
+   */
+  shape?: "dot" | "diamond";
+  /** Egyedi szín (CSS érték); alapból a sor színe */
+  color?: string;
+  /** Tetszőleges adat, a `onMilestoneClick` visszakapja */
+  data?: unknown;
+}
+
+export interface GanttRow {
+  /** A sor egyedi azonosítója */
+  id: string;
+  /** Sor felirata (bal oldali oszlop) */
+  label: TextValue;
+  /** Alcím a felirat alatt (pl. cég) */
+  sublabel?: TextValue;
+  /** Időszak felirat; alapból a dátumokból készül (nyelvfüggően) */
+  periodLabel?: TextValue;
+  /** Csoport azonosítója (lásd `groups`) */
+  group?: string;
+  /** A sor színe (CSS érték) */
+  color?: string;
+  /** Kezdet */
+  start: GanttDate;
+  /** Vég (a hónap vagy nap végéig tart); `null` / nincs megadva: tart még (a mai napig, + `ongoingDays`) */
+  end?: GanttDate | null;
+  /** A sávra írt szöveg; alapból a `label` */
+  barLabel?: TextValue;
+  /** Mérföldkövek */
+  milestones?: GanttMilestone[];
+  /** Tetszőleges adat, a visszahívások megkapják */
+  data?: unknown;
+}
+
+export interface GanttGroup {
+  id: string;
+  /** Csoportfejléc felirata */
+  label: TextValue;
+}
+
+export interface GanttParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Egyedi azonosító */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /** Sorok */
+  rows: GanttRow[];
+  /** Csoportok (a sorok `group` mezője hivatkozik rájuk); a sorrend a megjelenés sorrendje */
+  groups?: GanttGroup[];
+  /** Az időtengely kezdete; alapból az adatokból számolt (hónap eleje) */
+  from?: GanttDate;
+  /** Az időtengely vége; alapból az adatokból számolt (hónap vége) */
+  to?: GanttDate;
+  /**
+   * Egy hónap szélessége pixelben. `0`: az elérhető szélességhez igazodik (nincs vízszintes görgetés, ha elfér).
+   * @default 20
+   */
+  monthWidth?: number;
+  /**
+   * A bal oldali felirat-oszlop szélessége pixelben
+   * @default 220
+   */
+  labelWidth?: number;
+  /**
+   * Egy sor magassága pixelben
+   * @default 54
+   */
+  rowHeight?: number;
+  /**
+   * Kártyás mérföldköveket tartalmazó sor magassága pixelben
+   * @default 128
+   */
+  cardRowHeight?: number;
+  /**
+   * Időtengely: `months` – hónapnevek, `quarters` – negyedévek; `auto`: a rendelkezésre álló helytől függ
+   * @default "auto"
+   */
+  axis?: "auto" | "months" | "quarters";
+  /**
+   * Sáv stílusa: `solid` – vastag, szöveges; `thin` – vékony, áttetsző (kártyás mérföldkövekhez)
+   * @default "solid"
+   */
+  barStyle?: "solid" | "thin";
+  /**
+   * A mai nap jelölése függőleges vonallal
+   * @default true
+   */
+  showToday?: boolean;
+  /** A mai nap buborékjának felirata; `false`: nincs buborék. Alapból a beépített "Ma" */
+  todayLabel?: TextValue | false;
+  /** A "ma" felülírása (pl. teszteléshez / demóhoz) */
+  today?: GanttDate;
+  /**
+   * Hány nappal nyúlik túl a mai napon a még tartó (`end` nélküli) sáv
+   * @default 30
+   */
+  ongoingDays?: number;
+  /**
+   * A már elmúlt mérföldkövek halványítása
+   * @default false
+   */
+  dimPast?: boolean;
+  /**
+   * Sor kijelölése kattintásra (a kijelölt sorra újra kattintva megszűnik)
+   * @default true
+   */
+  selectable?: boolean;
+  /** Kezdetben kijelölt sor azonosítója */
+  selectedId?: string;
+  /**
+   * A sorok húzással átrendezhetők (csoporton belül)
+   * @default false
+   */
+  draggableRows?: boolean;
+  /**
+   * Induláskor hová görgessen: `today`, `start`, `end`
+   * @default "today"
+   */
+  initialScroll?: "today" | "start" | "end";
+  /** Sorra / sávra kattintáskor */
+  onRowClick?: (row: GanttRow) => void;
+  /** Kijelölés változásakor (`null`: megszűnt) */
+  onSelect?: (row: GanttRow | null) => void;
+  /** Mérföldkőre kattintáskor */
+  onMilestoneClick?: (milestone: GanttMilestone, row: GanttRow) => void;
+  /** Átrendezés után az új sorrenddel (azonosítók) */
+  onReorder?: (ids: string[]) => void;
+  /** Elérhetőségi név (aria-label) */
+  ariaLabel?: TextValue;
+  /** A felirat-oszlop fejléce; alapból a beépített "Feladat" */
+  labelHeader?: TextValue;
+  /** Szöveg üres állapotban; alapból a beépített felirat */
+  emptyText?: TextValue;
+}
+
+export interface GanttElement extends HTMLElement {
+  /** Sorok cseréje (a kijelölés és a görgetés megmarad) */
+  setRows(rows: GanttRow[]): void;
+  /** Aktuális sorok az aktuális sorrendben */
+  getRows(): GanttRow[];
+  /** Sor kijelölése (`null`: kijelölés törlése) */
+  select(id: string | null): void;
+  /** A kijelölt sor azonosítója */
+  getSelected(): string | null;
+  /** Az azonosítók az aktuális (esetleg átrendezett) sorrendben */
+  getOrder(): string[];
+  /** A mai naphoz görget */
+  scrollToToday(): void;
+}

@@ -94,6 +94,7 @@ export function getDrawerMenuItems(): DrawerMenuItem[] {
         { label: "Tooltip", href: "tooltip.html" },
         { label: "Carousel", href: "carousel.html" },
         { label: "Timeline", href: "timeline.html" },
+        { label: "Gantt", href: "gantt.html" },
       ],
     },
     {

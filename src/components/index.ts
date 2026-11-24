@@ -40,3 +40,4 @@ export { newLine } from "./newLine";
 export { asyncImage } from "./asyncImage";
 export { createCarousel } from "./createCarousel";
 export { createTimeline } from "./createTimeline";
+export { createGantt } from "./createGantt";

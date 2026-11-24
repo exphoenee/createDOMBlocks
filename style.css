@@ -3483,3 +3483,470 @@ button.drawer-toggle {
     transition: none;
   }
 }
+
+/* ===== Gantt ===== */
+.gantt {
+  --gantt-label-w: 220px;
+  --gantt-track-w: 1680px;
+  --gantt-row-h: 54px;
+  --gantt-head-h: 44px;
+  --gantt-today: #ef4444;
+  --gantt-surface: var(--bg);
+  --gantt-alt: var(--bg-alt);
+  --gantt-line: var(--border);
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--gantt-surface);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.gantt-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.gantt-chart {
+  position: relative;
+  width: calc(var(--gantt-label-w) + var(--gantt-track-w));
+}
+
+.gantt.is-fit .gantt-chart {
+  width: 100%;
+  min-width: calc(var(--gantt-label-w) + var(--gantt-track-w));
+}
+
+.gantt-head,
+.gantt-row,
+.gantt-group {
+  display: flex;
+}
+
+.gantt-head {
+  border-bottom: 1px solid var(--gantt-line);
+  background: var(--gantt-alt);
+}
+
+.gantt-head.has-today {
+  padding-top: 24px;
+}
+
+.gantt-corner,
+.gantt-label,
+.gantt-group-label {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  flex: 0 0 var(--gantt-label-w);
+  width: var(--gantt-label-w);
+  background: var(--gantt-surface);
+  border-right: 1px solid var(--gantt-line);
+}
+
+.gantt-corner {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0.75rem 0.5rem;
+  background: var(--gantt-alt);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-light);
+}
+
+.gantt-axis,
+.gantt-track,
+.gantt-group-track {
+  position: relative;
+  flex: 0 0 var(--gantt-track-w);
+  width: var(--gantt-track-w);
+}
+
+.gantt.is-fit .gantt-axis,
+.gantt.is-fit .gantt-track,
+.gantt.is-fit .gantt-group-track {
+  flex: 1 0 var(--gantt-track-w);
+  width: auto;
+}
+
+.gantt-axis {
+  height: var(--gantt-head-h);
+}
+
+.gantt-years,
+.gantt-sub {
+  position: relative;
+  height: 50%;
+}
+
+.gantt-year,
+.gantt-tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.75rem;
+}
+
+.gantt-year {
+  font-weight: 700;
+  border-left: 1px solid var(--gantt-line);
+}
+
+.gantt-tick {
+  color: var(--text-light);
+  border-left: 1px solid var(--gantt-line);
+  border-top: 1px solid var(--gantt-line);
+}
+
+.gantt-body {
+  position: relative;
+}
+
+.gantt-row {
+  position: relative;
+  border-bottom: 1px solid var(--gantt-line);
+}
+
+.gantt-row.is-alt {
+  background: var(--gantt-alt);
+}
+
+.gantt-row.is-alt .gantt-label {
+  background: var(--gantt-alt);
+}
+
+.gantt-row:hover .gantt-label {
+  background: color-mix(in srgb, var(--gantt-color) 6%, var(--gantt-surface));
+}
+
+.gantt-row.is-active,
+.gantt-row.is-active .gantt-label {
+  background: color-mix(in srgb, var(--gantt-color) 10%, var(--gantt-surface));
+}
+
+.gantt-row.is-dragging {
+  opacity: 0.45;
+}
+
+.gantt-row.is-drag-over-before {
+  box-shadow: inset 0 3px 0 var(--primary);
+}
+
+.gantt-row.is-drag-over-after {
+  box-shadow: inset 0 -3px 0 var(--primary);
+}
+
+.gantt-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+  overflow: hidden;
+  border-left: 3px solid var(--gantt-color);
+}
+
+.gantt-label[draggable="true"] {
+  cursor: grab;
+}
+
+.gantt-label:focus-visible,
+.gantt-bar:focus-visible,
+.gantt-mark:focus-visible,
+.gantt-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.gantt-label-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gantt-label-sub,
+.gantt-label-period {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gantt-group {
+  background: var(--gantt-alt);
+  border-bottom: 1px solid var(--gantt-line);
+  height: 28px;
+}
+
+.gantt-group-label {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background: var(--gantt-alt);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+}
+
+/* Sáv */
+.gantt-bar {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  height: 32px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  padding: 0 0.6rem;
+  border-radius: 6px;
+  background: var(--gantt-color);
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: filter var(--transition), box-shadow var(--transition);
+}
+
+.gantt-bar:hover {
+  filter: brightness(1.08);
+}
+
+.gantt-row.is-active .gantt-bar {
+  box-shadow: 0 0 0 2px var(--gantt-surface), 0 0 0 4px var(--gantt-color);
+}
+
+.gantt-bar.is-current {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  background: linear-gradient(90deg, var(--gantt-color) 75%, color-mix(in srgb, var(--gantt-color) 15%, transparent));
+}
+
+.gantt-bar-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.gantt.is-thin .gantt-bar {
+  height: 14px;
+  padding: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gantt-color) 22%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gantt-color) 55%, transparent);
+  box-shadow: none;
+}
+
+.gantt.is-thin .gantt-bar.is-current {
+  background: color-mix(in srgb, var(--gantt-color) 22%, transparent);
+}
+
+/* Mérföldkövek */
+.gantt-mark {
+  --gantt-ms-color: var(--gantt-color);
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--gantt-surface);
+  border-radius: 50%;
+  background: var(--gantt-ms-color);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.gantt:not(.is-thin) .gantt-mark {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+.gantt-mark.is-diamond {
+  border-radius: 2px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: #fbbf24;
+  border-color: #92400e;
+}
+
+.gantt-mark.is-past {
+  opacity: 0.55;
+}
+
+.gantt-tip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  z-index: 6;
+  transform: translateX(-50%);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 0.7rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.gantt-mark.is-diamond .gantt-tip {
+  transform: translateX(-50%) rotate(-45deg);
+}
+
+.gantt-mark:hover .gantt-tip,
+.gantt-mark:focus-visible .gantt-tip {
+  opacity: 1;
+}
+
+.gantt-ms-line {
+  --gantt-ms-color: var(--gantt-color);
+  position: absolute;
+  z-index: 1;
+  width: 1px;
+  height: 16px;
+  transform: translateX(-50%);
+  background: var(--gantt-ms-color);
+  pointer-events: none;
+}
+
+.gantt-ms-line.is-above {
+  bottom: calc(50% + 7px);
+}
+
+.gantt-ms-line.is-below {
+  top: calc(50% + 7px);
+}
+
+.gantt-ms-line.is-past {
+  opacity: 0.5;
+}
+
+.gantt-card {
+  --gantt-ms-color: var(--gantt-color);
+  position: absolute;
+  z-index: 3;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--gantt-ms-color);
+  border-radius: 8px;
+  background: var(--gantt-surface);
+  color: var(--text);
+  font-size: 0.7rem;
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+}
+
+.gantt-card.is-above {
+  bottom: calc(50% + 22px);
+}
+
+.gantt-card.is-below {
+  top: calc(50% + 22px);
+}
+
+.gantt-card:hover {
+  z-index: 5;
+  box-shadow: var(--shadow-md);
+}
+
+.gantt-card.is-past {
+  border-color: var(--border);
+  color: var(--text-light);
+  background: var(--gantt-alt);
+}
+
+.gantt-card.is-final {
+  background: var(--warning-bg);
+  border-color: var(--warning);
+  color: var(--warning-text);
+}
+
+.gantt-card-caption,
+.gantt-card-label {
+  display: block;
+}
+
+.gantt-card-caption {
+  font-weight: 700;
+}
+
+/* Rács és mai nap */
+.gantt-overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--gantt-label-w);
+  right: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.gantt-grid {
+  position: absolute;
+  inset: var(--gantt-head-h) 0 0 0;
+}
+
+.gantt-head.has-today ~ .gantt-overlay .gantt-grid {
+  top: calc(var(--gantt-head-h) + 24px);
+}
+
+.gantt-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid color-mix(in srgb, var(--gantt-line) 70%, transparent);
+}
+
+.gantt-line.is-year {
+  border-left-color: var(--gantt-line);
+}
+
+.gantt-today {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  border-left: 2px dashed var(--gantt-today);
+}
+
+.gantt-today-bubble {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  transform: translateX(-50%);
+  padding: 0.1rem 0.45rem;
+  border-radius: 6px;
+  background: var(--gantt-today);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.gantt-empty {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--text-light);
+}
