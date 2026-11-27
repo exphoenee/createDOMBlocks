@@ -269,6 +269,27 @@ function evalValue(v: unknown, scope: Vars, ctx: Ctx, deps: Set<string> | null, 
 /** Szöveg-érték kiértékelése szöveggé (undefined / null → üres). */
 const asText = (v: unknown): string => (v === null || v === undefined ? "" : String(v));
 
+/**
+ * Komponens-paraméterben a `{ t: kulcs }` (és `{ t: kulcs, args: {...} }`) alakú objektum élő fordítás lesz
+ * (`tr()`), bármilyen mélységben (pl. `labels: { prev: { t: carousel.prev } }`); a nyelvváltáskor frissül.
+ */
+function toTextRefs(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(toTextRefs);
+  if (!value || typeof value !== "object" || Object.getPrototypeOf(value) !== Object.prototype) return value;
+  const obj = value as Record<string, unknown>;
+  const keys = Object.keys(obj);
+  if (typeof obj.t === "string" && keys.every((k) => k === "t" || k === "args")) {
+    return tr(obj.t, obj.args as Record<string, string | number> | undefined);
+  }
+  let changed = false;
+  const out: Record<string, unknown> = {};
+  for (const k of keys) {
+    out[k] = toTextRefs(obj[k]);
+    if (out[k] !== obj[k]) changed = true;
+  }
+  return changed ? out : value;
+}
+
 /* ===== Visszahívások és beépített műveletek ===== */
 
 function checkHandler(name: string, ctx: Ctx, path: string): Handler {
@@ -771,7 +792,7 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
 
   // szöveg: t (nyelvesített; html: true mellett HTML-ként) / text / html
   if (params.t !== undefined && params.html === true) {
-    const key = asText(params.t);
+    const key = asText(evalValue(params.t, scope, ctx, null, `${path}.t`));
     const args = params.args !== undefined ? (evalValue(params.args, scope, ctx, null, `${path}.args`) as Record<string, string | number>) : undefined;
     const apply = (target: HTMLElement): void => void (target.innerHTML = t(key, args));
     apply(el);
@@ -779,7 +800,7 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
   } else if (params.t !== undefined) {
     if (params.html !== undefined) throw new SpecError('a "t" mellett a "html" csak true lehet (a fordítás HTML-ként kerül be)', `${path}.html`);
     const args = params.args !== undefined ? (evalValue(params.args, scope, ctx, null, `${path}.args`) as Record<string, string | number>) : undefined;
-    el.append(createDOMElem({ tag: "span", attrs: { class: "spec-t", style: "display:contents" }, text: tr(asText(params.t), args) }));
+    el.append(createDOMElem({ tag: "span", attrs: { class: "spec-t", style: "display:contents" }, text: tr(asText(evalValue(params.t, scope, ctx, null, `${path}.t`)), args) }));
   } else if (params.text !== undefined) {
     const textNode = document.createTextNode("");
     el.appendChild(textNode);
@@ -903,7 +924,7 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(raw)) {
       if (special.has(k) || def.fns.has(k) || slotParams.includes(k) || def.elements?.includes(k) || def.items?.[k]) continue;
-      const value = evalValue(v, scope, ctx, deps, `${path}.${k}`);
+      const value = toTextRefs(evalValue(v, scope, ctx, deps, `${path}.${k}`));
       out[k] = TEXT_PARAMS.has(k) && (typeof value === "number" || typeof value === "boolean") ? String(value) : value;
     }
     return out;
@@ -950,7 +971,7 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
     // nyelvesített szöveg
     if (raw.t !== undefined) {
       const args = raw.args !== undefined ? (evalValue(raw.args, scope, ctx, deps, `${path}.args`) as Record<string, string | number>) : undefined;
-      params[def.text!] = tr(asText(raw.t), args);
+      params[def.text!] = tr(asText(evalValue(raw.t, scope, ctx, deps, `${path}.t`)), args);
     }
     Object.assign(params, callbacks);
     for (const k of slotParams) params[k] = []; // a komponens létrehozza a tárolót

@@ -9,6 +9,16 @@ import { resolve } from "path";
 // belső segédfüggvények, nem komponensek
 const INTERNAL = new Set(["DOMElem", "InputElem", "InputChildren", "InputContainer", "CalendarHeader", "DayCell", "DayGrid"]);
 
+/**
+ * Függvény-e maga a típus (nem csak tartalmaz függvényt): `(e: Event) => void`, `Function`, ezek uniója `undefined`-dal.
+ * Egy objektumtípus, amelynek egyik mezője függvény (pl. `labels: { dot?: (n) => string }`), nem visszahívás.
+ */
+export function isFunctionType(raw) {
+  const t = String(raw).replace(/\s*\|\s*undefined$/, "").trim().replace(/^\((.*)\)$/s, "$1").trim();
+  if (t.startsWith("{")) return false;
+  return /^\(.*\)\s*=>/s.test(t) || /^Function\b/.test(t) || /^\(\(.*\)\s*=>/s.test(t);
+}
+
 export function specComponents(props) {
   const out = {};
   for (const [fn, info] of Object.entries(props)) {
@@ -21,7 +31,7 @@ export function specComponents(props) {
       all: entry.props.map((p) => p.name),
       required: entry.props.filter((p) => p.required).map((p) => p.name),
       // visszahívás-paraméterek (függvény típusúak): ide köthető a "@handler" és a beépített műveletek
-      fns: entry.props.filter((p) => /=>|Function/.test(p.type)).map((p) => p.name),
+      fns: entry.props.filter((p) => isFunctionType(p.type)).map((p) => p.name),
     };
   }
   return out;
@@ -61,7 +71,7 @@ const KEYWORD_SCHEMA = {
 
 function typeSchema(raw) {
   const t = String(raw).replace(/\s*\|\s*undefined$/, "").trim();
-  if (/=>|\bFunction\b/.test(t)) return CALLBACK;
+  if (isFunctionType(raw)) return CALLBACK;
   if (/^("[^"]*"|'[^']*')(\s*\|\s*("[^"]*"|'[^']*'))*$/.test(t)) {
     return { enum: t.split("|").map((x) => x.trim().replace(/^["']|["']$/g, "")) };
   }

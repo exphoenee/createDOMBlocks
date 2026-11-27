@@ -277,3 +277,33 @@ ui:
     }
   });
 });
+
+describe("t sablon és { t: kulcs } a komponens-paraméterekben", () => {
+  it("a t kulcs sablon is lehet (each változóból)", () => {
+    registerMessages("hu", { "filters.game": "Játék", "filters.api": "API" });
+    build(`
+ui:
+  - each: { in: [game, api], as: kind }
+    do:
+      - span.f: { t: "filters.\${kind}" }
+      - Badge: { t: "filters.\${kind}" }
+`);
+    expect([...root().querySelectorAll(".f")].map((e) => e.textContent)).toEqual(["Játék", "API"]);
+    expect([...root().querySelectorAll(".badge")].map((e) => e.textContent)).toEqual(["Játék", "API"]);
+  });
+
+  it("{ t: kulcs } objektum élő fordítás bármilyen mélységben (pl. Carousel labels)", () => {
+    registerMessages("hu", { "my.prev": "Vissza" });
+    registerMessages("en", { "my.prev": "Back" });
+    build(`
+ui:
+  - Carousel#c:
+      labels: { prev: { t: my.prev } }
+      slides: [ { title: A }, { title: B } ]
+`);
+    const prev = document.querySelector("#c .carousel-prev")!;
+    expect(prev.getAttribute("aria-label")).toBe("Vissza");
+    setLocale("en");
+    expect(prev.getAttribute("aria-label")).toBe("Back");
+  });
+});

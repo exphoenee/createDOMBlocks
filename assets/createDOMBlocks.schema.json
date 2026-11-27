@@ -1562,18 +1562,6 @@
                       "description": "Saját nyíl-ikonok (HTML, pl. SVG; csak megbízható tartalom); alapból ◀ / ▶"
                     },
                     "labels": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "pattern": "^@"
-                        },
-                        {
-                          "type": "object"
-                        },
-                        {
-                          "type": "array"
-                        }
-                      ],
                       "description": "Elérhetőségi feliratok (fordításhoz)"
                     },
                     "children": {
@@ -7222,33 +7210,9 @@
                       "description": "A betöltés csak akkor indul, ha a kép a látótérbe kerül"
                     },
                     "spinner": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "pattern": "^@"
-                        },
-                        {
-                          "type": "object"
-                        },
-                        {
-                          "type": "array"
-                        }
-                      ],
                       "description": "Betöltés alatt mutatott elem: kész elem, `createDOMElem` opciók vagy factory.\nAlapértelmezetten a `createSpinner`. `false` esetén nem jelenik meg semmi."
                     },
                     "fallback": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "pattern": "^@"
-                        },
-                        {
-                          "type": "object"
-                        },
-                        {
-                          "type": "array"
-                        }
-                      ],
                       "description": "Hiba esetén mutatott elem. Alapértelmezetten hibaüzenet újrapróbálás gombbal."
                     },
                     "errorText": {
@@ -9421,33 +9385,9 @@
                       "description": "A betöltés csak akkor indul, ha a videó a látótérbe kerül"
                     },
                     "spinner": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "pattern": "^@"
-                        },
-                        {
-                          "type": "object"
-                        },
-                        {
-                          "type": "array"
-                        }
-                      ],
                       "description": "Betöltés alatt mutatott elem: kész elem, `createDOMElem` opciók vagy factory.\nAlapértelmezetten a `createSpinner`. `false` esetén nem jelenik meg semmi."
                     },
                     "fallback": {
-                      "anyOf": [
-                        {
-                          "type": "string",
-                          "pattern": "^@"
-                        },
-                        {
-                          "type": "object"
-                        },
-                        {
-                          "type": "array"
-                        }
-                      ],
                       "description": "Hiba esetén mutatott elem. Alapértelmezetten hibaüzenet újrapróbálás gombbal."
                     },
                     "errorText": {
