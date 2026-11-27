@@ -6,9 +6,9 @@
 
 Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész.
 
-- [ ] D1 adatvezérelt API-csoportok (`apiGroups.ts` + teszt)
-- [ ] D2 YAML-minta függvény-paraméterrel (`"@kezelő"`, fejléc-megjegyzés)
-- [ ] D3 „YAML-ban” doboz a komponensoldalakon
+- [x] D1 adatvezérelt API-csoportok (`documentation/page-components/apiGroups.ts` + teszt; új csoportok: `theme`, `behaviors`)
+- [x] D2 YAML-minta függvény-paraméterrel (`"@kezelő"`, fejléc-megjegyzés; a docs és a teszt üres kezelőket ad: `exampleHandlers`)
+- [x] D3 „YAML-ban” doboz a komponensoldalakon (`documentation/page-components/yamlFacts.ts`, futásidőben a leíró regisztrációjából)
 - [x] D4 `src/spec/keywords.json` + referencia-táblázatok a `yaml.html`-en
 - [ ] D5 a beállítás-típusok mezői az API-oldalon
 - [x] D6 közös kulcsok (`attrs`, `onMount`) a JSON Schemában
@@ -20,7 +20,7 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész.
   - [ ] 5. származtatott állapot (`derive`)
   - [ ] 6. `strict` mód és HTML-validálás
   - [ ] 7. listák és teljesítmény
-- [ ] D8 állapotos kézi YAML-minták (`handlers` mezővel)
+- [~] D8 állapotos kézi YAML-minták (formátum kész: `YAML_EXAMPLE_HANDLERS` a `yamlExamples.ts`-ben; a minták a komponensekkel együtt készülnek)
   - [ ] SegmentedControl
   - [ ] Timeline
   - [ ] Carousel

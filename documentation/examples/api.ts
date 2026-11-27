@@ -4,6 +4,7 @@ import type { DOMOptions } from "../../src/index";
 import { tr } from "../page-components/i18n";
 // A referencia a forráskód JSDoc-jából generálódik (scripts/gen-api.mjs, a `@group` címkés exportok)
 import api from "../generated/api.json";
+import { API_GROUPS } from "../page-components/apiGroups";
 
 const done = initDocPage();
 const app = document.getElementById("app") as HTMLElement;
@@ -11,11 +12,11 @@ const app = document.getElementById("app") as HTMLElement;
 interface ApiMember { name: string; signature: string; summary: string }
 interface ApiEntry { group: string; name: string; kind: string; signatures: string[]; summary: string; members: ApiMember[] }
 
-const GROUPS: Array<[string, string]> = [
-  ["i18n", "Nyelvesítés (i18n)"],
-  ["yaml", "YAML leíró"],
-  ["overlays", "Felugró ablakok"],
-  ["utils", "Segédek"],
+// a csoportok sorrendje és címe; ismeretlen csoport a végére kerül a saját nevével (a teszt jelzi, hogy cím kell neki)
+const known = new Set(API_GROUPS.map(([g]) => g));
+const GROUPS: Array<readonly [string, string]> = [
+  ...API_GROUPS,
+  ...[...new Set((api as ApiEntry[]).map((e) => e.group))].filter((g) => !known.has(g)).map((g) => [g, g] as const),
 ];
 
 /** A JSDoc-szöveg HTML-lé alakítása: a `kód` jelölés <code> elemmé válik. */

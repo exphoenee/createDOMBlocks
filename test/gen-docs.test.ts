@@ -3,6 +3,7 @@ import { existsSync } from "fs";
 // @ts-expect-error a szkript sima JavaScript modul
 import { readComponentManifest } from "../scripts/gen-docs.mjs";
 import { SPEC_PARAMS } from "../src/spec/meta.generated";
+import { API_GROUPS } from "../documentation/page-components/apiGroups";
 
 interface Entry { name: string; slug: string; title: string; category: string; order: number; summary: string }
 const manifest: Entry[] = readComponentManifest(process.cwd());
@@ -38,10 +39,10 @@ describe("az API-referencia a JSDoc-ból", () => {
     // @ts-expect-error a szkript sima JavaScript modul
     const { writeApi } = await import("../scripts/gen-api.mjs");
     const api: Array<{ group: string; name: string; signatures: string[]; summary: string }> = writeApi(process.cwd());
-    const groups = new Set(["i18n", "yaml", "overlays", "utils"]);
+    const groups = new Set(API_GROUPS.map(([g]) => g));
     expect(api.length).toBeGreaterThan(25);
     for (const e of api) {
-      expect(groups.has(e.group), `${e.name}: ismeretlen csoport ${e.group}`).toBe(true);
+      expect(groups.has(e.group), `${e.name}: a(z) "${e.group}" @group-nak nincs címe a documentation/page-components/apiGroups.ts-ben`).toBe(true);
       expect(e.summary.length, `${e.name}: nincs leírás (JSDoc)`).toBeGreaterThan(5);
       expect(e.signatures.length, `${e.name}: nincs aláírás`).toBeGreaterThan(0);
     }

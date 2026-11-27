@@ -8,7 +8,7 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész. Egy mérföldk�
 
 - [~] 0. Kiindulás: `feature/yaml-descriptor` lezárva (PR #4 megnyitva, a merge a PR #3 után a felhasználó döntése)
 - [x] 1. Leíró-alapok (K: A1–A4 · D: D4, D6) — ág: `feature/spec-foundations`
-- [ ] 2. Generátor-előkészítés (D: D1, D2, D3)
+- [x] 2. Generátor-előkészítés (D: D1, D2, D3) — ág: `feature/spec-foundations`
 - [ ] 3. Leíró-ergonómia (K: A5–A8 · D: D5, D7 1–6.)
 - [ ] 4. Competitions takarítás (Y)
 - [ ] 5. Kis komponensek (K: C3, C4, C5, B2, B1 · D: D8)

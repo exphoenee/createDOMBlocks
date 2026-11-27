@@ -7,7 +7,8 @@ import { getDrawerMenuItems } from "./menuItems";
 import { createPageLoading } from "./createPageLoading";
 import type { DocSection } from "./example";
 import { propsTable } from "./propsTable";
-import { yamlExample } from "./yamlExamples";
+import { yamlExample, exampleHandlers } from "./yamlExamples";
+import { yamlFacts } from "./yamlFacts";
 // A TS példákból generált YAML minták (scripts/gen-yaml-examples.mjs): a kézi minta hiányában ezek jelennek meg
 import generatedYaml from "../generated/yamlExamples.json";
 import { initTheme } from "./theme";
@@ -115,12 +116,21 @@ function appendYamlSection(main: HTMLElement, componentName: string): void {
     ],
   });
   main.appendChild(sectionEl);
+  const facts = yamlFacts(componentName);
+  if (facts.length) {
+    createDOMElem({
+      tag: "ul",
+      parent: sectionEl,
+      attrs: { class: "doc-yaml-facts", id: `${id}-facts`, "aria-label": tr("A komponens a YAML leíróban") },
+      children: facts.map((f) => ({ tag: "li", content: f })),
+    });
+  }
   createCodeBlock({ parent: sectionEl, id: `${id}-code`, language: "yaml", code: source });
   sectionEl.appendChild(createDOMElem({ tag: "div", text: tr("Eredmény:"), attrs: { class: "doc-result-label" } }));
   const result = createDOMElem({ tag: "div", attrs: { class: "doc-result", id: `${id}-result` } });
   sectionEl.appendChild(result);
   try {
-    buildUI(source, { parent: result });
+    buildUI(source, { parent: result, handlers: exampleHandlers(componentName, source) });
   } catch (e) {
     createDOMElem({ tag: "pre", parent: result, text: (e as Error).message, style: { color: "var(--error)", whiteSpace: "pre-wrap", margin: "0" } });
   }

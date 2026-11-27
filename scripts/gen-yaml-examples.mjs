@@ -3,7 +3,8 @@
  *
  * Minden documentation/examples/<oldal>.ts első `createX({...})` hívásának paraméter-objektumát
  * (csak a literál értékeket) átalakítja YAML leíró csomóponttá, és a src/spec/stringifyYaml.ts-sel kiírja.
- * A függvény-értékű paraméterek (eseménykezelők) és a nem literál értékek kimaradnak.
+ * A visszahívás-paraméterek függvény-értéke `"@paraméternév"` kezelő-hivatkozás lesz, a minta első sora
+ * (`# Kezelők ...: a, b`) felsorolja őket. Más nem literál érték esetén a minta kimarad (félrevezető lenne).
  *
  * Kimenet: documentation/generated/yamlExamples.json   { "Card": "ui:\n  - Card: ...", ... }
  * A docs a kézzel írt mintát (documentation/page-components/yamlExamples.ts) részesíti előnyben,
@@ -103,6 +104,8 @@ function domNode(o) {
 }
 
 const toNodes = (v) => (Array.isArray(v) ? v : [v]).map(domNode).filter((x) => x !== null);
+/** A minta első sora, ha kezelőt használ; a docs és a teszt ebből készít üres kezelőket (documentation/page-components/yamlExamples.ts). */
+export const HANDLERS_HEADER = "# Kezelők (a buildUI handlers beállításában): ";
 const SCALAR_TARGETS = ["text", "title", "message", "label", "labelText"];
 
 export async function writeYamlExamples(root, manifest, props) {
@@ -122,6 +125,7 @@ export async function writeYamlExamples(root, manifest, props) {
     }
     const o = overrides[c.name] ?? {};
     incomplete = false;
+    const handlers = [];
 
     let params;
     let key = c.name;
@@ -150,9 +154,20 @@ export async function writeYamlExamples(root, manifest, props) {
       for (const [k, field] of Object.entries(o.items ?? {})) {
         if (Array.isArray(params[k])) params[k] = params[k].map((it) => (it[field] !== undefined ? { ...it, [field]: toNodes(it[field]) } : it));
       }
-      // skalár rövidítés, ha csak a fő szöveg van
       const typeName = props[`create${c.name}`]?.paramsType;
       const known = (props[typeName]?.props ?? []).map((p) => p.name);
+      // visszahívás-paraméter függvény-literállal → "@paraméternév" kezelő-hivatkozás (a minta fejléce felsorolja)
+      const callbackProps = new Set((props[typeName]?.props ?? []).filter((p) => /=>|\bFunction\b/.test(p.type)).map((p) => p.name));
+      if (first.type === "ObjectExpression") {
+        for (const p of first.properties) {
+          if (p.type !== "ObjectProperty" || p.computed || p.key.type !== "Identifier") continue;
+          if (callbackProps.has(p.key.name) && /Function/.test(p.value.type)) {
+            params[p.key.name] = `@${p.key.name}`;
+            handlers.push(p.key.name);
+          }
+        }
+      }
+      // skalár rövidítés, ha csak a fő szöveg van
       const textKey = o.text ?? SCALAR_TARGETS.find((t) => known.includes(t));
       const keys = Object.keys(params);
       if (keys.length === 1 && keys[0] === textKey && typeof params[textKey] === "string") params = params[textKey];
@@ -161,7 +176,7 @@ export async function writeYamlExamples(root, manifest, props) {
       skipped.push(c.name);
       continue;
     }
-    out[c.name] = stringifyYaml({ ui: [{ [key]: params }] });
+    out[c.name] = (handlers.length ? `${HANDLERS_HEADER}${handlers.join(", ")}\n` : "") + stringifyYaml({ ui: [{ [key]: params }] });
   }
 
   writeIfChanged(path.join(root, "documentation", "generated", "yamlExamples.json"), JSON.stringify(out, null, 2) + "\n", "utf-8");

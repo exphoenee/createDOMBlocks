@@ -7,6 +7,8 @@
  * A mintákban a `§{` jelentése `${` (nem kell a sablonszövegben escape-elni).
  */
 
+import type { Handler } from "../../src/index";
+
 export const YAML_EXAMPLES: Record<string, string> = {
   Accordion: `
 ui:
@@ -506,8 +508,32 @@ ui:
 `,
 };
 
+/**
+ * Állapotos minták élő kezelőkkel: ha egy minta `"@név"` kezelőt használ, itt adható meg a függvény
+ * (pl. próbaadatot betöltő `loadSlots`). Ha nincs megadva, a fejlécben felsorolt kezelők üres függvények.
+ */
+export const YAML_EXAMPLE_HANDLERS: Record<string, Record<string, Handler>> = {};
+
 /** A minta megjelenítésre és felépítésre kész szövege. */
 export function yamlExample(component: string): string | undefined {
   const src = YAML_EXAMPLES[component];
   return src ? src.replace(/§\{/g, "${").replace(/^\n/, "") : undefined;
+}
+
+/** A generált minták első sora, ha kezelőt használnak (scripts/gen-yaml-examples.mjs, HANDLERS_HEADER). */
+const HANDLERS_HEADER = /^# Kezelők \(a buildUI handlers beállításában\): (.+)$/m;
+
+/**
+ * A minta felépítéséhez szükséges kezelők: a komponens saját (élő) kezelői, kiegészítve üres függvényekkel
+ * minden `"@név"` hivatkozásra, amelyhez nincs megadva (így a minta kezelő nélkül is felépül).
+ */
+export function exampleHandlers(component: string, source: string): Record<string, Handler> {
+  const names = new Set<string>();
+  const header = HANDLERS_HEADER.exec(source);
+  if (header) header[1].split(",").forEach((n) => names.add(n.trim()));
+  for (const m of source.matchAll(/"@([A-Za-z_]\w*)"/g)) names.add(m[1]);
+  const own = YAML_EXAMPLE_HANDLERS[component] ?? {};
+  const out: Record<string, Handler> = {};
+  for (const n of names) out[n] = own[n] ?? (() => undefined);
+  return { ...out, ...own };
 }
