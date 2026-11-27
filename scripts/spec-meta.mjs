@@ -45,7 +45,19 @@ ${lines.join("\n")}
 
 import { readFileSync } from "fs";
 
-const CALLBACK = { anyOf: [{ type: "string", pattern: "^@" }, { type: "object" }, { type: "array" }], description: "@kezelő vagy beépített művelet (set, toggle, inc, push, open, close)" };
+const KEYWORDS = JSON.parse(readFileSync(new URL("../src/spec/keywords.json", import.meta.url), "utf-8"));
+const plain = (html) => html.replace(/<[^>]+>/g, "");
+
+const CALLBACK = { anyOf: [{ type: "string", pattern: "^@" }, { type: "object" }, { type: "array" }], description: `@kezelő vagy beépített művelet (${Object.keys(KEYWORDS.actions).join(", ")})` };
+
+/** A leíró-kulcsszavak sémája (a leírás a keywords.json-ból jön). */
+const KEYWORD_SCHEMA = {
+  t: { type: "string" },
+  args: { type: "object" },
+  bind: { type: "string" },
+  attrs: { type: "object", propertyNames: { not: { pattern: "^[oO][nN]" } }, additionalProperties: { type: ["string", "number", "boolean", "null"] } },
+  onMount: { anyOf: CALLBACK.anyOf },
+};
 
 function typeSchema(raw) {
   const t = String(raw).replace(/\s*\|\s*undefined$/, "").trim();
@@ -82,11 +94,12 @@ export function writeSpecSchema(props, root) {
     for (const [k, field] of Object.entries(o.items ?? {})) {
       properties[k] = { type: "array", items: { type: "object", properties: { [field]: nodeList } } };
     }
-    Object.assign(properties, {
-      t: { type: "string", description: "nyelvi kulcs (tr)" },
-      args: { type: "object", description: "a nyelvi szöveg paraméterei" },
-      ...(o.bind ? { bind: { type: "string", description: "állapot-kulcs: kétirányú kötés" } } : {}),
-    });
+    // a leíró saját kulcsai (src/spec/keywords.json, "component" helyen használhatók)
+    for (const [k, kw] of Object.entries(KEYWORDS.node)) {
+      if (!kw.on.includes("component")) continue;
+      if (k === "bind" && !o.bind) continue;
+      properties[k] = { ...KEYWORD_SCHEMA[k], description: plain(kw.summary) };
+    }
     patternProperties[`^${name}(\(\d+\))?([#.].*)?$`] = {
       description: `createDOMBlocks ${name} komponens`,
       oneOf: [{ type: ["string", "number", "boolean", "null"] }, nodeList, { type: "object", properties, additionalProperties: false }],

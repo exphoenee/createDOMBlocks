@@ -1,0 +1,44 @@
+{
+  "$comment": "A YAML leíró foglalt kulcsszavai, műveletei, függvényei és beépített változói: a builder (build.ts), a kifejezés-értelmező (expr.ts), a JSON Schema (scripts/spec-meta.mjs) és a dokumentáció (yaml.html referencia) is ebből olvas. Új kulcsszó felvétele: ide és a megvalósításba; a test/spec-keywords.test.ts ellenőrzi az egyezést.",
+  "node": {
+    "text": { "on": ["raw"], "summary": "A nyers elem szövege; <code>${...}</code> sablon is lehet.", "example": "p: { text: \"Szia, ${name}!\" }" },
+    "html": { "on": ["raw"], "summary": "HTML-tartalom (csak megbízható szöveg). A <code>t</code> mellett <code>true</code> érték: a fordítás HTML-ként kerül be.", "example": "span: { t: logo, html: true }" },
+    "t": { "on": ["raw", "component"], "summary": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül.", "example": "Button: { t: form.save }" },
+    "args": { "on": ["raw", "component"], "summary": "A nyelvi szöveg paraméterei (<code>{n}</code> helyőrzőkhöz).", "example": "Paragraph: { t: items.count, args: { n: 3 } }" },
+    "children": { "on": ["raw"], "summary": "A nyers elem gyerek-csomópontjai (a lista érték ugyanezt jelenti).", "example": "div: { class: row, children: [ { span: a } ] }" },
+    "style": { "on": ["raw"], "summary": "Stílus szövegként vagy térképként (a camelCase kulcsok és a <code>--változók</code> is működnek).", "example": "div: { style: { gap: 0.5rem } }" },
+    "class": { "on": ["raw"], "summary": "További osztályok a kulcsban megadottak mellé; <code>${...}</code> sablon is lehet.", "example": "li: { class: \"${done ? 'kesz' : ''}\", text: Teendő }" },
+    "attrs": { "on": ["raw", "component"], "summary": "Attribútumok a csomópont gyökérelemén (<code>data-*</code>, <code>aria-*</code>, tesztazonosítók). Az állapotfüggő érték helyben frissül; <code>on*</code> attribútum nem adható meg, eseményhez <code>\"@kezelő\"</code> kell.", "example": "Button: { text: Küldés, attrs: { data-testid: send, aria-label: Üzenet küldése } }" },
+    "bind": { "on": ["raw", "component"], "summary": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken).", "example": "TextInput: { bind: name }" },
+    "onMount": { "on": ["raw", "component"], "summary": "Kezelő vagy művelet a csomópont felépülése után (a kezelő <code>el</code> mezője a felépült elem). Komponens újraépülésekor és az <code>each</code> minden új elemére újra lefut.", "example": "div#lista: { onMount: \"@animate\", children: [] }" }
+  },
+  "structure": {
+    "each": { "summary": "Ismétlés: <code>{ in: lista, as: név, key: azonosító }</code> és <code>do:</code> a csomópontokkal. A <code>key</code> alapján a változatlan elemek megmaradnak.", "example": "each: { in: \"${todos}\", as: todo, key: todo.id }" },
+    "if": { "summary": "Feltétel: a <code>then:</code> vagy az <code>else:</code> ág épül fel, az érték változásakor újra.", "example": "if: \"${admin}\"" },
+    "define": { "summary": "Felső szintű kulcs: saját, paraméterezhető részletek (<code>{ Név: { params: [...], body: [...] } }</code>), nagybetűs névvel.", "example": "define: { Stat: { params: [label], body: [ { span: \"${label}\" } ] } }" }
+  },
+  "actions": {
+    "set": { "summary": "Állapot-kulcsok beállítása.", "example": "click: { set: { open: false } }" },
+    "toggle": { "summary": "Logikai érték(ek) megfordítása.", "example": "click: { toggle: open }" },
+    "inc": { "summary": "Szám növelése (alapból 1-gyel).", "example": "click: { inc: { n: 10 } }" },
+    "push": { "summary": "Elem hozzáfűzése egy listához.", "example": "click: { push: { log: \"n=${n}\" } }" },
+    "open": { "summary": "Modal vagy Drawer megnyitása azonosító alapján.", "example": "click: { open: settings }" },
+    "close": { "summary": "Modal vagy Drawer bezárása azonosító alapján.", "example": "click: { close: settings }" }
+  },
+  "functions": {
+    "len": { "summary": "Szöveg vagy lista hossza, objektum kulcsainak száma.", "example": "${len(todos)}" },
+    "upper": { "summary": "Nagybetűs szöveg.", "example": "${upper(name)}" },
+    "lower": { "summary": "Kisbetűs szöveg.", "example": "${lower(name)}" },
+    "trim": { "summary": "Szóközök levágása a szöveg elejéről és végéről.", "example": "${trim(query)}" },
+    "join": { "summary": "Lista elemeinek összefűzése (alapból vesszővel).", "example": "${join(tags, ' · ')}" },
+    "round": { "summary": "Kerekítés adott tizedesjegyre.", "example": "${round(price, 2)}" },
+    "min": { "summary": "A legkisebb szám.", "example": "${min(n, 10)}" },
+    "max": { "summary": "A legnagyobb szám.", "example": "${max(n, 0)}" },
+    "str": { "summary": "Szöveggé alakítás (null / undefined → üres).", "example": "${str(count)}" },
+    "plural": { "summary": "Egyes vagy többes alak a szám alapján.", "example": "${plural(n, 'elem', 'elem')}" }
+  },
+  "variables": {
+    "index": { "summary": "Az <code>each</code> aktuális elemének sorszáma (0-tól).", "example": "${index + 1}" },
+    "locale": { "summary": "Az aktuális nyelv kódja; nyelvváltáskor a rá épülő kifejezések frissülnek. Foglalt név: állapot-kulcs nem lehet.", "example": "${project.desc[locale]}" }
+  }
+}

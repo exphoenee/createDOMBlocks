@@ -9,14 +9,14 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész.
 - [ ] D1 adatvezérelt API-csoportok (`apiGroups.ts` + teszt)
 - [ ] D2 YAML-minta függvény-paraméterrel (`"@kezelő"`, fejléc-megjegyzés)
 - [ ] D3 „YAML-ban” doboz a komponensoldalakon
-- [ ] D4 `src/spec/keywords.ts` + `gen-spec-ref.mjs` + referencia-táblázatok
+- [x] D4 `src/spec/keywords.json` + referencia-táblázatok a `yaml.html`-en
 - [ ] D5 a beállítás-típusok mezői az API-oldalon
-- [ ] D6 közös kulcsok (`attrs`, `onMount`) a JSON Schemában
-- [ ] D7 YAML-útmutató új fejezetei
-  - [ ] 1. attribútumok (`attrs`)
-  - [ ] 2. HTML-fordítás (`t` + `html`)
-  - [ ] 3. nyelvfüggő adat (`locale`)
-  - [ ] 4. életciklus (`onMount`)
+- [x] D6 közös kulcsok (`attrs`, `onMount`) a JSON Schemában
+- [~] D7 YAML-útmutató új fejezetei
+  - [x] 1. attribútumok (`attrs`)
+  - [x] 2. HTML-fordítás (`t` + `html`)
+  - [x] 3. nyelvfüggő adat (`locale`)
+  - [x] 4. életciklus (`onMount`)
   - [ ] 5. származtatott állapot (`derive`)
   - [ ] 6. `strict` mód és HTML-validálás
   - [ ] 7. listák és teljesítmény
@@ -117,30 +117,16 @@ A feliratok (`yaml.fact.*`) a docs i18n-katalógusába kerülnek, így két nyel
 
 ### D4. Generált leíró-referencia
 
-Új forrás: `src/spec/keywords.ts`. Ez a leíró foglalt kulcsszavait, műveleteit és kifejezés-függvényeit **JSDoc-kal** tartalmazza, és a `build.ts` és az `expr.ts` is innen veszi a listát (egy igazság). A `gen-spec-ref.mjs` ebből `specReference.json`-t ír, a `yaml.html` táblázatai ebből készülnek.
+Új forrás: `src/spec/keywords.json` (JSON, hogy a TypeScript-builder, a `.mjs` séma-generátor és a dokumentáció is fordítás nélkül olvassa). Csoportjai: `node` (csomópont-kulcsok, `on: ["raw", "component"]` jelöléssel), `structure`, `actions`, `functions`, `variables`; minden bejegyzés `summary` (magyar, HTML-jelöléssel) és `example`. Külön generátorlépés nem kell: a `yaml.html` közvetlenül importálja, a `summary` a docs i18n-jén (`tr`) át fordítódik.
 
 ```ts
-// src/spec/keywords.ts
-export const NODE_KEYS = {
-  /** Attribútumok a csomópont gyökerén (`data-*`, `aria-*`); `on*` tiltott. @since A1 */
-  attrs: { appliesTo: "all", example: "attrs: { data-testid: hire }" },
-  /** Nyelvesített szöveg kulcsa; `html: true` mellett HTML-ként. */
-  t: { appliesTo: "text", example: "t: nav.home" },
-  /** Kezelő a beszúrás után (`{ el, state, ui }`). @since A4 */
-  onMount: { appliesTo: "all", example: 'onMount: "@revealCards"' },
-  // ... each, if, define, bind, args, html, style, class
-} as const;
-
-export const ACTIONS = { set: "…", toggle: "…", inc: "…", push: "…", open: "…", close: "…" } as const;
-export const EXPR_FUNCTIONS = { len: "…", upper: "…", lower: "…", join: "…", round: "…", str: "…" } as const;
+// build.ts – a kézi Set-ek helyett
+const RAW_RESERVED = new Set(Object.keys(NODE_KEYWORDS).filter((k) => NODE_KEYWORDS[k].on.includes("raw")));
+const COMPONENT_SPECIAL = new Set(Object.keys(NODE_KEYWORDS).filter((k) => NODE_KEYWORDS[k].on.includes("component")));
+const ACTIONS = new Set(Object.keys(keywords.actions));
 ```
 
-```ts
-// build.ts – a mai kézi Set helyett
-const RAW_RESERVED = new Set(Object.keys(NODE_KEYS));
-```
-
-Teszt: minden `NODE_KEYS`, `ACTIONS` és `EXPR_FUNCTIONS` elemnek van leírása és példája, és a példa a `buildUI`-val felépül.
+Teszt (`test/spec-keywords.test.ts`): minden bejegyzésnek van leírása és példája; a `functions` kulcsai egyeznek az `expr.ts` `EXPR_FUNCTION_NAMES`-ével; minden művelet működik; a séma minden komponensnél ismeri az `attrs`/`onMount` kulcsot.
 
 ### D5. A beállítás-típusok mezői az API-oldalon
 
@@ -212,7 +198,7 @@ Kézi minta készül: `SegmentedControl`, `Timeline` (tömör váltás), `Carous
 
 | Lépés | Tételek | Mikor (a komponens-terv szakaszaihoz képest) |
 |---|---|---|
-| 1 | D4 `keywords.ts` + D6 séma | az A1–A4 megvalósításával **együtt** (a kulcsszavak innen kerülnek a builderbe) |
+| 1 | D4 `keywords.json` + D6 séma | az A1–A4 megvalósításával **együtt** (a kulcsszavak innen kerülnek a builderbe) |
 | 2 | D1 API-csoportok, D2 függvény → kezelő, D3 „YAML-ban” doboz | a C-tételek **előtt**, hogy minden új komponens magától teljes oldalt kapjon |
 | 3 | D5 beállítás-mezők | az A6–A7 (`derive`, `strict`) után |
 | 4 | D7 útmutató, D8 kézi minták | folyamatosan, minden komponens-szakasz végén az ahhoz tartozó rész |

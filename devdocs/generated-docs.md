@@ -9,6 +9,7 @@ A dokumentáció váza a forráskódból készül, minden `npm run build`, `buil
 | Komponens-oldalak (HTML) és a menü | a `createX` függvények JSDoc-címkéi | `gen-docs.mjs` | `pages/*.html`, `components.json` |
 | YAML minta a komponens-oldalakhoz | az oldal TS példájának első `createX({...})` hívása | `gen-yaml-examples.mjs` | `yamlExamples.json` |
 | API-referencia (i18n, YAML, felugró ablakok, segédek) | a `@group` címkés exportok JSDoc-ja és típusai | `gen-api.mjs` | `api.json` |
+| YAML leíró-referencia (kulcsszavak, műveletek, függvények, változók) | `src/spec/keywords.json` (a builder, a séma és a `yaml.html` közös forrása) | – (közvetlen import) | a `yaml.html` referencia-táblázatai, a séma `attrs` / `onMount` leírásai |
 | Példakódok az oldalakon | a példa `render` függvényének tényleges forrása | `example-loader.mjs` (webpack) | (a bundle-be) |
 
 ## Új komponens felvétele

@@ -228,6 +228,9 @@ const FUNCTIONS: Record<string, (...a: unknown[]) => unknown> = {
   plural: (n, one, other) => (num(n) === 1 ? one : other),
 };
 
+/** A kifejezésekben hívható függvények nevei (a dokumentáció a src/spec/keywords.json-ból írja le őket). */
+export const EXPR_FUNCTION_NAMES: readonly string[] = Object.keys(FUNCTIONS);
+
 /* ===== Kiértékelés ===== */
 
 const truthy = (v: unknown): boolean => !!v;

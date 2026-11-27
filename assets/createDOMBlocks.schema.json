@@ -171,11 +171,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -323,11 +355,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -475,11 +539,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -627,11 +723,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -692,11 +820,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -781,11 +941,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -857,11 +1049,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -921,11 +1145,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -982,11 +1238,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1040,11 +1328,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1106,11 +1426,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1213,11 +1565,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1278,11 +1662,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1331,11 +1747,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1428,11 +1876,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1532,11 +2012,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1629,11 +2141,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1726,11 +2270,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1816,11 +2392,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1913,11 +2521,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -1960,11 +2600,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2048,11 +2720,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2096,11 +2800,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2171,11 +2907,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2314,15 +3082,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2461,15 +3261,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2608,15 +3440,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2755,15 +3619,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -2902,15 +3798,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3067,15 +3995,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3214,15 +4174,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3361,15 +4353,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3508,15 +4532,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3655,15 +4711,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3802,15 +4890,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -3949,15 +5069,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4096,15 +5248,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4243,15 +5427,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4390,11 +5606,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4533,15 +5781,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4680,15 +5960,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4832,15 +6144,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -4984,15 +6328,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5131,15 +6507,47 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
                     },
                     "bind": {
                       "type": "string",
-                      "description": "állapot-kulcs: kétirányú kötés"
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5217,11 +6625,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5457,11 +6897,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5528,11 +7000,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5590,11 +7094,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5775,11 +7311,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5860,11 +7428,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5912,11 +7512,43 @@
                     "items": {},
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -5964,11 +7596,43 @@
                     "items": {},
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6084,11 +7748,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6241,11 +7937,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6292,11 +8020,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6346,11 +8106,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6419,11 +8211,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6520,11 +8344,43 @@
                     "data": {},
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6610,11 +8466,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6672,11 +8560,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6727,11 +8647,43 @@
                     "level": {},
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6810,11 +8762,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -6880,11 +8864,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false
@@ -7087,11 +9103,43 @@
                     },
                     "t": {
                       "type": "string",
-                      "description": "nyelvi kulcs (tr)"
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
                     },
                     "args": {
                       "type": "object",
-                      "description": "a nyelvi szöveg paraméterei"
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
                     }
                   },
                   "additionalProperties": false

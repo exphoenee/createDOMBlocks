@@ -1,5 +1,5 @@
 import { createDOMElem } from "../dom";
-import { registerTranslations, tr } from "../i18n";
+import { registerTranslations, tr, t, watchLocale, getLocale, onLocaleChange } from "../i18n";
 import type { MessagesTree } from "../i18n";
 import { openModal, closeModal } from "../components/createModal";
 import { openDrawer, closeDrawer } from "../components/createDrawer";
@@ -10,6 +10,7 @@ import { Store } from "./store";
 import { SpecError, didYouMean } from "./errors";
 import { getDef, componentNames } from "./registry";
 import type { Def } from "./registry";
+import keywords from "./keywords.json";
 
 /* ===== Nyilvános típusok ===== */
 
@@ -90,8 +91,16 @@ const EVENTS = new Set([
   "mouseenter", "mouseleave", "mousedown", "mouseup", "pointerdown", "pointerup", "scroll", "wheel", "contextmenu", "dragstart",
   "dragend", "dragover", "drop", "touchstart", "touchend",
 ]);
-const RAW_RESERVED = new Set(["text", "html", "t", "args", "children", "style", "class", "attrs", "bind"]);
-const ACTIONS = new Set(["set", "toggle", "inc", "push", "open", "close"]);
+/* A foglalt kulcsszavak egyetlen forrása a keywords.json (a séma és a dokumentáció is innen olvas). */
+type NodeKeyword = { on: string[] };
+const NODE_KEYWORDS = keywords.node as Record<string, NodeKeyword>;
+/** nyers elemen: ezek nem attribútumok */
+const RAW_RESERVED = new Set(Object.keys(NODE_KEYWORDS).filter((k) => NODE_KEYWORDS[k].on.includes("raw")));
+/** komponensen: ezek nem a komponens paraméterei, a leíró kezeli őket */
+const COMPONENT_SPECIAL = new Set(Object.keys(NODE_KEYWORDS).filter((k) => NODE_KEYWORDS[k].on.includes("component")));
+const ACTIONS = new Set(Object.keys(keywords.actions));
+/** Az aktuális nyelv belső állapot-útvonala; a kifejezésekben `locale` néven érhető el. */
+const LOCALE_PATH = "$locale";
 /** Új hatókör: null-prototípusú, hogy az `Object.prototype` nevei (toString, ...) ne oldódjanak fel. */
 function child(scope: Vars, vars: Vars): Vars {
   return Object.assign(Object.create(null), scope, vars);
@@ -162,6 +171,7 @@ function makeEnv(scope: Vars, ctx: Ctx, deps: Set<string> | null, dataFirst = fa
     resolve(name) {
       if (dataFirst && name in ctx.data) return { value: ctx.data[name] };
       if (name in scope) return { value: scope[name] };
+      if (name === "locale") return { value: ctx.store.get(LOCALE_PATH), statePath: LOCALE_PATH };
       if (name in stateKeys) return { value: stateKeys[name], statePath: name };
       if (name in ctx.data) return { value: ctx.data[name] };
       // még nem létező állapot-kulcs: később beállítható, ezért követjük
@@ -262,7 +272,9 @@ function toCallback(spec: unknown, scope: Vars, ctx: Ctx, path: string): (...arg
       const handler = checkHandler(name, ctx, p);
       return (args) => {
         const event = args[0] instanceof Event ? args[0] : undefined;
-        handler({ state: ctx.store, ui: ctx.ui, event, el: (event?.currentTarget as Element | null) ?? null, args }, ...args);
+        // eseménynél a currentTarget, onMount-nál a felépült elem (az első argumentum)
+        const el = (event?.currentTarget as Element | null) ?? (args[0] instanceof Element ? args[0] : null);
+        handler({ state: ctx.store, ui: ctx.ui, event, el, args }, ...args);
       };
     }
     if (item && typeof item === "object" && !Array.isArray(item)) {
@@ -350,6 +362,31 @@ function register(ctx: Ctx, id: string, el: HTMLElement, path: string, explicit:
 function watch(deps: Set<string>, ctx: Ctx, owner: Owner, fn: () => void, isStatic: boolean): void {
   if (isStatic || deps.size === 0) return;
   owner.add(ctx.store.subscribe([...deps], fn));
+}
+
+/** Az `attrs` térkép ellenőrzése: térkép legyen, és ne tartalmazzon `on*` eseményattribútumot. */
+function attrEntries(value: unknown, path: string): Array<[string, unknown]> {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) throw new SpecError("az attrs térkép kell legyen", path);
+  const entries = Object.entries(value as Record<string, unknown>);
+  for (const [k] of entries) {
+    if (/^on/i.test(k)) throw new SpecError(`eseménykezelő nem adható meg attribútumként: "${k}" (eseményhez "@kezelő" vagy művelet kell)`, `${path}.${k}`);
+  }
+  return entries;
+}
+
+/**
+ * Az `onMount` visszahívás ütemezése a beszúrás utánra (mikrofeladatként, amikor a csomópont már a helyén van).
+ * A visszaadott függvény meghívása után (a csomópont lebontásakor) már nem fut le.
+ */
+function scheduleMount(cb: ((...a: unknown[]) => void) | null, el: HTMLElement): () => void {
+  if (!cb) return () => {};
+  let alive = true;
+  queueMicrotask(() => {
+    if (alive) cb(el);
+  });
+  return () => {
+    alive = false;
+  };
 }
 
 /* ===== Csomópontok ===== */
@@ -605,7 +642,9 @@ function applyStyle(el: HTMLElement, value: unknown): void {
 }
 
 function setAttr(el: HTMLElement, name: string, value: unknown): void {
-  if (value === false || value === null || value === undefined) el.removeAttribute(name);
+  // az aria-* attribútumok "true" / "false" szöveget várnak (aria-pressed="false" mást jelent, mint a hiánya)
+  if (typeof value === "boolean" && /^aria-/i.test(name)) el.setAttribute(name, String(value));
+  else if (value === false || value === null || value === undefined) el.removeAttribute(name);
   else el.setAttribute(name, value === true ? "" : String(value));
 }
 
@@ -640,8 +679,15 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
     if (deps.size) dynamic.push({ deps, apply: () => void (el.className = compute(null)) });
   }
 
-  // szöveg: t (nyelvesített) / text / html
-  if (params.t !== undefined) {
+  // szöveg: t (nyelvesített; html: true mellett HTML-ként) / text / html
+  if (params.t !== undefined && params.html === true) {
+    const key = asText(params.t);
+    const args = params.args !== undefined ? (evalValue(params.args, scope, ctx, null, `${path}.args`) as Record<string, string | number>) : undefined;
+    const apply = (target: HTMLElement): void => void (target.innerHTML = t(key, args));
+    apply(el);
+    watchLocale(el, apply);
+  } else if (params.t !== undefined) {
+    if (params.html !== undefined) throw new SpecError('a "t" mellett a "html" csak true lehet (a fordítás HTML-ként kerül be)', `${path}.html`);
     const args = params.args !== undefined ? (evalValue(params.args, scope, ctx, null, `${path}.args`) as Record<string, string | number>) : undefined;
     el.append(createDOMElem({ tag: "span", attrs: { class: "spec-t", style: "display:contents" }, text: tr(asText(params.t), args) }));
   } else if (params.text !== undefined) {
@@ -654,9 +700,9 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
 
   if (params.style !== undefined) bindProp(params.style, `${path}.style`, (v) => applyStyle(el, v));
   if (params.attrs !== undefined) {
-    if (typeof params.attrs !== "object" || params.attrs === null) throw new SpecError("az attrs térkép kell legyen", `${path}.attrs`);
-    for (const [k, v] of Object.entries(params.attrs as Record<string, unknown>)) bindProp(v, `${path}.attrs.${k}`, (x) => setAttr(el, k, x));
+    for (const [k, v] of attrEntries(params.attrs, `${path}.attrs`)) bindProp(v, `${path}.attrs.${k}`, (x) => setAttr(el, k, x));
   }
+  const onMount = params.onMount !== undefined ? toCallback(params.onMount, scope, ctx, `${path}.onMount`) : null;
 
   // események és egyéb attribútumok
   for (const [k, v] of Object.entries(params)) {
@@ -682,10 +728,12 @@ function renderRaw(sel: Selector, body: unknown, env: RenderEnv, parent: Node, r
 
   // állapotfüggő tulajdonságok: helyben frissítés
   for (const d of dynamic) watch(d.deps, ctx, owner, d.apply, env.isStatic);
+  const cancelMount = scheduleMount(onMount, el);
   return {
     first: el,
     last: el,
     dispose: () => {
+      cancelMount();
       kids.forEach((k) => k.dispose());
       if (id) ctx.byId.delete(id);
       el.parentNode?.removeChild(el);
@@ -723,8 +771,8 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
     raw.level = sel.level;
   }
 
-  // 2. ellenőrzés: ismert paraméterek
-  const special = new Set(["t", "args", "bind"]);
+  // 2. ellenőrzés: ismert paraméterek (a leíró saját kulcsai: t, args, bind, attrs, onMount)
+  const special = COMPONENT_SPECIAL;
   for (const k of Object.keys(raw)) {
     if (!def.params.has(k) && !special.has(k)) {
       throw new SpecError(`ismeretlen paraméter: "${k}"${didYouMean(k, [...def.params, ...special])}`, `${path}.${k}`);
@@ -744,6 +792,18 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
   for (const k of Object.keys(raw)) {
     if (def.fns.has(k)) callbacks[k] = toCallback(raw[k], scope, ctx, `${path}.${k}`);
   }
+  const onMount = raw.onMount !== undefined ? toCallback(raw.onMount, scope, ctx, `${path}.onMount`) : null;
+  const attrs = raw.attrs !== undefined ? attrEntries(raw.attrs, `${path}.attrs`) : [];
+
+  /** Az `attrs` a gyökérelemre kerül; állapotfüggő érték helyben frissül (nem épít újra). */
+  const applyAttrs = (el: HTMLElement, owner: Owner): void => {
+    for (const [k, v] of attrs) {
+      const where = `${path}.attrs.${k}`;
+      const deps = new Set<string>();
+      setAttr(el, k, evalValue(v, scope, ctx, deps, where));
+      watch(deps, ctx, owner, () => setAttr(el, k, evalValue(v, scope, ctx, null, where)), env.isStatic);
+    }
+  };
 
   const slotParams = Object.keys(def.slots ?? {}).filter((k) => raw[k] !== undefined);
   const staticOwner = (): RenderEnv => ({ ctx, scope, owner: new Owner(), isStatic: true });
@@ -830,6 +890,8 @@ function renderComponent(def: Def, sel: Selector, body: unknown, env: RenderEnv,
       setupBind(el, def.bind, String(raw.bind), ctx, owner, `${path}.bind`);
     }
     register(ctx, finalId, el, path, explicit || typeof raw.id === "string");
+    applyAttrs(el, owner);
+    owner.add(scheduleMount(onMount, el));
     return { id: finalId, el, params: values, deps, owner, portal };
   };
 
@@ -958,7 +1020,10 @@ export function buildUI(spec: unknown, options: BuildOptions = {}): UI {
   if (root.messages) registerTranslations(root.messages as Record<string, MessagesTree>);
   if (root.theme && typeof root.theme === "object") applyTheme(root.theme as Record<string, unknown>, cleanups);
 
-  const store = new Store({ ...((root.state as Record<string, unknown>) ?? {}), ...(options.state ?? {}) });
+  const initialState = { ...((root.state as Record<string, unknown>) ?? {}), ...(options.state ?? {}) };
+  if ("locale" in initialState) throw new SpecError('a "locale" név foglalt (a kifejezésekben az aktuális nyelv), állapot-kulcsnak válassz másik nevet', "state.locale");
+  const store = new Store({ ...initialState, [LOCALE_PATH]: getLocale() });
+  cleanups.push(onLocaleChange((lang) => store.set(LOCALE_PATH, lang)));
   const ctx = {
     store,
     data: { ...((root.data as Record<string, unknown>) ?? {}), ...(options.data ?? {}) },

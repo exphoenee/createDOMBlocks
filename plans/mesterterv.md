@@ -6,8 +6,8 @@
 
 Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész. Egy mérföldkő akkor kész, ha a hivatkozott alterv-tételek mind késznek vannak jelölve, és a „Mérföldkövenként kötelező” ellenőrzések lefutottak.
 
-- [ ] 0. Kiindulás: `feature/yaml-descriptor` lezárva (PR, merge)
-- [ ] 1. Leíró-alapok (K: A1–A4 · D: D4, D6)
+- [~] 0. Kiindulás: `feature/yaml-descriptor` lezárva (PR #4 megnyitva, a merge a PR #3 után a felhasználó döntése)
+- [x] 1. Leíró-alapok (K: A1–A4 · D: D4, D6) — ág: `feature/spec-foundations`
 - [ ] 2. Generátor-előkészítés (D: D1, D2, D3)
 - [ ] 3. Leíró-ergonómia (K: A5–A8 · D: D5, D7 1–6.)
 - [ ] 4. Competitions takarítás (Y)

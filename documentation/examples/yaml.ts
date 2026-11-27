@@ -2,6 +2,8 @@ import { initDocPage } from "../page-components/index";
 import { createCard, createCodeBlock, createTextarea, createBadge, buildUI, createLocalizedElem as createDOMElem } from "../../src/index";
 import type { UI, DOMOptions, Handler } from "../../src/index";
 import { tr } from "../page-components/i18n";
+// a referencia-táblázatok forrása: a leíró, a séma és ez az oldal is ebből a listából dolgozik
+import keywords from "../../src/spec/keywords.json";
 
 const done = initDocPage();
 const app = document.getElementById("app") as HTMLElement;
@@ -50,8 +52,8 @@ function demo(parent: HTMLElement, id: string, yamlSrc: string, o: DemoOptions =
   }
 }
 
-/** Táblázat: az első oszlop kód, a többi (nyelvesíthető) leírás. */
-function table(parent: HTMLElement, id: string, head: string[], rows: string[][]): void {
+/** Táblázat: a `codeCols` oszlopok kódok (alapból az első), a többi (nyelvesíthető) leírás. */
+function table(parent: HTMLElement, id: string, head: string[], rows: string[][], codeCols: number[] = [0]): void {
   createDOMElem({
     tag: "table",
     parent,
@@ -67,8 +69,8 @@ function table(parent: HTMLElement, id: string, head: string[], rows: string[][]
             style: { borderTop: "1px solid var(--border)" },
             children: r.map(
               (c, i): DOMOptions =>
-                i === 0
-                  ? { tag: "td", text: c, style: { padding: "0.4rem", fontFamily: "ui-monospace,Consolas,monospace", fontSize: "0.85rem", whiteSpace: "nowrap", verticalAlign: "top" } }
+                codeCols.includes(i)
+                  ? { tag: "td", text: c, style: { padding: "0.4rem", fontFamily: "ui-monospace,Consolas,monospace", fontSize: "0.85rem", whiteSpace: i === 0 ? "nowrap" : "normal", verticalAlign: "top" } }
                   : { tag: "td", content: tr(c), style: { padding: "0.4rem", verticalAlign: "top" } },
             ),
           }),
@@ -588,6 +590,117 @@ off(); // leiratkozás`);
   text(body, "Tömbök és objektumok elemét <strong>cseréld</strong> (<code>set(\"rows.1\", ujSor)</code>), ne módosítsd helyben, így a változás felismerhető. Az állapot JSON-szerű adat legyen (a kezdőértéket a tár másolja).");
 }
 
+/* ---------------------------------------------------------------- 9b. Attribútumok, HTML-fordítás, nyelv, életciklus */
+{
+  const body = card("yaml-extras", "Attribútumok, HTML-fordítás, nyelv és életciklus");
+  text(body, "Négy kulcs, amely bármelyik csomóponton használható, és a meglévő oldalak átírásánál különösen hasznos: tesztazonosítók és <code>aria-*</code> attribútumok, HTML-t tartalmazó fordítások, az adatban tárolt többnyelvű szövegek és a felépülés után futó saját kód.");
+
+  heading(body, "attrs: attribútumok komponensen is");
+  text(body, "Az <code>attrs</code> térkép a csomópont gyökérelemére kerül: nyers elemen és könyvtári komponensen is. Az állapotfüggő érték <strong>helyben</strong> frissül, a komponens nem épül újra. Az <code>aria-*</code> attribútumok logikai értéke <code>\"true\"</code> / <code>\"false\"</code> szöveg lesz, más attribútumnál a <code>false</code> eltávolítja az attribútumot. Eseményattribútum (<code>onclick</code> és társai) nem adható meg, eseményhez <code>\"@kezelő\"</code> kell.");
+  demo(
+    body,
+    "yd-attrs",
+    `
+state: { liked: false }
+ui:
+  - Button#yd-attrs-like:
+      text: Tetszik
+      click: { toggle: liked }
+      attrs:
+        data-testid: like-button
+        aria-pressed: "§{liked}"
+        data-state: "§{liked ? 'on' : 'off'}"
+  - Paragraph: "aria-pressed = §{liked}, data-state = §{liked ? 'on' : 'off'}"
+`,
+  );
+
+  heading(body, "t + html: true: HTML-t tartalmazó fordítás");
+  text(body, "Ha egy fordítás HTML-jelölést tartalmaz (kiemelés, sortörés, <code>&amp;lt;</code> entitás), a <code>t</code> mellé írt <code>html: true</code> HTML-ként írja be, és nyelvváltáskor ugyanígy frissíti. <strong>Csak a saját nyelvi fájljaidból</strong> jövő szövegre használd; a sima <code>t</code> mindig szövegként kerül be.");
+  demo(
+    body,
+    "yd-thtml",
+    `
+messages:
+  hu: { ydx: { logo: "&lt;VB/&gt; <strong>portfólió</strong>" } }
+  en: { ydx: { logo: "&lt;VB/&gt; <strong>portfolio</strong>" } }
+ui:
+  - p: { t: ydx.logo, html: true }
+  - p: { t: ydx.logo }
+`,
+  );
+
+  heading(body, "locale: nyelvfüggő adat");
+  text(body, "Ha a többnyelvű szöveg az adatban van (nem a nyelvi katalógusban), a <code>locale</code> változó az aktuális nyelv kódja. A rá épülő kifejezések nyelvváltáskor maguktól frissülnek. A <code>locale</code> foglalt név: állapot-kulcs nem lehet.");
+  demo(
+    body,
+    "yd-locale",
+    `
+ui:
+  - Paragraph: "Aktuális nyelv: §{locale}"
+  - each: { in: $projects, as: project, key: project.id }
+    do:
+      - Card:
+          title: "§{project.name}"
+          body:
+            - Paragraph: "§{project.desc[locale] ?? project.desc.hu}"
+`,
+    {
+      data: {
+        projects: [
+          { id: "arrganizer", name: "Arrganizer", desc: { hu: "Láncolható adat-átalakító könyvtár.", en: "A chainable data-transformation library." } },
+          { id: "xudoq", name: "XudoQ", desc: { hu: "Sudoku-játék és API.", en: "A sudoku game and API." } },
+        ],
+      },
+      js: `buildUI(spec, {
+  parent: "app",
+  data: { projects: [{ id: "arrganizer", name: "Arrganizer", desc: { hu: "…", en: "…" } }] },
+});`,
+    },
+  );
+
+  heading(body, "onMount: kód a felépülés után");
+  text(body, "Az <code>onMount</code> kezelő vagy művelet akkor fut, amikor a csomópont már a helyén van (animáció indítása, képbetöltő vagy külső könyvtár bekötése). A kezelő <code>el</code> mezője a felépült elem. Az <code>each</code> minden új elemére és a komponens minden újraépülésekor újra lefut; ha a csomópont előbb lebomlik, nem fut le.");
+  demo(
+    body,
+    "yd-mount",
+    `
+state: { items: [ { id: 1, name: Első } ], mounted: 0 }
+ui:
+  - Button: { text: Új elem, click: "@addItem" }
+  - Paragraph: "Felépült elemek: §{mounted}"
+  - ul:
+      - each: { in: "§{items}", as: item, key: item.id }
+        do:
+          - li: { text: "§{item.name}", onMount: "@highlight" }
+`,
+    {
+      js: `buildUI(spec, {
+  parent: "app",
+  handlers: {
+    addItem: ({ state }) => {
+      const items = state.get("items");
+      state.set("items", [...items, { id: items.length + 1, name: "#" + (items.length + 1) }]);
+    },
+    highlight: ({ el, state }) => {
+      el.animate([{ background: "var(--primary-light)" }, { background: "transparent" }], 800);
+      state.inc("mounted");
+    },
+  },
+});`,
+      handlers: {
+        addItem: ({ state }) => {
+          const items = state.get("items") as Array<{ id: number; name: string }>;
+          state.set("items", [...items, { id: items.length + 1, name: `#${items.length + 1}` }]);
+        },
+        highlight: ({ el, state }) => {
+          (el as HTMLElement | null)?.animate?.([{ background: "var(--primary-light)" }, { background: "transparent" }], 800);
+          state.inc("mounted");
+        },
+      },
+    },
+  );
+}
+
 /* ---------------------------------------------------------------- 10. Téma */
 {
   const body = card("yaml-theme", "Téma és stílus");
@@ -682,9 +795,33 @@ parseYaml(text: string): unknown          // csak a YAML-részhalmaz értelmezé
     ["state", "az állapottár"],
     ["ui", "a felépített felület (<code>ui.get(id)</code>, <code>ui.root</code>)"],
     ["event", "az esemény, ha a visszahívás első argumentuma esemény"],
-    ["el", "az eseményt kezelő elem (<code>event.currentTarget</code>)"],
+    ["el", "az eseményt kezelő elem (<code>event.currentTarget</code>); <code>onMount</code>-nál a felépült elem"],
     ["args", "a visszahívás összes argumentuma (pl. Gantt <code>onMilestoneClick</code>: a mérföldkő és a sor)"],
   ]);
+}
+
+/* ---------------------------------------------------------------- 12b. Referencia (src/spec/keywords.json) */
+{
+  const body = card("yaml-reference", "Referencia: kulcsszavak, műveletek, függvények");
+  text(body, "Az alábbi táblázatok a könyvtár forrásából (<code>src/spec/keywords.json</code>) készülnek: ugyanebből a listából dolgozik a leíró, a JSON Schema és ez az oldal, ezért mindig naprakészek.");
+  type Entry = { summary: string; example: string; on?: string[] };
+  const rows = (group: Record<string, Entry>, withPlace = false): string[][] =>
+    Object.entries(group).map(([name, kw]) => [
+      name,
+      ...(withPlace ? [(kw.on ?? []).map((p) => (p === "raw" ? "nyers elem" : "komponens")).join(", ")] : []),
+      kw.summary,
+      kw.example,
+    ]);
+  heading(body, "Csomópont-kulcsok");
+  table(body, "yaml-ref-node", ["Kulcs", "Hol", "Leírás", "Példa"], rows(keywords.node as Record<string, Entry>, true), [0, 3]);
+  heading(body, "Szerkezet");
+  table(body, "yaml-ref-structure", ["Kulcs", "Leírás", "Példa"], rows(keywords.structure as Record<string, Entry>), [0, 2]);
+  heading(body, "Beépített műveletek");
+  table(body, "yaml-ref-actions", ["Művelet", "Leírás", "Példa"], rows(keywords.actions as Record<string, Entry>), [0, 2]);
+  heading(body, "Függvények a kifejezésekben");
+  table(body, "yaml-ref-functions", ["Függvény", "Leírás", "Példa"], rows(keywords.functions as Record<string, Entry>), [0, 2]);
+  heading(body, "Beépített változók");
+  table(body, "yaml-ref-variables", ["Név", "Leírás", "Példa"], rows(keywords.variables as Record<string, Entry>), [0, 2]);
 }
 
 /* ---------------------------------------------------------------- 13. Hibák */
@@ -726,7 +863,7 @@ ui:
   heading(body, "Korlátok");
   text(body, "A saját YAML-értelmező egy részhalmazt ismer: nincs horgony / alias, címke, több dokumentum és többsoros sima (idézőjel nélküli) szöveg; a <code>|</code> és <code>&gt;</code> blokk-szöveg és a flow forma (<code>[a, b]</code>, <code>{a: 1}</code>) működik. Az <code>each</code> és <code>if</code> a Tabs, Accordion és Drawer tartalmában csak egyszer értékelődik ki (nem reaktív). A nyers elemek <code>t:</code> argumentumai egyszer értékelődnek ki.");
   heading(body, "Biztonság");
-  text(body, "Nincs <code>eval</code>: a kifejezések saját értelmezővel futnak, csak az engedélyezett függvények hívhatók, a <code>__proto__</code>, <code>constructor</code> és <code>prototype</code> nevek tiltottak. Eseménykezelő csak a megadott <code>handlers</code> térképből jöhet. A <code>html:</code> kulcs és a <code>content</code> nyers HTML, csak megbízható szöveget adj át; a <code>text</code> mindig szövegként kerül be.");
+  text(body, "Nincs <code>eval</code>: a kifejezések saját értelmezővel futnak, csak az engedélyezett függvények hívhatók, a <code>__proto__</code>, <code>constructor</code> és <code>prototype</code> nevek tiltottak. Eseménykezelő csak a megadott <code>handlers</code> térképből jöhet, az <code>attrs</code>-ban eseményattribútum (<code>on*</code>) nem adható meg. A <code>html:</code> kulcs, a <code>t</code> + <code>html: true</code> és a <code>content</code> nyers HTML, csak megbízható szöveget adj át; a <code>text</code> és a sima <code>t</code> mindig szövegként kerül be.");
   createBadge({ parent: body, id: "yaml-badge", text: tr("Nincs eval, nincs új függőség"), type: "success" });
 }
 

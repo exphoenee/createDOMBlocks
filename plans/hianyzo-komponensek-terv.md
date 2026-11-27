@@ -8,10 +8,10 @@
 Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész (a 7. fejezet kész-definíciója szerint: típusok, JSDoc, feliratok, `overrides.json`, teszt, docs példa, böngészős ellenőrzés).
 
 **A. Leíró**
-- [ ] A1 `attrs` komponens-csomóponton
-- [ ] A2 nyelvesített HTML-szöveg (`t` + `html: true`)
-- [ ] A3 `locale` a kifejezésekben
-- [ ] A4 `onMount` életciklus-horog
+- [x] A1 `attrs` komponens-csomóponton (és `on*` tiltás nyers elemen is; `aria-*` logikai érték "true"/"false" szöveg)
+- [x] A2 nyelvesített HTML-szöveg (`t` + `html: true`, nyers elemen)
+- [x] A3 `locale` a kifejezésekben (belső útvonal: `$locale`; a `locale` állapot-kulcs tiltott)
+- [x] A4 `onMount` életciklus-horog
 - [ ] A5 `each`: tartalom szerinti újrahasznosítás (1. lépés: szerkezeti egyenlőség; 2. lépés: helyben frissítés)
 - [ ] A6 származtatott állapot (`derive`)
 - [ ] A7 elírt útvonalak jelzése (`strict`)
