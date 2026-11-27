@@ -48,5 +48,6 @@ describe("az API-referencia a JSDoc-ból", () => {
     for (const must of ["setLocale", "tr", "buildUI", "mountYaml", "stringifyYaml", "Store", "openModal"]) {
       expect(api.some((e) => e.name === must), must).toBe(true);
     }
-  });
+    // a TypeScript-program felépítése a teljes tesztfutás terhelése alatt 5 mp-nél tovább is tarthat
+  }, 30_000);
 });
