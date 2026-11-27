@@ -4,14 +4,16 @@
 
 Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész. A könyvtár-szintű pontok a `plans/hianyzo-komponensek-terv.md`-ben vannak (A5–A8); itt az oldal (2026-27-competitions, domblocks worktree) saját teendői.
 
-- [ ] 1. `define` az ismétlődő részekre (`DiscrepancyBadge`, `CalendarButton`, `ExternalLink`)
-- [ ] 2. egységes gyerek-szintaxis, a mély részek kiemelése (max. ~8 szint)
-- [ ] 3. a stílusosztály- és szövegszámítás csak a `derive.js`-ben (a YAML-beli ternaryk kivezetve)
-- [ ] 4. beágyazott YAML ellenőrzése: `validate-spec index.html#page` (a könyvtár A8 tétele után)
-- [ ] 5. a holt `isDetailsSectionOpen` kulcs törlése (`app.js:27`)
-- [ ] 6. `stable()` és `syncing` / `SOURCE_KEYS` kiváltása a könyvtár A5 és A6 tételével
-- [ ] vendor-szinkron a bővített könyvtárral
-- [ ] Verifikáció: `file://` alól ugyanaz a renderelés, nincs konzolhiba, a mentett állapot visszatöltése változatlan, smoke-teszt zöld
+> A worktree időközben a `main`-be olvadt; a takarítás a competitions repó `feature/yaml-cleanup` ágán készült (commit `a3bdf5f`, nincs feltöltve).
+
+- [x] 1. `define` az ismétlődő részekre (`DiscrepancyBadge`, `CalendarButton`, `ExternalLink`; a letöltések is a közös `DocumentList`-et használják)
+- [x] 2. egységes gyerek-szintaxis, a mély részek kiemelése (`CompetitionSwitchCard`, `EventListItem`, `CompetitionInfoCard`, `TeamRow`, `WorkshopProjectCard`)
+- [x] 3. a stílusosztály- és szövegszámítás csak a `derive.js`-ben (`menuButton`, `selectedStatus`, `timeFilterButtons`, `detailsToggle`; a YAML-ben csak `len(...)` maradt)
+- [x] 4. beágyazott YAML ellenőrzése: `validate-spec index.html --run --strict` (a teljes oldal a szkriptjeivel; a `#page` mód a derive nélküli szerkezetre)
+- [x] 5. a holt `isDetailsSectionOpen` kulcs törlése
+- [x] 6. `stable()` és `syncing` / `SOURCE_KEYS` kiváltása a könyvtár A5 és A6 tételével (`DERIVED` szabályok, `mountYaml(..., { derive })`)
+- [x] vendor-szinkron a bővített könyvtárral
+- [x] Verifikáció: a `--run --strict` hiba és figyelmeztetés nélkül fut (1102 elem); böngészőben (http) a kapcsolók, a szűrő, a kiválasztás (a listaelemek helyben frissülnek), a részletek, a menü és a téma működik, konzolhiba nincs. (A `file://` alatti betöltést a Chrome-bővítmény nem tudja ellenőrizni; a szkriptek sorrendje és a `#page` betöltés nem változott.)
 
 ## Context
 A user azt kérte, hogy elemezzem: mennyire egyszerű és átlátható az oldal YAML-leíróra épülő renderelése. Elemzés történt (index.html, js/app.js, js/derive.js elolvasva), kódmódosítás nincs. Az alábbi javaslatok opcionálisak.

@@ -4,8 +4,8 @@ import type { MessagesTree } from "../i18n";
 import { openModal, closeModal } from "../components/createModal";
 import { openDrawer, closeDrawer } from "../components/createDrawer";
 import { parseYaml } from "./parseYaml";
-import { compileTemplate, evalTemplate, parseExpr, evalExpr, ExprError } from "./expr";
-import type { ExprEnv, Template } from "./expr";
+import { compileTemplate, evalTemplate, parseExpr, evalExpr, statePathOf, ExprError } from "./expr";
+import type { ExprEnv, ExprNode, Template } from "./expr";
 import { Store, normalizePath } from "./store";
 import { SpecError, didYouMean } from "./errors";
 import { getDef, componentNames } from "./registry";
@@ -661,6 +661,15 @@ function renderEach(obj: Record<string, unknown>, env: RenderEnv, parent: Node, 
 
 /* ----- saját részletek (define) ----- */
 
+/** Ha az érték egyetlen `${útvonal}` kifejezés, amely az állapotba mutat: hivatkozás rá; különben `undefined`. */
+function stateRefOf(value: string, scope: Vars, ctx: Ctx, where: string): ScopeRef | undefined {
+  const tpl = template(value, where);
+  if (!tpl || !tpl.whole) return undefined;
+  const node = (tpl.parts[0] as { expr: ExprNode }).expr;
+  const statePath = statePathOf(node, makeEnv(scope, ctx, null, false, where));
+  return statePath === undefined ? undefined : new ScopeRef(statePath);
+}
+
 function renderDefine(sel: Selector, body: unknown, env: RenderEnv, parent: Node, ref: Node | null, path: string): Mounted {
   const { ctx, scope } = env;
   const def = ctx.defs[sel.type];
@@ -685,7 +694,13 @@ function renderDefine(sel: Selector, body: unknown, env: RenderEnv, parent: Node
   const draw = (d: Set<string> | null): void => {
     clear();
     const vars: Vars = Object.create(null);
-    for (const p of def.params) vars[p] = evalValue(given[p], scope, ctx, d, `${path}.${p}`);
+    for (const p of def.params) {
+      const where = `${path}.${p}`;
+      // egyszerű állapot-útvonal (pl. "${event}" egy each-elemből): hivatkozásként adjuk át, így a részlet
+      // a változáskor helyben frissül (nem rajzolódik újra); minden más érték egyszer kiértékelődik
+      const ref = typeof given[p] === "string" ? stateRefOf(given[p] as string, scope, ctx, where) : undefined;
+      vars[p] = ref ?? evalValue(given[p], scope, ctx, d, where);
+    }
     current = renderNodes(def.body, { ctx, scope: vars, owner: inner, isStatic: env.isStatic }, parent, end, `${sel.type}.body`);
   };
   draw(deps);

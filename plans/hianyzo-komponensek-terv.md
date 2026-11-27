@@ -15,7 +15,8 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész (a 7. fejezet k�
 - [x] A5 `each`: tartalom szerinti újrahasznosítás és helyben frissítés (az elem-változó és az `index` az állapotban él: `$each.eN.sM`; a megváltozott elem nem épül újra)
 - [x] A6 származtatott állapot (`derive`; írásvédelem `Store.setGuard`-dal, körkörös függés felismerése, csak szerkezeti változásnál ír)
 - [x] A7 elírt útvonalak jelzése (`strict`; ismeretlen név és hiányzó mező, javaslattal, egyszer)
-- [x] A8 beágyazott YAML ellenőrzése (`validate-spec <html>[#id] [--strict] [--lib]`; a vendorba másolás az oldalprojektek szinkronszkriptjében)
+- [x] A5b `define`: az egyszerű állapot-útvonal paraméter (`${event}`) hivatkozásként megy át, a részlet helyben frissül (a competitions próbája mutatta meg, hogy enélkül a `define`-ba kiemelt listaelem újraépül)
+- [x] A8 beágyazott YAML ellenőrzése (`validate-spec <html>[#id] [--strict] [--lib]`, és `--run`: a teljes oldal a saját szkriptjeivel, `?debug` módban; nem vendorolt, a szomszédos könyvtárból fut, mert jsdom kell hozzá)
 - [x] A9 a leíró-tesztek kiegészítve (`test/spec-keywords.test.ts`, `test/spec-ergonomics.test.ts`)
 
 **B. Meglévő komponensek**

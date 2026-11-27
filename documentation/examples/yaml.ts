@@ -792,9 +792,12 @@ ui:
 
   heading(body, "A HTML-be ágyazott leírás ellenőrzése");
   text(body, "A <code>&lt;script type=\"text/yaml\"&gt;</code> blokkban a szerkesztő nem ad sémát és kiegészítést. Ellenőrizd parancssorból (CI-ban is): a szkript felépíti a leírást a valódi könyvtárral, a hibákat a HTML-beli sorszámmal írja ki, <code>--strict</code> mellett az elírt nevek is hibának számítanak, és felsorolja a megírandó kezelőket és az átadandó adatokat.");
-  code(body, "yd-validate", "bash", `node scripts/validate-spec.mjs index.html#page --strict
-# saját projektben a vendorolt könyvtárral:
-node vendor/validate-spec.mjs index.html#page --lib vendor/createDOMBlocks.js --data data.json --strict`);
+  code(body, "yd-validate", "bash", `# a leírás szerkezete (adat / derive nélkül épít):
+node scripts/validate-spec.mjs index.html#page --lib vendor/createDOMBlocks.js --strict
+
+# a teljes oldal a saját szkriptjeivel (?debug módban), ha a leírás JavaScriptből kapott adatra,
+# kezelőkre vagy derive-ra épül: ez a valódi ellenőrzés
+node scripts/validate-spec.mjs index.html --run --strict`);
 }
 
 /* ---------------------------------------------------------------- 10. Téma */

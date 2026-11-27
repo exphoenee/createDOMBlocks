@@ -211,3 +211,51 @@ describe("A8 – validate-spec: beágyazott YAML", () => {
     expect(readSpec(file.replace(".html", ".html")).label).toBe(file);
   });
 });
+
+describe("A5 – define: állapot-útvonal paraméter hivatkozásként (helyben frissül)", () => {
+  const yaml = `
+define:
+  Row:
+    params: [item, label]
+    body:
+      - li:
+          class: "\${item.done ? 'kesz' : ''}"
+          text: "\${label}: \${item.name}"
+ui:
+  - ul:
+      - each: { in: "\${items}", as: item, key: item.id }
+        do:
+          - Row: { item: "\${item}", label: Elem }
+  - div#sel:
+      - Row: { item: "\${selected}", label: Kijelölt }
+`;
+
+  it("az each-elemből átadott paraméter: a részlet nem rajzolódik újra, csak a kötései frissülnek", () => {
+    const ui = build(yaml, { state: { items: [{ id: 1, name: "a", done: false }], selected: { name: "x", done: false } } });
+    const li = root().querySelector("ul li")!;
+    ui.state.set("items", [{ id: 1, name: "a!", done: true }]);
+    expect(root().querySelector("ul li")).toBe(li);
+    expect(li.textContent).toBe("Elem: a!");
+    expect(li.className).toBe("kesz");
+  });
+
+  it("állapot-kulcs paraméter: ugyanígy helyben frissül", () => {
+    const ui = build(yaml, { state: { items: [], selected: { name: "x", done: false } } });
+    const li = root().querySelector("#sel li")!;
+    ui.state.set("selected", { name: "y", done: true });
+    expect(root().querySelector("#sel li")).toBe(li);
+    expect(li.textContent).toBe("Kijelölt: y");
+  });
+
+  it("nem útvonal kifejezés (számítás) továbbra is kiértékelt értékként megy át", () => {
+    const ui = build(`
+define:
+  Num: { params: [n], body: [ { span#n: "\${n}" } ] }
+ui:
+  - Num: { n: "\${count * 2}" }
+`, { state: { count: 2 } });
+    expect(document.getElementById("n")!.textContent).toBe("4");
+    ui.state.set("count", 5);
+    expect(document.getElementById("n")!.textContent).toBe("10");
+  });
+});

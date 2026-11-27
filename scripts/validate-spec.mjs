@@ -2,7 +2,11 @@
  * validate-spec: egy YAML oldalleírás ellenőrzése a ténylegesen felépített könyvtárral (jsdom).
  *
  *   node scripts/validate-spec.mjs <leiras.yaml | oldal.html[#id]> [--data adat.json] [--state allapot.json] [--lib build.js] [--strict] [--print]
+ *   node scripts/validate-spec.mjs oldal.html --run [--strict] [--root app]
  *
+ * - --run: a teljes oldal futtatása a saját szkriptjeivel (`?debug` URL-lel); ha a leírás JavaScriptből kapott adatra,
+ *   kezelőkre vagy származtatott állapotra (derive) épül, ez a valódi ellenőrzés. Hiba: szkripthiba, console.error,
+ *   --strict mellett console.warn is, vagy ha a gyökérelem (--root, alapból #app) üres marad;
  * - HTML-fájlnál a `<script type="text/yaml">` blokkot ellenőrzi (`#id`-vel egy adott blokkot); a hibák sorszáma a HTML-beli sor;
  * - felépíti az oldalt a dist/index.js-sel (előtte: npm run build; más helyen lévő buildhez, pl. vendor-fájlhoz: --lib),
  *   és kiírja a hibákat útvonallal és javaslattal;
@@ -45,11 +49,60 @@ export function readSpec(target) {
 /** A YAML-hiba sorszámának átírása a HTML-beli sorra. */
 export const shiftLines = (message, offset) => (offset ? message.replace(/\((\d+)\. sor\)/, (_, n) => `(${Number(n) + offset}. sor)`) : message);
 
-function main(args) {
-  const VALUE_FLAGS = ["--data", "--state", "--lib"];
+/**
+ * --run: a teljes HTML-oldal futtatása jsdom-ban a saját szkriptjeivel (a vendorolt könyvtárral, az adat- és
+ * kezelőfájlokkal együtt), `?debug` paraméterrel (az oldal ezzel kapcsolhatja be a strict módot). Ez a valódi
+ * ellenőrzés olyan oldalnál, amelynek a leírása a JavaScriptből kapott adatra / származtatott állapotra épül.
+ * Hibának számít: szkripthiba, console.error, és --strict mellett a console.warn is.
+ */
+async function runPage(file, { strict, waitMs = 1500, root = "app" }) {
+  const { pathToFileURL } = await import("url");
+  const errors = [];
+  const warnings = [];
+  const memStorage = () => {
+    const s = {};
+    return { getItem: (k) => (k in s ? s[k] : null), setItem: (k, v) => void (s[k] = String(v)), removeItem: (k) => void delete s[k], clear: () => Object.keys(s).forEach((k) => delete s[k]) };
+  };
+  const { VirtualConsole } = await import("jsdom");
+  const vc = new VirtualConsole();
+  vc.on("jsdomError", (e) => errors.push(e.message));
+  vc.on("error", (...a) => errors.push(a.map(String).join(" ")));
+  vc.on("warn", (...a) => warnings.push(a.map(String).join(" ")));
+  const dom = await JSDOM.fromFile(file, {
+    url: pathToFileURL(path.resolve(file)).href + "?debug",
+    runScripts: "dangerously",
+    resources: "usable",
+    pretendToBeVisual: true,
+    virtualConsole: vc,
+    beforeParse(w) {
+      Object.defineProperty(w, "localStorage", { value: memStorage() });
+      Object.defineProperty(w, "sessionStorage", { value: memStorage() });
+      w.matchMedia = () => ({ matches: false, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} });
+      w.addEventListener("error", (e) => errors.push(e.message));
+    },
+  });
+  await new Promise((r) => setTimeout(r, waitMs));
+  const host = dom.window.document.getElementById(root) ?? dom.window.document.body;
+  const count = host.querySelectorAll("*").length;
+  dom.window.close();
+  return { errors, warnings, count };
+}
+
+async function main(args) {
+  const VALUE_FLAGS = ["--data", "--state", "--lib", "--root"];
   const file = args.find((a, i) => !a.startsWith("--") && !VALUE_FLAGS.includes(args[i - 1]));
   const opt = (name) => (args.includes(name) ? args[args.indexOf(name) + 1] : undefined);
   const strict = args.includes("--strict");
+
+  if (file && args.includes("--run")) {
+    const target = file.split("#")[0];
+    const { errors, warnings, count } = await runPage(target, { strict, root: opt("--root") ?? "app" });
+    for (const e of errors) console.error(`HIBA: ${e}`);
+    for (const w of warnings) console.warn(`FIGYELMEZTETÉS: ${w.replace(/^\[createDOMBlocks\] /, "")}`);
+    const failed = errors.length > 0 || (strict && warnings.length > 0) || count === 0;
+    console.log(`${failed ? "HIBÁS" : "OK"}: ${target} lefutott (${count} elem${warnings.length ? `, ${warnings.length} figyelmeztetés` : ""}${errors.length ? `, ${errors.length} hiba` : ""}).`);
+    return failed ? 1 : 0;
+  }
 
   if (!file) {
     console.error("Használat: node scripts/validate-spec.mjs <leiras.yaml | oldal.html[#id]> [--data adat.json] [--state allapot.json] [--lib build.js] [--strict] [--print]");
@@ -109,4 +162,6 @@ function main(args) {
 }
 
 // közvetlen futtatás: node scripts/validate-spec.mjs ...
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = main(process.argv.slice(2));
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main(process.argv.slice(2)).then((code) => (process.exitCode = code));
+}

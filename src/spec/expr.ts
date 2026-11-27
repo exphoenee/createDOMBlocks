@@ -328,6 +328,16 @@ export function evalExpr(node: ExprNode, env: ExprEnv): unknown {
   return evalNode(node, env);
 }
 
+/**
+ * Ha a kifejezés egy egyszerű állapot-útvonal (`a`, `a.b.c`, indexelés és függvény nélkül), az útvonal az
+ * állapotban; különben `undefined`. A `define` paraméterei így hivatkozásként adhatók át (helyben frissülnek).
+ */
+export function statePathOf(node: ExprNode, env: ExprEnv): string | undefined {
+  if (node.t !== "id" && node.t !== "member") return undefined;
+  if (node.t === "member" && node.obj.t !== "id" && node.obj.t !== "member") return undefined;
+  return evalRef(node, env).path;
+}
+
 /* ===== Sablonok: "szöveg ${kifejezés} szöveg" ===== */
 
 export type TemplatePart = string | { expr: ExprNode; src: string };
