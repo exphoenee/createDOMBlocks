@@ -1,6 +1,6 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
 import { tr } from "../page-components/i18n";
-import { createCarousel } from "../../src/index";
+import { createCarousel, createSegmentedControl } from "../../src/index";
 
 const done = initDocPage();
 
@@ -121,6 +121,32 @@ const sections = [
         ],
       });
       parent.appendChild(status);
+      return carousel;
+    },
+  ),
+  example(
+    { title: tr("Szűrés: setSlides"), description: tr("A setSlides() kulcs (id) szerint cseréli a diákat: a megmaradók DOM-ja és betöltött képei megmaradnak, az aktív dia marad, ha még benne van.") },
+    (parent) => {
+      const all = [
+        { id: "space", icon: "🎮", title: "Űrutazás", description: "Játék" },
+        { id: "arr", icon: "📦", title: "Arrganizer", description: "Könyvtár" },
+        { id: "sudoku", icon: "🧩", title: "Sudoku", description: "Játék" },
+        { id: "dom", icon: "📦", title: "DOMelemJS", description: "Könyvtár" },
+      ];
+      const carousel = createCarousel({ parent, id: "demo-carousel-6", slideWidth: "200px", height: "220px", slides: all });
+      createSegmentedControl({
+        parent,
+        id: "demo-carousel-6-filter",
+        mode: "toggle",
+        size: "sm",
+        value: "all",
+        options: [
+          { value: "all", label: "Mind" },
+          { value: "Játék", label: "Játék" },
+          { value: "Könyvtár", label: "Könyvtár" },
+        ],
+        onChange: (kind) => carousel.setSlides(kind === "all" ? all : all.filter((s) => s.description === kind)),
+      });
       return carousel;
     },
   ),

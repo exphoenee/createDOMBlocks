@@ -21,9 +21,10 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész.
   - [x] 6. `strict` mód és HTML-validálás
   - [x] 7. listák és teljesítmény (a `derive` fejezetben: „Listák: mi épül újra?”)
 - [~] D8 állapotos kézi YAML-minták (formátum kész: `YAML_EXAMPLE_HANDLERS` a `yamlExamples.ts`-ben; a minták a komponensekkel együtt készülnek)
-  - [ ] SegmentedControl
-  - [ ] Timeline
-  - [ ] Carousel
+  - [x] SegmentedControl
+  - [x] Timeline
+  - [x] Carousel (szűrés `each`-csel a `children` slotban)
+  - [x] ThemeToggle, LocaleSwitcher
   - [ ] SlotPicker
   - [ ] MusicPlayer
   - [ ] Board

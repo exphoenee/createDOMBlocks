@@ -1,7 +1,7 @@
 import { createDOMElem } from "../dom";
 import type { DOMOptions } from "../dom";
 import type { TextValue } from "../i18n";
-import type { TimelineParams, TimelineItem } from "../types";
+import type { TimelineParams, TimelineItem, TimelineElement } from "../types";
 
 function buildItem(item: TimelineItem): DOMOptions {
   const head: DOMOptions[] = [{ tag: "span", text: item.period, attrs: { class: "timeline-period" } }];
@@ -33,7 +33,7 @@ function buildItem(item: TimelineItem): DOMOptions {
  * @order 4
  * @summary Váltakozó oldalú kártyák; keskeny képernyőn egy oszlop.
  */
-export function createTimeline(params: TimelineParams): HTMLElement {
+export function createTimeline(params: TimelineParams): TimelineElement {
   const attrs: Record<string, TextValue> = {
     class: `timeline${params.compact ? " is-compact" : ""}${params.class ? ` ${params.class}` : ""}`,
     role: "list",
@@ -41,10 +41,20 @@ export function createTimeline(params: TimelineParams): HTMLElement {
   if (params.id) attrs.id = params.id;
   if (params.ariaLabel) attrs["aria-label"] = params.ariaLabel;
 
-  return createDOMElem({
+  const root = createDOMElem({
     tag: "div",
     parent: params.parent,
     attrs,
     children: params.items.map(buildItem),
+  });
+
+  return Object.assign(root, {
+    setCompact(compact: boolean): void {
+      root.classList.toggle("is-compact", !!compact);
+    },
+    setItems(items: TimelineItem[]): void {
+      // egyetlen DOM-csere: a gyökér (és a görgetési helyzet) marad
+      root.replaceChildren(...items.map((item) => createDOMElem(buildItem(item))));
+    },
   });
 }

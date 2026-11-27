@@ -1505,7 +1505,17 @@
                     },
                     "slides": {
                       "type": "array",
-                      "description": "Slide-ok tömbje"
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "content": {
+                            "type": "array",
+                            "items": {
+                              "$ref": "#/$defs/node"
+                            }
+                          }
+                        }
+                      }
                     },
                     "showArrows": {
                       "type": "boolean",
@@ -1562,6 +1572,12 @@
                         }
                       ],
                       "description": "Elérhetőségi feliratok (fordításhoz)"
+                    },
+                    "children": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/$defs/node"
+                      }
                     },
                     "t": {
                       "type": "string",
@@ -7639,6 +7655,141 @@
                 }
               ]
             },
+            "^LocaleSwitcher((d+))?([#.].*)?$": {
+              "description": "createDOMBlocks LocaleSwitcher komponens",
+              "oneOf": [
+                {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/node"
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "Egyedi azonosító"
+                    },
+                    "class": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "CSS osztály"
+                    },
+                    "locales": {
+                      "type": "array",
+                      "description": "A választható nyelvek"
+                    },
+                    "value": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A kiválasztott nyelv; alapból a könyvtár aktuális nyelve (`getLocale()`)"
+                    },
+                    "mode": {
+                      "enum": [
+                        "auto",
+                        "buttons",
+                        "dropdown"
+                      ],
+                      "description": "`buttons`: gombsor, `dropdown`: legördülő menü, `auto`: a `breakpoint` alatt legördülő, fölötte gombsor"
+                    },
+                    "breakpoint": {
+                      "type": "number",
+                      "description": "Az `auto` mód töréspontja pixelben"
+                    },
+                    "menuAlign": {
+                      "enum": [
+                        "start",
+                        "end"
+                      ],
+                      "description": "A legördülő menü igazítása: `start` a gomb bal széléhez, `end` a jobb széléhez (pl. a fejléc jobb szélén)"
+                    },
+                    "updateLibrary": {
+                      "type": "boolean",
+                      "description": "Váltáskor a könyvtár nyelvét is átállítja (`setLocale`)"
+                    },
+                    "ariaLabel": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A csoport elérhetőségi neve; alapból a beépített \"Nyelv\""
+                    },
+                    "onChange": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Váltáskor (csak felhasználói műveletre), a `setLocale` után: URL, mentés, meta-adatok"
+                    },
+                    "t": {
+                      "type": "string",
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
+                    },
+                    "args": {
+                      "type": "object",
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
             "^Modal((d+))?([#.].*)?$": {
               "description": "createDOMBlocks Modal komponens",
               "oneOf": [
@@ -8254,6 +8405,143 @@
                 }
               ]
             },
+            "^SegmentedControl((d+))?([#.].*)?$": {
+              "description": "createDOMBlocks SegmentedControl komponens",
+              "oneOf": [
+                {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/node"
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "Egyedi azonosító"
+                    },
+                    "class": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "CSS osztály"
+                    },
+                    "options": {
+                      "type": "array",
+                      "description": "Az opciók"
+                    },
+                    "value": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A kiválasztott érték; alapból az első opció"
+                    },
+                    "mode": {
+                      "enum": [
+                        "radio",
+                        "toggle"
+                      ],
+                      "description": "`radio`: rádiócsoport (egy érték, nyilakkal léptethető, nézetváltóhoz); `toggle`: `aria-pressed` gombok (szűrőhöz)"
+                    },
+                    "size": {
+                      "enum": [
+                        "sm",
+                        "md"
+                      ],
+                      "description": "Méret"
+                    },
+                    "name": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A rejtett mező neve (űrlapban); alapból az `id`"
+                    },
+                    "ariaLabel": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A csoport elérhetőségi neve (aria-label)"
+                    },
+                    "onChange": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Választáskor (csak felhasználói műveletre)"
+                    },
+                    "t": {
+                      "type": "string",
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
+                    },
+                    "args": {
+                      "type": "object",
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "bind": {
+                      "type": "string",
+                      "description": "Kétirányú kötés egy állapot-kulcshoz (beviteli elemeken és komponenseken)."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
             "^Table((d+))?([#.].*)?$": {
               "description": "createDOMBlocks Table komponens",
               "oneOf": [
@@ -8463,6 +8751,131 @@
                         }
                       ],
                       "description": "Tabváltáskor hívódik, az új tab azonosítójával"
+                    },
+                    "t": {
+                      "type": "string",
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
+                    },
+                    "args": {
+                      "type": "object",
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "^ThemeToggle((d+))?([#.].*)?$": {
+              "description": "createDOMBlocks ThemeToggle komponens",
+              "oneOf": [
+                {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/node"
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "Egyedi azonosító"
+                    },
+                    "class": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "CSS osztály"
+                    },
+                    "themes": {
+                      "type": "array",
+                      "description": "A témák, amelyek között a gomb körbe vált (a `<html data-theme>` értékei)"
+                    },
+                    "theme": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A kezdő téma; alapból a mentett, a már beállított (`<html data-theme>`) vagy a rendszer szerinti"
+                    },
+                    "storageKey": {
+                      "description": "A mentett téma kulcsa a localStorage-ban; `null`: nincs mentés"
+                    },
+                    "icons": {
+                      "description": "Ikon témánként (emoji vagy SVG szöveg; csak megbízható tartalom). Alapból ☀️ / 🌙"
+                    },
+                    "labels": {
+                      "description": "A témák neve (felirat, képernyőolvasó); alapból a beépített Világos / Sötét, saját témánál a neve"
+                    },
+                    "showLabel": {
+                      "type": "boolean",
+                      "description": "Látható felirat az ikon mellett (különben csak a képernyőolvasónak)"
+                    },
+                    "display": {
+                      "enum": [
+                        "next",
+                        "current"
+                      ],
+                      "description": "Mit mutasson a gomb: a következő témát (a váltást) vagy a jelenlegit"
+                    },
+                    "onChange": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Váltáskor (csak felhasználói műveletre), az új témával"
                     },
                     "t": {
                       "type": "string",

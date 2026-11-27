@@ -16,14 +16,15 @@ const sections = [
     (parent) => createTimeline({ parent, id: "demo-timeline-1", items, ariaLabel: "Munkatapasztalat" }),
   ),
   example(
-    { title: tr("Kompakt nézet"), description: tr("Az `is-compact` osztály rejti a leírásokat; kapcsolóval váltható.") },
+    { title: tr("Kompakt nézet"), description: tr("A tömör nézet rejti a leírásokat; a setCompact() újraépítés nélkül vált (a YAML-ban a compact paraméter ezt hívja).") },
     (parent) => {
       const timeline = createTimeline({ parent, id: "demo-timeline-2", items, compact: true });
+      let compact = true;
       createButton({
         parent,
         id: "demo-timeline-toggle",
         text: "Kompakt / részletes",
-        click: () => timeline.classList.toggle("is-compact"),
+        click: () => timeline.setCompact((compact = !compact)),
       });
       return timeline;
     },

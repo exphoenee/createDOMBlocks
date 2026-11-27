@@ -20,17 +20,17 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész (a 7. fejezet k�
 - [x] A9 a leíró-tesztek kiegészítve (`test/spec-keywords.test.ts`, `test/spec-ergonomics.test.ts`)
 
 **B. Meglévő komponensek**
-- [ ] B1 Carousel: dia-tartalom YAML-ból, `setSlides`, `goTo`
-- [ ] B2 Timeline: `setCompact`, `setItems`
+- [x] B1 Carousel: `setSlides` (kulcs szerint, az aktív dia marad), `goTo`, `getIndex`, dián `attrs`; YAML-ban a diák `children` slotba is rajzolhatók (`each`), a carousel MutationObserverrel követi — a `slides[].content` statikus marad (a `slides` updater a YAML `items`-leképezés miatt nem futna)
+- [x] B2 Timeline: `setCompact`, `setItems`
 - [ ] B3 MusicPlayer: `storageKey`, `playlistMode`, `actions`
-- [ ] B4 Gantt: `reorderable`, `onReorder`
+- [ ] B4 Gantt: a `draggableRows` + `onReorder` + Alt+nyíl **már megvan** (natív HTML5 drag-and-drop); hátravan: érintéses húzás és felolvasott állapot a C1 `Sortable`-lel
 
 **C. Új komponensek**
 - [ ] C1 Sortable viselkedés
 - [ ] C2 Board (Kanban)
-- [ ] C3 SegmentedControl
-- [ ] C4 LocaleSwitcher
-- [ ] C5 ThemeToggle + `themeBootstrapScript()`
+- [x] C3 SegmentedControl (`radio` / `toggle` mód, `bind` a rejtett mezőn, `setValue`, `setOptions`)
+- [x] C4 LocaleSwitcher (`buttons` / `dropdown` / `auto`, `menuAlign`, `setLocale`-hez kötve, külső nyelvváltást követ)
+- [x] C5 ThemeToggle + `themeBootstrapScript()` (`@group theme`)
 - [ ] C6 SlotPicker
 - [ ] C7 CodeView
 

@@ -104,6 +104,10 @@ export {
   createCarousel,
   createTimeline,
   createGantt,
+  createSegmentedControl,
+  createThemeToggle,
+  themeBootstrapScript,
+  createLocaleSwitcher,
 } from "./components";
 
 export type {
@@ -186,8 +190,18 @@ export type {
 export type {
   CarouselSlide,
   CarouselParams,
+  CarouselElement,
   TimelineItem,
   TimelineParams,
+  TimelineElement,
+  SegmentedOption,
+  SegmentedControlParams,
+  SegmentedControlElement,
+  ThemeToggleParams,
+  ThemeToggleElement,
+  LocaleOption,
+  LocaleSwitcherParams,
+  LocaleSwitcherElement,
   GanttDate,
   GanttMilestone,
   GanttRow,

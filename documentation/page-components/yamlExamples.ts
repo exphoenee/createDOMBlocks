@@ -85,13 +85,35 @@ ui:
 `,
 
   Carousel: `
+# a diák lehetnek adatok (slides) vagy csomópontok (children + each): az utóbbi szűrhető, a carousel követi
+state:
+  kind: all
+  projects:
+    - { id: p1, icon: "🎮", name: Űrutazás, kind: game }
+    - { id: p2, icon: "📦", name: Arrganizer, kind: library }
+    - { id: p3, icon: "🧩", name: Sudoku, kind: game }
+    - { id: p4, icon: "📦", name: DOMelemJS, kind: library }
 ui:
+  - SegmentedControl:
+      bind: kind
+      mode: toggle
+      size: sm
+      ariaLabel: Típus
+      options:
+        - { value: all, label: Mind }
+        - { value: game, label: Játék }
+        - { value: library, label: Könyvtár }
   - Carousel:
-      showDots: true
-      slides:
-        - { icon: "🚀", title: Első slide, description: Gyors indulás }
-        - { icon: "🛡️", title: Második slide, description: Biztonság }
-        - { icon: "📊", title: Harmadik slide, description: Monitoring }
+      slideWidth: 200px
+      height: 220px
+      children:
+        - each: { in: "§{projects}", as: project, key: project.id }
+          do:
+            - if: "§{kind == 'all' || project.kind == kind}"
+              then:
+                - div:
+                    - div.carousel-slide-icon: "§{project.icon}"
+                    - span.carousel-slide-title: "§{project.name}"
 `,
 
   Checkbox: `
@@ -443,15 +465,57 @@ ui:
   - Paragraph: "A beírt érték: §{name}"
 `,
 
+  LocaleSwitcher: `
+# a saját oldaladon az updateLibrary elhagyható: akkor a könyvtár nyelve is vált
+ui:
+  - LocaleSwitcher:
+      mode: dropdown
+      value: hu
+      updateLibrary: false
+      locales:
+        - { code: hu, label: Magyar }
+        - { code: en, label: English }
+        - { code: de, label: Deutsch }
+`,
+
+  SegmentedControl: `
+state: { view: grid, filter: all }
+ui:
+  - SegmentedControl:
+      bind: view
+      ariaLabel: Nézet
+      options:
+        - { value: grid, label: Rács }
+        - { value: carousel, label: Carousel }
+  - SegmentedControl:
+      bind: filter
+      mode: toggle
+      size: sm
+      ariaLabel: Szűrő
+      options:
+        - { value: all, label: Mind }
+        - { value: open, label: Nyitott }
+        - { value: done, label: Kész }
+  - Paragraph: "Nézet: §{view}, szűrő: §{filter}"
+`,
+
+  ThemeToggle: `
+ui:
+  - ThemeToggle: { storageKey: null, showLabel: true }
+`,
+
   TimeInput: `
 ui:
   - TimeInput: { labelText: "Idő:", value: "14:30" }
 `,
 
   Timeline: `
+state: { compact: false }
 ui:
+  - Checkbox: { bind: compact, labelText: Tömör nézet }
   - Timeline:
       ariaLabel: Munkatapasztalat
+      compact: "§{compact}"
       items:
         - { period: 2022 – jelenleg, title: Senior fejlesztő, subtitle: Példa Kft., description: Komponenskönyvtár fejlesztése., badge: jelenlegi }
         - { period: 2019 – 2022, title: Fejlesztő, subtitle: Minta Zrt., description: Webalkalmazások fejlesztése. }

@@ -2,7 +2,7 @@ import { createDOMElem } from "../dom";
 import { builtin, t, watchLocale } from "../i18n";
 import type { TextValue } from "../i18n";
 import type { DOMOptions } from "../dom";
-import type { CarouselParams, CarouselSlide } from "../types";
+import type { CarouselParams, CarouselSlide, CarouselElement } from "../types";
 
 function buildSlide(slide: CarouselSlide): DOMOptions {
   const children: DOMOptions[] = [];
@@ -33,11 +33,15 @@ function buildSlide(slide: CarouselSlide): DOMOptions {
   }
 
   const slideAttrs: Record<string, string> = {
+    ...(slide.attrs ?? {}),
     class: `carousel-slide${slide.class ? ` ${slide.class}` : ""}`,
     role: "group",
     "aria-roledescription": "slide",
   };
-  if (slide.id) slideAttrs.id = slide.id;
+  if (slide.id) {
+    slideAttrs.id = slide.id;
+    slideAttrs["data-slide-id"] = slide.id;
+  }
 
   return {
     tag: "div",
@@ -54,7 +58,7 @@ function buildSlide(slide: CarouselSlide): DOMOptions {
  * @order 3
  * @summary Egyszerű carousel 3D perspective effektekkel, nyíl navigációval és dot indikátorokkal.
  */
-export function createCarousel(params: CarouselParams): HTMLElement {
+export function createCarousel(params: CarouselParams): CarouselElement {
   const labels = params.labels ?? {};
   const rootAttrs: Record<string, TextValue> = {
     class: `carousel-wrap${params.class ? ` ${params.class}` : ""}`,
@@ -97,7 +101,7 @@ export function createCarousel(params: CarouselParams): HTMLElement {
           "aria-label": labels.stage ?? builtin("carousel.stage", "Carousel"),
           tabindex: "0",
         },
-        children: params.slides.map((s) => buildSlide(s)),
+        children: (params.slides ?? []).map((s) => buildSlide(s)),
       },
       { tag: "div", attrs: { class: "carousel-nav", role: "group", "aria-label": labels.nav ?? builtin("carousel.nav", "Carousel navigation") }, children: navChildren },
     ],
@@ -106,8 +110,7 @@ export function createCarousel(params: CarouselParams): HTMLElement {
   if (params.slideWidth) carousel.style.setProperty("--carousel-slide-w", params.slideWidth);
   if (params.height) carousel.style.setProperty("--carousel-height", params.height);
 
-  initCarouselLogic(carousel, params);
-  return carousel;
+  return Object.assign(carousel, initCarouselLogic(carousel, params));
 }
 
 const FOCUSABLE = "a, button, input, select, textarea, [tabindex]";
@@ -132,35 +135,47 @@ function mod(n: number, m: number): number {
   return ((n % m) + m) % m;
 }
 
-function initCarouselLogic(root: HTMLElement, params: CarouselParams): void {
-  const stage = root.querySelector<HTMLElement>(".carousel-stage");
-  if (!stage) return;
-
-  const slides = Array.from(stage.querySelectorAll<HTMLElement>(":scope > .carousel-slide"));
+/**
+ * A carousel működése. A diák listája dinamikus: a színpad (`.carousel-stage`) minden elem-gyereke egy dia
+ * (a YAML-ban egy `each` is rajzolhatja őket), a változást MutationObserver követi, a `setSlides` kulcs
+ * (`id`) szerint cseréli a diákat. Változáskor az aktív dia megmarad, ha még létezik.
+ */
+function initCarouselLogic(root: HTMLElement, params: CarouselParams): Pick<CarouselElement, "goTo" | "getIndex" | "setSlides"> {
+  const stage = root.querySelector<HTMLElement>(".carousel-stage")!;
   const dotsWrap = root.querySelector<HTMLElement>(".carousel-dots");
   const prevBtn = root.querySelector<HTMLElement>(".carousel-prev");
   const nextBtn = root.querySelector<HTMLElement>(".carousel-next");
-  const N = slides.length;
-  if (N === 0) return;
+  let slides: HTMLElement[] = [];
   let current = 0;
+  let dots: HTMLElement[] = [];
 
-  const dots: HTMLElement[] = [];
   const dotLabel = (n: number): string => (params.labels?.dot ? params.labels.dot(n) : t("cdb.carousel.dot", { n }, "Slide {n}"));
   // nyelvváltáskor a pöttyök feliratai is frissülnek
   watchLocale(root, () => dots.forEach((d, i) => d.setAttribute("aria-label", dotLabel(i + 1))));
-  if (dotsWrap) {
-    for (let i = 0; i < N; i++) {
+
+  /** A színpad elem-gyerekei a diák; a kívülről (pl. YAML each) érkezők is megkapják a dia osztályát és szerepét. */
+  function collect(): void {
+    slides = Array.from(stage.children).filter((el): el is HTMLElement => el instanceof HTMLElement);
+    for (const slide of slides) {
+      slide.classList.add("carousel-slide");
+      if (!slide.hasAttribute("role")) slide.setAttribute("role", "group");
+      slide.setAttribute("aria-roledescription", "slide");
+    }
+    if (!dotsWrap) return;
+    dots = slides.map((_, i) => {
       const d = document.createElement("button");
       d.type = "button";
       d.className = "carousel-dot";
       d.setAttribute("aria-label", dotLabel(i + 1));
       d.addEventListener("click", () => goTo(i));
-      dotsWrap.appendChild(d);
-      dots.push(d);
-    }
+      return d;
+    });
+    dotsWrap.replaceChildren(...dots);
   }
 
   function goTo(idx: number): void {
+    const N = slides.length;
+    if (N === 0) return;
     const previous = current;
     current = mod(idx, N);
     const prev = mod(current - 1, N);
@@ -181,13 +196,26 @@ function initCarouselLogic(root: HTMLElement, params: CarouselParams): void {
     if (previous !== current) params.onChange?.(current);
   }
 
+  /** A dia-lista újraolvasása; az aktív dia megmarad, ha még létezik, különben a helyén lévő lesz aktív. */
+  function refresh(): void {
+    const active = slides[current];
+    collect();
+    const kept = active ? slides.indexOf(active) : -1;
+    const idx = kept >= 0 ? kept : Math.min(current, slides.length - 1);
+    const before = current;
+    current = Math.max(0, idx);
+    goTo(current);
+    // az aktív dia ugyanaz maradt, csak a sorszáma változott: a figyelő is tudjon róla
+    if (before !== current) params.onChange?.(current);
+  }
+
   prevBtn?.addEventListener("click", () => goTo(current - 1));
   nextBtn?.addEventListener("click", () => goTo(current + 1));
 
   // A szomszédos slide-ra kattintva arra lép; az aktív slide saját vezérlői működnek.
   stage.addEventListener("click", (e: Event) => {
     const slide = (e.target as HTMLElement).closest<HTMLElement>(".carousel-slide");
-    if (!slide) return;
+    if (!slide || slide.parentElement !== stage) return;
     const state = slide.dataset.state;
     if (state === "prev" || state === "next") {
       e.preventDefault();
@@ -199,7 +227,7 @@ function initCarouselLogic(root: HTMLElement, params: CarouselParams): void {
   // Húzás / swipe Pointer Events-szel; a függőleges görgetés a böngészőé (touch-action: pan-y).
   let slideW = 210;
   const measure = (): void => {
-    slideW = slides[0].offsetWidth || slideW;
+    slideW = slides[0]?.offsetWidth || slideW;
   };
   const clamp = (v: number, min: number, max: number): number => Math.min(max, Math.max(min, v));
   const drag = { active: false, startX: 0, startY: 0, moved: false, suppress: false };
@@ -275,11 +303,40 @@ function initCarouselLogic(root: HTMLElement, params: CarouselParams): void {
     if (e.key === "ArrowRight") goTo(current + 1);
     else if (e.key === "ArrowLeft") goTo(current - 1);
     else if (e.key === "Home") goTo(0);
-    else if (e.key === "End") goTo(N - 1);
+    else if (e.key === "End") goTo(slides.length - 1);
     else return;
     e.preventDefault();
   };
   [stage, prevBtn, nextBtn].forEach((el) => el?.addEventListener("keydown", onKey as EventListener));
 
-  goTo(params.startIndex ?? 0);
+  // A diák kívülről is változhatnak (YAML each a színpadban): a változás után újraolvassuk a listát.
+  if (typeof MutationObserver !== "undefined") {
+    new MutationObserver((records) => {
+      const elementChanged = records.some((r) => [...Array.from(r.addedNodes), ...Array.from(r.removedNodes)].some((n) => n.nodeType === 1));
+      if (elementChanged) refresh();
+    }).observe(stage, { childList: true });
+  }
+
+  collect();
+  current = Math.min(Math.max(0, params.startIndex ?? 0), Math.max(0, slides.length - 1));
+  // a kezdő állapot beállítása (a kezdő index nem "változás", ezért az onChange nem hívódik)
+  const initial = current;
+  current = -1;
+  if (slides.length) {
+    const silent = params.onChange;
+    params = { ...params, onChange: undefined };
+    goTo(initial);
+    params = { ...params, onChange: silent };
+  } else current = 0;
+
+  return {
+    goTo,
+    getIndex: () => current,
+    setSlides(next: CarouselSlide[]): void {
+      const byId = new Map(slides.filter((el) => el.dataset.slideId).map((el) => [el.dataset.slideId as string, el]));
+      const fresh = next.map((slide) => (slide.id && byId.get(slide.id)) || createDOMElem(buildSlide(slide)));
+      stage.replaceChildren(...fresh); // egyetlen csere: a megmaradó diák (és a betöltött képeik) ugyanazok
+      refresh();
+    },
+  };
 }

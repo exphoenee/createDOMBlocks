@@ -9,7 +9,18 @@
   "Accordion": { "array": "items", "items": { "items": "content" } },
   "Tabs": { "array": "tabs", "items": { "tabs": "content" } },
   "Drawer": { "elements": ["children"] },
+  "Carousel": {
+    "array": "slides",
+    "extra": ["children"],
+    "items": { "slides": "content" },
+    "slots": { "children": ".carousel-stage" },
+    "updaters": { "startIndex": "goTo" }
+  },
   "Gantt": { "updaters": { "rows": "setRows", "selectedMilestoneId": "selectMilestone" } },
+  "LocaleSwitcher": { "array": "locales", "updaters": { "value": "setValue", "locales": "setLocales" } },
+  "SegmentedControl": { "array": "options", "bind": "value", "updaters": { "value": "setValue", "options": "setOptions" } },
+  "ThemeToggle": { "updaters": { "theme": "setTheme" } },
+  "Timeline": { "array": "items", "updaters": { "compact": "setCompact", "items": "setItems" } },
   "Modal": {
     "text": "title",
     "array": "body",

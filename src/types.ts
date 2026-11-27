@@ -1359,6 +1359,21 @@ export interface CarouselSlide {
   cta?: { text: TextValue; href?: string; click?: (e: Event) => void };
   /** Egyedi tartalom a slide-ban */
   content?: DOMOptions | HTMLElement | (DOMOptions | HTMLElement)[];
+  /** További attribútumok a dián (pl. `data-category`, tesztazonosító) */
+  attrs?: Record<string, string>;
+}
+
+/** A `createCarousel` visszatérési értéke: a gyökérelem, a diák kezelésével. */
+export interface CarouselElement extends HTMLElement {
+  /** Ugrás egy diára (körbeér) */
+  goTo(index: number): void;
+  /** Az aktív dia indexe */
+  getIndex(): number;
+  /**
+   * A diák cseréje: az azonos `id`-jú diák DOM-ja (és betöltött képeik) megmarad; az aktív dia marad, ha még létezik.
+   * A diák a színpadba (`.carousel-stage`) közvetlenül is tehetők (pl. YAML `each`), a carousel ezt is követi.
+   */
+  setSlides(slides: CarouselSlide[]): void;
 }
 
 export interface CarouselParams {
@@ -1368,8 +1383,8 @@ export interface CarouselParams {
   id: string;
   /** Carousel CSS osztálya */
   class?: string;
-  /** Slide-ok tömbje */
-  slides: CarouselSlide[];
+  /** Slide-ok tömbje (a YAML-ban a diák gyerek-csomópontként, pl. `each`-csel is megadhatók) */
+  slides?: CarouselSlide[];
   /**
    * Nyíl megjelenítése
    * @default true
@@ -1431,6 +1446,177 @@ export interface TimelineParams {
   compact?: boolean;
   /** Az idővonal elérhetőségi neve (aria-label) */
   ariaLabel?: TextValue;
+}
+
+export interface SegmentedOption {
+  /** Az opció értéke (ez kerül a `value`-ba és az `onChange`-be) */
+  value: string;
+  /** Felirat */
+  label: TextValue;
+  /** Ikon a felirat előtt (SVG szöveg vagy emoji; csak megbízható tartalom) */
+  icon?: string;
+  /**
+   * Csak az ikon látszik; a felirat a képernyőolvasónak és a tooltipnek marad
+   * @default false
+   */
+  iconOnly?: boolean;
+  /**
+   * Nem választható
+   * @default false
+   */
+  disabled?: boolean;
+}
+
+export interface SegmentedControlParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Egyedi azonosító */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /** Az opciók */
+  options: SegmentedOption[];
+  /** A kiválasztott érték; alapból az első opció */
+  value?: string;
+  /**
+   * `radio`: rádiócsoport (egy érték, nyilakkal léptethető, nézetváltóhoz); `toggle`: `aria-pressed` gombok (szűrőhöz)
+   * @default "radio"
+   */
+  mode?: "radio" | "toggle";
+  /**
+   * Méret
+   * @default "md"
+   */
+  size?: "sm" | "md";
+  /** A rejtett mező neve (űrlapban); alapból az `id` */
+  name?: string;
+  /** A csoport elérhetőségi neve (aria-label) */
+  ariaLabel?: TextValue;
+  /** Választáskor (csak felhasználói műveletre) */
+  onChange?: (value: string) => void;
+}
+
+/** A `createSegmentedControl` visszatérési értéke: a gyökérelem, frissítő metódusokkal. */
+export interface SegmentedControlElement extends HTMLElement {
+  /** A kiválasztott érték */
+  getValue(): string;
+  /** Kiválasztás kódból (az `onChange` nem hívódik) */
+  setValue(value: string): void;
+  /** Az opciók cseréje (ha a kiválasztott érték eltűnik, az első lesz kiválasztva) */
+  setOptions(options: SegmentedOption[]): void;
+}
+
+export interface ThemeToggleParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Egyedi azonosító */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /**
+   * A témák, amelyek között a gomb körbe vált (a `<html data-theme>` értékei)
+   * @default ["light", "dark"]
+   */
+  themes?: string[];
+  /** A kezdő téma; alapból a mentett, a már beállított (`<html data-theme>`) vagy a rendszer szerinti */
+  theme?: string;
+  /**
+   * A mentett téma kulcsa a localStorage-ban; `null`: nincs mentés
+   * @default "cdb-theme"
+   */
+  storageKey?: string | null;
+  /** Ikon témánként (emoji vagy SVG szöveg; csak megbízható tartalom). Alapból ☀️ / 🌙 */
+  icons?: Record<string, string>;
+  /** A témák neve (felirat, képernyőolvasó); alapból a beépített Világos / Sötét, saját témánál a neve */
+  labels?: Record<string, TextValue>;
+  /**
+   * Látható felirat az ikon mellett (különben csak a képernyőolvasónak)
+   * @default false
+   */
+  showLabel?: boolean;
+  /**
+   * Mit mutasson a gomb: a következő témát (a váltást) vagy a jelenlegit
+   * @default "next"
+   */
+  display?: "next" | "current";
+  /** Váltáskor (csak felhasználói műveletre), az új témával */
+  onChange?: (theme: string) => void;
+}
+
+/** A `createThemeToggle` visszatérési értéke: a gomb, a téma lekérdezésével és beállításával. */
+export interface ThemeToggleElement extends HTMLButtonElement {
+  /** Az aktuális téma */
+  getTheme(): string;
+  /** Téma beállítása kódból (nem ment, az `onChange` nem hívódik) */
+  setTheme(theme: string): void;
+}
+
+export interface LocaleOption {
+  /** A nyelv kódja (ezt kapja a `setLocale`, pl. "hu", "en") */
+  code: string;
+  /** A nyelv neve a saját nyelvén (pl. "Magyar", "Deutsch") */
+  label: string;
+  /** Rövid jelölés a gombon; alapból a kód nagybetűvel */
+  short?: string;
+  /** Ikon (pl. zászló emoji; csak megbízható tartalom) */
+  icon?: string;
+}
+
+export interface LocaleSwitcherParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Egyedi azonosító */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /** A választható nyelvek */
+  locales: LocaleOption[];
+  /** A kiválasztott nyelv; alapból a könyvtár aktuális nyelve (`getLocale()`) */
+  value?: string;
+  /**
+   * `buttons`: gombsor, `dropdown`: legördülő menü, `auto`: a `breakpoint` alatt legördülő, fölötte gombsor
+   * @default "auto"
+   */
+  mode?: "buttons" | "dropdown" | "auto";
+  /**
+   * Az `auto` mód töréspontja pixelben
+   * @default 768
+   */
+  breakpoint?: number;
+  /**
+   * A legördülő menü igazítása: `start` a gomb bal széléhez, `end` a jobb széléhez (pl. a fejléc jobb szélén)
+   * @default "start"
+   */
+  menuAlign?: "start" | "end";
+  /**
+   * Váltáskor a könyvtár nyelvét is átállítja (`setLocale`)
+   * @default true
+   */
+  updateLibrary?: boolean;
+  /** A csoport elérhetőségi neve; alapból a beépített "Nyelv" */
+  ariaLabel?: TextValue;
+  /** Váltáskor (csak felhasználói műveletre), a `setLocale` után: URL, mentés, meta-adatok */
+  onChange?: (code: string) => void;
+}
+
+/** A `createLocaleSwitcher` visszatérési értéke: a gyökérelem, a kiválasztás kezelésével. */
+export interface LocaleSwitcherElement extends HTMLElement {
+  /** A kiválasztott nyelv kódja */
+  getValue(): string;
+  /** Kiválasztás kódból (nem hívja a `setLocale`-t és az `onChange`-et) */
+  setValue(code: string): void;
+  /** A nyelvek listájának cseréje */
+  setLocales(locales: LocaleOption[]): void;
+  /** A legördülő menü bezárása */
+  close(): void;
+}
+
+/** A `createTimeline` visszatérési értéke: a gyökérelem, frissítő metódusokkal. */
+export interface TimelineElement extends HTMLElement {
+  /** Tömör nézet be- / kikapcsolása (a leírások rejtettek), újraépítés nélkül */
+  setCompact(compact: boolean): void;
+  /** A bejegyzések cseréje (pl. nyelvváltáskor), a gyökérelem marad */
+  setItems(items: TimelineItem[]): void;
 }
 
 /** Gantt dátum: "2024-03" (hónap), "2024-03-15" (nap) vagy Date */

@@ -40,4 +40,7 @@ export { newLine } from "./newLine";
 export { asyncImage } from "./asyncImage";
 export { createCarousel } from "./createCarousel";
 export { createTimeline } from "./createTimeline";
+export { createSegmentedControl } from "./createSegmentedControl";
+export { createThemeToggle, themeBootstrapScript } from "./createThemeToggle";
+export { createLocaleSwitcher } from "./createLocaleSwitcher";
 export { createGantt } from "./createGantt";
