@@ -12,7 +12,7 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész. Egy mérföldk�
 - [x] 3. Leíró-ergonómia (K: A5–A8 · D: D5, D7 1–7.) — ág: `feature/spec-foundations`
 - [x] 4. Competitions takarítás (Y) — competitions: `feature/yaml-cleanup`; a könyvtárban közben: `define` paraméter hivatkozásként, `validate-spec --run`
 - [x] 5. Kis komponensek (K: C3, C4, C5, B2, B1 · D: D8) — ág: `feature/spec-foundations`
-- [ ] 6. Portfólió 0–4. szakasz (P)
+- [x] 6. Portfólió 0–4. szakasz (P) — dev-portfolio: `feature/yaml-rewrite`; a könyvtárban közben: `t:` sablon, `{ t: kulcs }` paraméter, `arrowIcons`
 - [ ] 7. Foglalás és zene (K: C6, B3 · D: D8)
 - [ ] 8. Portfólió befejezése (P: 5–6.)
 - [ ] 9. cv 0–2. szakasz (C)

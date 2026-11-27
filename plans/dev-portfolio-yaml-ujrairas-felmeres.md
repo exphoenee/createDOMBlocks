@@ -6,11 +6,16 @@
 
 Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész. Zárójelben a szükséges komponens-tételek (`plans/hianyzo-komponensek-terv.md`).
 
-- [ ] 0. Előkészítés: vendor + szinkronszkript, DOM-alapvonalteszt a mostani oldalra, `i18n-bridge.js` (A1, A2, A3)
-- [ ] 1. Keret: navbar, nyelvváltó, téma, footer, vissza-felülre (A4, C4, C5)
-- [ ] 2. Hero (terminál, showcase, gépelő effekt)
-- [ ] 3. Projektek: szűrők, nézetváltó, kártyák, carousel (B1, C3)
-- [ ] 4. Skillek, idővonal, kapcsolat (B2, C3)
+> Megvalósítás: dev-portfolio `feature/yaml-rewrite` ág (commit `a7b8b78`, nincs feltöltve). Rögzített döntések az implementáció közben:
+> - A teljes `<body>` a YAML-ból épül (a hero is), a `<head>` kézi HTML maradt.
+> - **A könyvtár CSS-ét nem töltjük be**: a portfólió kinézetét kizárólag a `styles/` adja. Ok: osztálynév-ütközések (`.btn`, `.modal`, `.card-body`, `.theme-toggle`, `.timeline-*`, `.carousel-*`) és a könyvtár alap-resetje. Ezért a leíró a portfólió saját jelölését és osztályait használja nyers elemekkel; könyvtári komponens csak a `Carousel` (a portfólió globális carousel-CSS-e illeszkedik a jelölésére, `--drag-x` → `--carousel-drag` alias, `arrowIcons`). A `ThemeToggle`, `LocaleSwitcher`, `SegmentedControl`, `Timeline` saját kinézetű megfelelője marad nyers elemekkel (pixelpontos egyezés). Ez a cv-nél is érvényes tanulság (lásd a komponens-terv „CSS-névtér” tételét).
+> - DOM-alapvonal: a jsdom ES-modult nem futtat, ezért az alapvonal és az összevetés böngészőben készült (elemszámok, szűrők, nézetek, nyelvváltás, modálok) — minden egyezett.
+
+- [x] 0. Előkészítés: vendor + szinkronszkript, alapvonal (böngészőben), `i18n-bridge.js` (A1, A2, A3)
+- [x] 1. Keret: navbar, nyelvváltó, téma, footer (nyers elemek a portfólió osztályaival; vissza-felülre statikus maradt)
+- [x] 2. Hero (terminál, showcase, gépelő effekt; `onMount`)
+- [x] 3. Projektek: szűrők, nézetváltó, kártyák, carousel (`Carousel` + `each` a slotban, fülek helyben frissülnek)
+- [x] 4. Skillek, idővonal, kapcsolat
 - [ ] 5. Modálok: képnagyító, hire, booking (C6)
 - [ ] 6. Takarítás, CI (`validate-spec`, A8), README
 - [ ] Ellenőrzés: `npm run verify` + DOM-teszt zöld, Lighthouse előtte/utána, böngészős ellenőrzés (6 nyelv, téma, mobil), megosztási előnézet

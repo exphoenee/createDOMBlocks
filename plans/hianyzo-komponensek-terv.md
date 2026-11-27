@@ -34,6 +34,11 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész (a 7. fejezet k�
 - [ ] C6 SlotPicker
 - [ ] C7 CodeView
 
+**A portfólió-átírás tanulságai (6. mérföldkő)**
+- [x] `t:` sablon (`t: "filters.${kind}"`) és `{ t: kulcs }` objektum komponens-paraméterben (élő fordítás, pl. `Carousel labels`)
+- [x] `Carousel arrowIcons`; a visszahívás-felismerés csak valódi függvénytípusra (`isFunctionType`)
+- [ ] CSS-névtér: a könyvtár stíluslapja ütközik a saját stílusú oldalakkal (alap-reset, `.btn`, `.modal`, `.timeline-*`, `.carousel-*`, `.theme-toggle`). Javaslat: külön „components-only” stíluslap reset nélkül, és hosszabb távon `cdb-` előtag vagy `@layer cdb` (a cv-nél is számít)
+
 **Kiadás**
 - [ ] a 8. fejezet kockázatainak felülvizsgálata (csomagméret mérve, extras belépési pont kell-e)
 - [ ] a competitions vendor-szinkronja és smoke-tesztje minden kiadás után
