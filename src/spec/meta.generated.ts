@@ -50,6 +50,7 @@ export const SPEC_PARAMS: Record<string, { all: string[]; required: string[]; fn
   SearchInput: { all: ["type","parent","id","class","name","value","placeholder","labelText","labelfirst","checked","onChange","click","handleEvent","min","max","step","start","rows","cols"], required: ["parent","id"], fns: ["onChange","click"] },
   SegmentedControl: { all: ["parent","id","class","options","value","mode","size","name","ariaLabel","onChange"], required: ["parent","id","options"], fns: ["onChange"] },
   Select: { all: ["options","parent","id","type","class","name","value","placeholder","labelText","labelfirst","checked","onChange","click","handleEvent","min","max","step","start","rows","cols"], required: ["options","parent","id"], fns: ["onChange","click"] },
+  SlotPicker: { all: ["parent","id","class","loadSlots","autoLoad","dateLocale","onSelect","labels","classNames"], required: ["parent","id","loadSlots"], fns: ["loadSlots","onSelect"] },
   Spinner: { all: ["parent","id","class","size","color"], required: ["parent","id"], fns: [] },
   SubmitInput: { all: ["type","text","parent","id","class","name","value","placeholder","labelText","labelfirst","checked","onChange","click","handleEvent","min","max","step","start","rows","cols"], required: ["parent","id"], fns: ["onChange","click"] },
   Table: { all: ["parent","id","class","hasHeader","hasFooter","showHeader","showFooter","addRowNumbers","sumRowValues","cellNames","precision","sortable","filterable","pageSize","pageSizeOptions","labels","serverSide"], required: ["parent","id"], fns: [] },

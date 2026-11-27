@@ -341,9 +341,9 @@ function runAction(action: Record<string, unknown>, scope: Vars, ctx: Ctx, path:
 }
 
 /** `@kezelő`, művelet-objektum vagy ezek listája → függvény (a hibákat már építéskor jelzi). */
-function toCallback(spec: unknown, scope: Vars, ctx: Ctx, path: string): (...args: unknown[]) => void {
+function toCallback(spec: unknown, scope: Vars, ctx: Ctx, path: string): (...args: unknown[]) => unknown {
   const items = Array.isArray(spec) ? spec : [spec];
-  const steps = items.map((item, i): ((args: unknown[]) => void) => {
+  const steps = items.map((item, i): ((args: unknown[]) => unknown) => {
     const p = Array.isArray(spec) ? `${path}[${i}]` : path;
     if (typeof item === "string" && item.startsWith("@")) {
       const name = item.slice(1);
@@ -352,7 +352,7 @@ function toCallback(spec: unknown, scope: Vars, ctx: Ctx, path: string): (...arg
         const event = args[0] instanceof Event ? args[0] : undefined;
         // eseménynél a currentTarget, onMount-nál a felépült elem (az első argumentum)
         const el = (event?.currentTarget as Element | null) ?? (args[0] instanceof Element ? args[0] : null);
-        handler({ state: ctx.store, ui: ctx.ui, event, el, args }, ...args);
+        return handler({ state: ctx.store, ui: ctx.ui, event, el, args }, ...args);
       };
     }
     if (item && typeof item === "object" && !Array.isArray(item)) {
@@ -364,7 +364,8 @@ function toCallback(spec: unknown, scope: Vars, ctx: Ctx, path: string): (...arg
     }
     throw new SpecError(`visszahívásnak "@kezelő" vagy művelet kell, nem ez: ${JSON.stringify(item)}`, p);
   });
-  return (...args) => steps.forEach((s) => s(args));
+  // az utolsó lépés eredménye visszajön (pl. a SlotPicker loadSlots Promise-a)
+  return (...args) => steps.reduce<unknown>((_, s) => s(args), undefined);
 }
 
 /* ===== Beviteli kötés ===== */

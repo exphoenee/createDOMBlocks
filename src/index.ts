@@ -108,6 +108,7 @@ export {
   createThemeToggle,
   themeBootstrapScript,
   createLocaleSwitcher,
+  createSlotPicker,
 } from "./components";
 
 export type {
@@ -202,6 +203,10 @@ export type {
   LocaleOption,
   LocaleSwitcherParams,
   LocaleSwitcherElement,
+  TimeSlot,
+  SlotPickerClassNames,
+  SlotPickerParams,
+  SlotPickerElement,
   GanttDate,
   GanttMilestone,
   GanttRow,

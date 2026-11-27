@@ -1613,6 +1613,68 @@ export interface LocaleSwitcherElement extends HTMLElement {
   close(): void;
 }
 
+/** Egy szabad időpont (ISO dátum-idő szövegek, pl. "2026-12-01T09:00:00+01:00"). */
+export interface TimeSlot {
+  /** Kezdete */
+  start: string;
+  /** Vége */
+  end: string;
+  /** Tetszőleges adat (pl. a foglaláshoz szükséges azonosító) */
+  data?: unknown;
+}
+
+/** A SlotPicker elemeinek CSS-osztályai (saját stíluslaphoz, pl. a meglévő `bk-*` osztályokhoz). */
+export interface SlotPickerClassNames {
+  state?: string;
+  spinner?: string;
+  retry?: string;
+  step?: string;
+  stepLabel?: string;
+  back?: string;
+  badge?: string;
+  days?: string;
+  day?: string;
+  dayName?: string;
+  dayDate?: string;
+  dayCount?: string;
+  times?: string;
+  time?: string;
+}
+
+export interface SlotPickerParams {
+  /** Szülő elem */
+  parent: HTMLElement | string;
+  /** Egyedi azonosító */
+  id: string;
+  /** CSS osztály */
+  class?: string;
+  /** A szabad időpontok betöltése (pl. fetch); a hibát a komponens mutatja, újrapróbálás gombbal */
+  loadSlots: () => Promise<TimeSlot[]>;
+  /**
+   * Betöltés létrehozáskor (különben a `reload()` indítja, pl. a modál megnyitásakor)
+   * @default true
+   */
+  autoLoad?: boolean;
+  /** A dátumok formázásának nyelve; alapból a könyvtár aktuális nyelve (ismeretlen nyelvnél angol) */
+  dateLocale?: string;
+  /** Időpont választásakor: az időpont és egy kész, olvasható felirat (`label`) */
+  onSelect?: (slot: TimeSlot & { label: string }) => void;
+  /** A feliratok (alapból a beépített, nyelvesített szövegek) */
+  labels?: { loading?: TextValue; error?: TextValue; retry?: TextValue; empty?: TextValue; chooseDay?: TextValue; chooseTime?: TextValue; back?: TextValue };
+  /** Saját CSS-osztályok az elemekre (a könyvtár stíluslapja nélkül, saját stílushoz) */
+  classNames?: SlotPickerClassNames;
+}
+
+/** A `createSlotPicker` visszatérési értéke: a gyökérelem, a betöltés és a kiválasztás kezelésével. */
+export interface SlotPickerElement extends HTMLElement {
+  /** Újratöltés (a kiválasztás törlődik) */
+  reload(): Promise<void>;
+  /** Vissza a napokhoz, a kiválasztás törlésével (pl. „Új foglalás”) */
+  reset(): void;
+  /** A kiválasztott időpont */
+  getSelected(): TimeSlot | null;
+}
+
 /** A `createTimeline` visszatérési értéke: a gyökérelem, frissítő metódusokkal. */
 export interface TimelineElement extends HTMLElement {
   /** Tömör nézet be- / kikapcsolása (a leírások rejtettek), újraépítés nélkül */

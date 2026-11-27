@@ -8509,6 +8509,132 @@
                 }
               ]
             },
+            "^SlotPicker((d+))?([#.].*)?$": {
+              "description": "createDOMBlocks SlotPicker komponens",
+              "oneOf": [
+                {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean",
+                    "null"
+                  ]
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/node"
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "Egyedi azonosító"
+                    },
+                    "class": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "CSS osztály"
+                    },
+                    "loadSlots": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "A szabad időpontok betöltése (pl. fetch); a hibát a komponens mutatja, újrapróbálás gombbal"
+                    },
+                    "autoLoad": {
+                      "type": "boolean",
+                      "description": "Betöltés létrehozáskor (különben a `reload()` indítja, pl. a modál megnyitásakor)"
+                    },
+                    "dateLocale": {
+                      "type": [
+                        "string",
+                        "number"
+                      ],
+                      "description": "A dátumok formázásának nyelve; alapból a könyvtár aktuális nyelve (ismeretlen nyelvnél angol)"
+                    },
+                    "onSelect": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Időpont választásakor: az időpont és egy kész, olvasható felirat (`label`)"
+                    },
+                    "labels": {
+                      "description": "A feliratok (alapból a beépített, nyelvesített szövegek)"
+                    },
+                    "classNames": {
+                      "description": "Saját CSS-osztályok az elemekre (a könyvtár stíluslapja nélkül, saját stílushoz)"
+                    },
+                    "t": {
+                      "type": "string",
+                      "description": "Nyelvi kulcs: a szöveg a nyelvi katalógusból jön, és nyelvváltáskor frissül."
+                    },
+                    "args": {
+                      "type": "object",
+                      "description": "A nyelvi szöveg paraméterei ({n} helyőrzőkhöz)."
+                    },
+                    "attrs": {
+                      "type": "object",
+                      "propertyNames": {
+                        "not": {
+                          "pattern": "^[oO][nN]"
+                        }
+                      },
+                      "additionalProperties": {
+                        "type": [
+                          "string",
+                          "number",
+                          "boolean",
+                          "null"
+                        ]
+                      },
+                      "description": "Attribútumok a csomópont gyökérelemén (data-*, aria-*, tesztazonosítók). Az állapotfüggő érték helyben frissül; on* attribútum nem adható meg, eseményhez \"@kezelő\" kell."
+                    },
+                    "onMount": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^@"
+                        },
+                        {
+                          "type": "object"
+                        },
+                        {
+                          "type": "array"
+                        }
+                      ],
+                      "description": "Kezelő vagy művelet a csomópont felépülése után (a kezelő el mezője a felépült elem). Komponens újraépülésekor és az each minden új elemére újra lefut."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            },
             "^Table((d+))?([#.].*)?$": {
               "description": "createDOMBlocks Table komponens",
               "oneOf": [

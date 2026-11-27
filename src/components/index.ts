@@ -43,4 +43,5 @@ export { createTimeline } from "./createTimeline";
 export { createSegmentedControl } from "./createSegmentedControl";
 export { createThemeToggle, themeBootstrapScript } from "./createThemeToggle";
 export { createLocaleSwitcher } from "./createLocaleSwitcher";
+export { createSlotPicker } from "./createSlotPicker";
 export { createGantt } from "./createGantt";
