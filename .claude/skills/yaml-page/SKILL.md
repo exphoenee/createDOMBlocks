@@ -16,10 +16,11 @@ A részletes szintaxis: `documentation/examples/yaml.ts` (a "YAML leíró" docs 
 3. **Tervezd meg az állapotot és az adatokat.**
    - `state`: ami a felhasználó műveleteitől változik (nyitva-e valami, szűrő, kiválasztott elem, beviteli mezők értéke, listák).
    - `data` (`$név`): kész, nem változó adat, amit a JavaScript ad át.
-   - Származtatott érték (szűrt lista, formázott szöveg): **a JavaScript számolja**, és az állapotba írja; a YAML csak megjeleníti. Összetett számítást ne írj kifejezésbe.
-4. **Írd meg a YAML-t** az alábbi szabályok szerint, ments el egy fájlba (pl. `page.yaml`).
-5. **Ellenőrizd:** `node scripts/validate-spec.mjs page.yaml [--data adat.json] [--state allapot.json] [--print]` (előtte `npm run build`, ha nincs friss `dist/`). A kimenet kiírja a hibát útvonallal és javaslattal, a megírandó `@kezelőket`, az átadandó `$adatokat` és az állapot-kulcsokat. **Javítsd, amíg `OK`.**
-6. **Add át:** a YAML-t, a minimális JavaScriptet (`buildUI` / `mountYaml` hívás, `handlers`, `data`, származtatott állapot), és 2-3 mondatban a döntéseket (mit tettél állapotba, mit adatba).
+   - Származtatott érték (szűrt lista, darabszám, formázott szöveg): **a `derive` beállítás** számolja (`buildUI(spec, { derive: { visibleTodos: { deps: ["todos", "filter"], fn: (s) => ... } } })`); a YAML csak megjeleníti. Ne írd vissza kézzel, ne használj `syncing` zászlót vagy JSON-összehasonlítást: a könyvtár csak szerkezeti változásnál ír, és az `each` a változatlan elemeket megtartja, a megváltozottakat helyben frissíti. Összetett számítást ne írj kifejezésbe.
+   - Többnyelvű **adat** (pl. `desc: { hu, en }`): `${project.desc[locale]}` — a `locale` az aktuális nyelv, foglalt név (állapot-kulcs nem lehet).
+4. **Írd meg a YAML-t** az alábbi szabályok szerint, ments el egy fájlba (pl. `page.yaml`), vagy egy HTML `<script type="text/yaml" id="page">` blokkba.
+5. **Ellenőrizd:** `node scripts/validate-spec.mjs page.yaml [--data adat.json] [--state allapot.json] [--strict] [--print]` — HTML-ben lévő leírásnál `node scripts/validate-spec.mjs index.html#page --strict` (a sorszám a HTML-beli sor). Előtte `npm run build`, ha nincs friss `dist/`; más buildhez (vendor) `--lib vendor/createDOMBlocks.js`. A kimenet kiírja a hibát útvonallal és javaslattal, `--strict` mellett az elírt neveket / mezőket is, a megírandó `@kezelőket`, az átadandó `$adatokat` és az állapot-kulcsokat. **Javítsd, amíg `OK`.**
+6. **Add át:** a YAML-t, a minimális JavaScriptet (`buildUI` / `mountYaml` hívás, `handlers`, `data`, `derive`; fejlesztés közben `strict: true`), és 2-3 mondatban a döntéseket (mit tettél állapotba, mit adatba, mit származtatottba).
 
 ## Szintaxis (összefoglaló)
 
@@ -50,7 +51,10 @@ ui:
 - **Állapot:** a `${}` kifejezések az állapot változásakor magukat frissítik. `bind: kulcs` kétirányú kötés beviteli mezőn (TextInput, Textarea, Select, Checkbox, Radio, RangeInput, NumberInput, DateInput ... és nyers `input`).
 - **Szerkezet:** `each: { in: "${lista}", as: elem, key: elem.id }` + `do: [...]`; `if: "${feltétel}"` + `then:` + `else:`; `define` + a név használata.
 - **Események:** `"@kezelő"` (JavaScript `handlers`), vagy beépített művelet: `set: { kulcs: érték }`, `toggle: kulcs`, `inc: kulcs` / `{ kulcs: n }`, `push: { lista: elem }`, `open: azonosító`, `close: azonosító` (Modal, Drawer); listában egymás után futnak; az útvonal sablon is lehet: `toggle: "active.${competition.id}"`.
-- **Nyelv:** `messages` + `t: kulcs` (+ `args: { count: 3 }`), a szöveg a nyelvváltáskor frissül.
+- **Nyelv:** `messages` + `t: kulcs` (+ `args: { count: 3 }`), a szöveg a nyelvváltáskor frissül. HTML-t tartalmazó fordítás nyers elemen: `{ t: kulcs, html: true }` (csak saját nyelvi fájlból). Adatban tárolt többnyelvű szöveg: `${item.desc[locale]}`.
+- **Attribútumok bármelyik csomóponton:** `attrs: { data-testid: send, aria-label: ..., aria-pressed: "${on}" }` (komponensen is; az állapotfüggő érték helyben frissül; `on*` tilos, eseményhez `"@kezelő"`).
+- **Felépülés után futó kód:** `onMount: "@kezelő"` (a kezelő `el` mezője a kész elem; animáció, külső könyvtár bekötése, képbetöltő). Az `each` minden új elemére lefut.
+- **Mit tud a komponens a leíróban** (kötés, újraépítés nélküli frissítés, gyerek-helyek, visszahívások): a docs komponens-oldalának „YAML-ban” doboza, vagy `spec-catalog Név`. A teljes kulcsszó-lista: `src/spec/keywords.json`.
 - **Téma:** `theme: { primary: "#...", dark: { primary: "#..." } }` (CSS-változók); egy részre szűkítve a konténer `style: "--primary:#..."`.
 
 ## Olvashatósági szabályok (kötelező)
@@ -76,6 +80,10 @@ A leírást emberek olvassák és tartják karban, ezért:
 | `ismétlődő azonosító` | az `#id` egyedi legyen; each-ben `#név-${elem.id}` |
 | a szám üresen jelenik meg | szöveg-paraméterben a szám szöveggé alakul; nyers elemnél `text: "${n}"` kell idézőjellel |
 | a lista nem frissül | tömb elemét **cseréld** (`set("lista.1", új)`), ne módosítsd helyben |
+| egy mező csendben üres | elírt név (`${event.hasLnk}`): futtasd `--strict`-tel, vagy `buildUI(..., { strict: true })`; a figyelmeztetés javasol |
+| `származtatott állapot (derive), kézzel nem írható` | a `derive` kulcsot ne `set`-eld; a forrását (`deps`) módosítsd |
+| `a "locale" név foglalt` | az aktuális nyelv neve; az állapot-kulcsot nevezd át (pl. `uiLanguage`) |
+| `eseménykezelő nem adható meg attribútumként` | `attrs`-ban nincs `onclick`; használj `click: "@kezelő"`-t |
 | `${...}` nem fut le | idézőjel hiányzik: `text: "${x}"`, nem `text: ${x}` (a YAML kapcsos zárójelet értelmez) |
 
 ## Korlátok

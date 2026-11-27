@@ -22,7 +22,7 @@ export type { Messages, MessagesTree, MessageRefs, MessageParams, TextRef, TextV
 export { hu as huMessages, en as enMessages } from "./locales";
 export { createDOMElem as createLocalizedElem } from "./dom";
 export { buildUI } from "./spec/build";
-export type { BuildOptions, UI, Handler, HandlerContext } from "./spec/build";
+export type { BuildOptions, UI, Handler, HandlerContext, DeriveRule } from "./spec/build";
 export { mountYaml } from "./spec/mount";
 export { parseYaml, YamlError } from "./spec/parseYaml";
 export { stringifyYaml } from "./spec/stringifyYaml";

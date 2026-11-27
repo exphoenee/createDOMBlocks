@@ -1,6 +1,6 @@
 import { initDocPage } from "../page-components/index";
 import { createCard, createCodeBlock, createTextarea, createBadge, buildUI, createLocalizedElem as createDOMElem } from "../../src/index";
-import type { UI, DOMOptions, Handler } from "../../src/index";
+import type { UI, DOMOptions, Handler, DeriveRule } from "../../src/index";
 import { tr } from "../page-components/i18n";
 // a referencia-táblázatok forrása: a leíró, a séma és ez az oldal is ebből a listából dolgozik
 import keywords from "../../src/spec/keywords.json";
@@ -28,6 +28,8 @@ interface DemoOptions {
   state?: Record<string, unknown>;
   data?: Record<string, unknown>;
   handlers?: Record<string, Handler>;
+  derive?: Record<string, DeriveRule>;
+  strict?: boolean;
   /** a megjelenített JavaScript (opcionális) */
   js?: string;
 }
@@ -45,7 +47,7 @@ function demo(parent: HTMLElement, id: string, yamlSrc: string, o: DemoOptions =
     style: { border: "1px dashed var(--border)", borderRadius: "var(--radius)", padding: "1rem", marginBottom: "1rem" },
   });
   try {
-    return buildUI(src, { parent: box, state: o.state, data: o.data, handlers: o.handlers });
+    return buildUI(src, { parent: box, state: o.state, data: o.data, handlers: o.handlers, derive: o.derive, strict: o.strict });
   } catch (e) {
     createDOMElem({ tag: "pre", parent: box, attrs: { class: "yaml-demo-error" }, text: (e as Error).message, style: { color: "var(--error)", whiteSpace: "pre-wrap", margin: "0" } });
     return null;
@@ -701,6 +703,100 @@ ui:
   );
 }
 
+/* ---------------------------------------------------------------- 9c. Származtatott állapot, listák, fejlesztői mód */
+{
+  const body = card("yaml-derive", "Származtatott állapot, listák és fejlesztői mód");
+  text(body, "Ha egy lista vagy szám a forrásállapotból számolható (szűrt lista, darabszám, összeg), ne a YAML-ban számold, és ne írd vissza kézzel: add meg a <code>derive</code> beállításban. A könyvtár a forrás változásakor újraszámol, <strong>csak akkor ír</strong>, ha az eredmény szerkezetileg változott, és a számolt kulcsot kézzel nem engedi írni. A számolt kulcsok egymásra is épülhetnek; körkörös függésnél hibát kapsz.");
+  heading(body, "derive: szűrt lista és darabszám");
+  demo(
+    body,
+    "yd-derive",
+    `
+state:
+  filter: all
+  todos:
+    - { id: 1, title: Bevásárlás, done: false }
+    - { id: 2, title: Edzés, done: true }
+    - { id: 3, title: Olvasás, done: false }
+ui:
+  - div:
+      style: { display: flex, gap: 0.5rem, flexWrap: wrap }
+      children:
+        - Button: { text: Mind, click: { set: { filter: all } } }
+        - Button: { text: Nyitott, click: { set: { filter: open } } }
+        - Button: { text: Kész, click: { set: { filter: done } } }
+  - Paragraph: "§{openCount} nyitott a §{len(todos)} teendőből (szűrő: §{filter})"
+  - ul:
+      - each: { in: "§{visibleTodos}", as: todo, key: todo.id }
+        do:
+          - li:
+              text: "§{todo.done ? '✔' : '○'} §{todo.title}"
+              style: { cursor: pointer }
+              data-id: "§{todo.id}"
+              click: "@toggleTodo"
+`,
+    {
+      derive: {
+        visibleTodos: {
+          deps: ["todos", "filter"],
+          fn: (s) => (s.todos as Array<{ done: boolean }>).filter((t) => s.filter === "all" || (s.filter === "done") === t.done),
+        },
+        openCount: { deps: ["todos"], fn: (s) => (s.todos as Array<{ done: boolean }>).filter((t) => !t.done).length },
+      },
+      handlers: {
+        toggleTodo: ({ state, el }) => {
+          const id = Number((el as HTMLElement).dataset.id);
+          state.set("todos", (state.get("todos") as Array<{ id: number; done: boolean }>).map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+        },
+      },
+      js: `buildUI(spec, {
+  parent: "app",
+  derive: {
+    visibleTodos: {
+      deps: ["todos", "filter"],
+      fn: (s) => s.todos.filter((t) => s.filter === "all" || (s.filter === "done") === t.done),
+    },
+    openCount: { deps: ["todos"], fn: (s) => s.todos.filter((t) => !t.done).length },
+  },
+  handlers: {
+    toggleTodo: ({ state, el }) => {
+      const id = Number(el.dataset.id);
+      state.set("todos", state.get("todos").map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+    },
+  },
+});`,
+    },
+  );
+
+  heading(body, "Listák: mi épül újra?");
+  text(body, "Az <code>each</code> a <code>key</code> alapján követi az elemeket. Ha egy elem <strong>szerkezetileg ugyanaz</strong> (akár új objektumként érkezik egy újraszámolt listában), semmi nem történik vele; ha megváltozott, <strong>helyben frissül</strong>: a benne lévő szövegek, attribútumok, feltételek és komponensek az új értékből számolnak, a DOM-csomópont marad (a fókusz, a görgetés, a betöltött képek megmaradnak). Új elem épül, a kimaradó lebomlik, az átrendezett mozog. Ezért nem kell az azonosságot kézzel megőrizni (például JSON-összehasonlítással) a számolt listákban.");
+
+  heading(body, "strict: elírt nevek jelzése");
+  text(body, "Fejlesztés közben a <code>strict: true</code> beállítás a konzolon jelzi, ha egy kifejezés ismeretlen nevet olvas (nincs az állapotban, az adatban, a hatókörben), vagy egy létező objektum nem létező mezőjét. Az üzenet tartalmazza a helyet a leírásban és a legközelebbi létező nevet. Strict nélkül ezek csendben üresek maradnak. Az alábbi minta szándékosan elírt neveket tartalmaz, alatta a kapott figyelmeztetések:");
+  const strictSrc = y(`
+state: { count: 3, event: { hasLink: true } }
+ui:
+  - Paragraph: "Darab: §{cuont}"
+  - Paragraph: "Link: §{event.hasLnk ? 'van' : 'nincs'}"
+`);
+  code(body, "yd-strict-yaml", "yaml", strictSrc);
+  const warnings: string[] = [];
+  const originalWarn = console.warn;
+  console.warn = (...a: unknown[]) => void warnings.push(a.map(String).join(" "));
+  try {
+    buildUI(strictSrc, { strict: true }).destroy();
+  } finally {
+    console.warn = originalWarn;
+  }
+  createDOMElem({ tag: "pre", parent: body, attrs: { id: "yd-strict-warnings", class: "yaml-demo-message" }, text: warnings.join("\n") || "–", style: { color: "var(--warning, #b45309)", whiteSpace: "pre-wrap", margin: "0.25rem 0 0.5rem", fontSize: "0.85rem" } });
+
+  heading(body, "A HTML-be ágyazott leírás ellenőrzése");
+  text(body, "A <code>&lt;script type=\"text/yaml\"&gt;</code> blokkban a szerkesztő nem ad sémát és kiegészítést. Ellenőrizd parancssorból (CI-ban is): a szkript felépíti a leírást a valódi könyvtárral, a hibákat a HTML-beli sorszámmal írja ki, <code>--strict</code> mellett az elírt nevek is hibának számítanak, és felsorolja a megírandó kezelőket és az átadandó adatokat.");
+  code(body, "yd-validate", "bash", `node scripts/validate-spec.mjs index.html#page --strict
+# saját projektben a vendorolt könyvtárral:
+node vendor/validate-spec.mjs index.html#page --lib vendor/createDOMBlocks.js --data data.json --strict`);
+}
+
 /* ---------------------------------------------------------------- 10. Téma */
 {
   const body = card("yaml-theme", "Téma és stílus");
@@ -782,6 +878,8 @@ parseYaml(text: string): unknown          // csak a YAML-részhalmaz értelmezé
     ["handlers", "a <code>\"@név\"</code> hivatkozások függvényei: <code>(ctx, ...args) =&gt; void</code>"],
     ["data", "kész adatok: <code>$név</code> / <code>${név}</code> (nem reaktívak; frissítéshez használd az állapotot)"],
     ["state", "kezdőállapot, a leírás <code>state</code> részét felülírja"],
+    ["derive", "származtatott állapot: <code>{ kulcs: { deps: [útvonalak], fn: (state) =&gt; érték } }</code>"],
+    ["strict", "fejlesztői mód: ismeretlen nevek és hiányzó mezők jelzése a konzolon"],
   ]);
   heading(body, "UI (a visszatérési érték)");
   table(body, "ya-ui", ["Név", "Leírás"], [

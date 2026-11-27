@@ -46,6 +46,11 @@ describe("az API-referencia a JSDoc-ból", () => {
       expect(e.summary.length, `${e.name}: nincs leírás (JSDoc)`).toBeGreaterThan(5);
       expect(e.signatures.length, `${e.name}: nincs aláírás`).toBeGreaterThan(0);
     }
+    // a függvények beállítás-mezői (pl. buildUI options.derive) is leírással szerepelnek
+    const members = api.flatMap((e) => ((e as unknown as { members: Array<{ name: string; summary: string }> }).members ?? []).map((m) => ({ ...m, owner: e.name })));
+    for (const m of members) expect(m.summary.length, `${m.owner} ${m.name}: nincs leírás (JSDoc)`).toBeGreaterThan(3);
+    const build = members.filter((m) => m.owner === "buildUI").map((m) => m.name);
+    expect(build).toEqual(expect.arrayContaining(["options.handlers", "options.derive", "options.strict"]));
     for (const must of ["setLocale", "tr", "buildUI", "mountYaml", "stringifyYaml", "Store", "openModal"]) {
       expect(api.some((e) => e.name === must), must).toBe(true);
     }

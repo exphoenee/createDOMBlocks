@@ -51,6 +51,12 @@ function isPluralNode(node: MessagesTree): boolean {
   return keys.length > 0 && "other" in node && keys.every((k) => PLURAL_CATEGORIES.has(k) && typeof node[k] !== "object");
 }
 
+/** A több nyelvet egyszerre regisztráló függvények beállítása. */
+export interface PrefixOptions {
+  /** Minden kulcs elé kerülő előtag (pl. `"app."` → `app.form.save`) */
+  prefix?: string;
+}
+
 /**
  * Egymásba ágyazott objektumból lapos `kulcs → szöveg` térkép (a `registerMessages` ezt automatikusan elvégzi).
  * @example flattenMessages({ form: { name: "Név" }, items: { one: "{count} elem", other: "{count} elem" } })
@@ -89,7 +95,7 @@ export function registerMessages(lang: string, messages: Messages | MessagesTree
 
  * @group i18n
  */
-export function registerTranslations(translations: Record<string, MessagesTree>, options: { prefix?: string } = {}): void {
+export function registerTranslations(translations: Record<string, MessagesTree>, options: PrefixOptions = {}): void {
   for (const [lang, tree] of Object.entries(translations)) {
     registerMessages(lang, options.prefix ? flattenMessages(tree, options.prefix) : tree);
   }
@@ -145,7 +151,7 @@ function buildRefs(trees: MessagesTree[], prefix: string): Record<string, unknow
  */
 export function defineMessages<T extends Record<string, MessagesTree>>(
   translations: T,
-  options: { prefix?: string } = {},
+  options: PrefixOptions = {},
 ): MessageRefs<T[keyof T]> {
   registerTranslations(translations, options);
   return buildRefs(Object.values(translations), options.prefix ?? "") as MessageRefs<T[keyof T]>;
@@ -328,7 +334,16 @@ function notify(): void {
 
  * @group i18n
  */
-export function setLocale(lang: string, options: { updateHtmlLang?: boolean } = {}): void {
+export function setLocale(
+  lang: string,
+  options: {
+    /**
+     * A `<html lang>` attribútum frissítése
+     * @default true
+     */
+    updateHtmlLang?: boolean;
+  } = {},
+): void {
   if (lang === locale) return;
   locale = lang;
   if (options.updateHtmlLang !== false && typeof document !== "undefined") document.documentElement.lang = lang;

@@ -6,7 +6,7 @@ import { openDrawer, closeDrawer } from "../components/createDrawer";
 import { parseYaml } from "./parseYaml";
 import { compileTemplate, evalTemplate, parseExpr, evalExpr, ExprError } from "./expr";
 import type { ExprEnv, Template } from "./expr";
-import { Store } from "./store";
+import { Store, normalizePath } from "./store";
 import { SpecError, didYouMean } from "./errors";
 import { getDef, componentNames } from "./registry";
 import type { Def } from "./registry";
@@ -36,6 +36,26 @@ export interface BuildOptions {
   data?: Record<string, unknown>;
   /** Kezdő állapot (a leíró `state:` részét felülírja) */
   state?: Record<string, unknown>;
+  /**
+   * Származtatott állapot: a kulcs a számolt állapot neve, a `deps` a forrás-útvonalak, az `fn` tiszta függvény
+   * (megkapja a teljes állapotot). A könyvtár a forrás változásakor újraszámol, és csak akkor ír, ha az eredmény
+   * szerkezetileg változott; a számolt kulcs kézzel nem írható.
+   */
+  derive?: Record<string, DeriveRule>;
+  /**
+   * Fejlesztői mód: a kifejezésekben ismeretlen név vagy egy létező objektum hiányzó mezője figyelmeztetést ad a
+   * konzolon (útvonallal, javaslattal). Éles oldalon kapcsold ki.
+   * @default false
+   */
+  strict?: boolean;
+}
+
+/** Egy származtatott állapot-kulcs szabálya (`BuildOptions.derive`). */
+export interface DeriveRule {
+  /** A forrás állapot-útvonalak; ezek változásakor számol újra */
+  deps: string[];
+  /** A számítás: a teljes állapotból (csak olvasásra) */
+  fn: (state: Record<string, unknown>) => unknown;
 }
 
 export interface UI {
@@ -62,6 +82,10 @@ interface Ctx {
   counters: Record<string, number>;
   scratch: HTMLElement;
   ui: UI;
+  /** fejlesztői mód: ismeretlen nevek / mezők jelzése */
+  strict: boolean;
+  /** a már jelzett (útvonal | név) párok, hogy egy figyelmeztetés csak egyszer jelenjen meg */
+  warned: Set<string>;
 }
 
 interface DefineSpec {
@@ -165,20 +189,53 @@ function parseSelector(key: string, path: string): Selector {
 
 /* ===== Kifejezés-környezet és értékek ===== */
 
-function makeEnv(scope: Vars, ctx: Ctx, deps: Set<string> | null, dataFirst = false): ExprEnv {
+/**
+ * Állapotra mutató hatókör-változó: az `each` elem-változója (és indexe) az állapotban él, így az elem értékének
+ * változásakor a kötések helyben frissülnek (az elem nem épül újra).
+ */
+class ScopeRef {
+  constructor(readonly path: string) {}
+}
+
+function makeEnv(scope: Vars, ctx: Ctx, deps: Set<string> | null, dataFirst = false, where = ""): ExprEnv {
   const stateKeys = ctx.store.snapshot;
   return {
     resolve(name) {
       if (dataFirst && name in ctx.data) return { value: ctx.data[name] };
-      if (name in scope) return { value: scope[name] };
+      if (name in scope) {
+        const v = scope[name];
+        return v instanceof ScopeRef ? { value: ctx.store.get(v.path), statePath: v.path } : { value: v };
+      }
       if (name === "locale") return { value: ctx.store.get(LOCALE_PATH), statePath: LOCALE_PATH };
       if (name in stateKeys) return { value: stateKeys[name], statePath: name };
       if (name in ctx.data) return { value: ctx.data[name] };
-      // még nem létező állapot-kulcs: később beállítható, ezért követjük
+      // még nem létező állapot-kulcs: később beállítható, ezért követjük (strict módban figyelmeztet)
+      if (ctx.strict) warnMissing(ctx, where, name, [...Object.keys(scope), ...Object.keys(stateKeys).filter((k) => !k.startsWith("$")), ...Object.keys(ctx.data), "locale"]);
       return { value: undefined, statePath: name };
     },
     read: deps ? (p) => void deps.add(p) : undefined,
+    missing: ctx.strict ? (key, candidates) => warnMissing(ctx, where, key, candidates, true) : undefined,
   };
+}
+
+/** Strict mód: elírt / ismeretlen név jelzése egyszer (útvonallal és javaslattal). */
+function warnMissing(ctx: Ctx, where: string, name: string, candidates: string[], isField = false): void {
+  const id = `${where}|${name}`;
+  if (ctx.warned.has(id)) return;
+  ctx.warned.add(id);
+  const what = isField ? `ismeretlen mező: "${name}"` : `ismeretlen név: "${name}" (nincs az állapotban, az adatban és a hatókörben)`;
+  console.warn(`[createDOMBlocks] ${what}${didYouMean(name, candidates)}${where ? ` – ${where}` : ""}`);
+}
+
+/** Szerkezeti egyenlőség (JSON-szerű adatokra): az each ezzel ismeri fel a változatlan elemet. */
+function deepEqual(a: unknown, b: unknown): boolean {
+  if (Object.is(a, b)) return true;
+  if (a === null || b === null || typeof a !== "object" || typeof b !== "object") return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  const ka = Object.keys(a as object);
+  const kb = Object.keys(b as object);
+  if (ka.length !== kb.length) return false;
+  return ka.every((k) => Object.prototype.hasOwnProperty.call(b, k) && deepEqual((a as Record<string, unknown>)[k], (b as Record<string, unknown>)[k]));
 }
 
 function evalValue(v: unknown, scope: Vars, ctx: Ctx, deps: Set<string> | null, path: string): unknown {
@@ -186,7 +243,7 @@ function evalValue(v: unknown, scope: Vars, ctx: Ctx, deps: Set<string> | null, 
     const dm = DATA_REF.exec(v);
     if (dm) {
       try {
-        return evalExpr(parseExpr(dm[1]), makeEnv(scope, ctx, deps, true));
+        return evalExpr(parseExpr(dm[1]), makeEnv(scope, ctx, deps, true, path));
       } catch (e) {
         throw new SpecError((e as Error).message, path);
       }
@@ -194,7 +251,7 @@ function evalValue(v: unknown, scope: Vars, ctx: Ctx, deps: Set<string> | null, 
     const tpl = template(v, path);
     if (!tpl) return v;
     try {
-      return evalTemplate(tpl, makeEnv(scope, ctx, deps));
+      return evalTemplate(tpl, makeEnv(scope, ctx, deps, false, path));
     } catch (e) {
       if (e instanceof ExprError) throw new SpecError(e.message, path);
       throw e;
@@ -489,11 +546,16 @@ function renderIf(obj: Record<string, unknown>, env: RenderEnv, parent: Node, re
 interface EachItem {
   key: unknown;
   value: unknown;
+  index: number;
+  /** az elem helye az állapotban: `{ v: érték, i: index }` (a hatókör-változók ide mutatnak) */
+  slot: string;
   owner: Owner;
   mounted: Mounted[];
-  first: Node;
-  last: Node;
 }
+
+/** Az elem első / utolsó DOM-csomópontja (dinamikusan: egy újraépült komponens gyökere változhat). */
+const firstOf = (item: EachItem): Node => item.mounted[0].first;
+const lastOf = (item: EachItem): Node => item.mounted[item.mounted.length - 1].last;
 
 function renderEach(obj: Record<string, unknown>, env: RenderEnv, parent: Node, ref: Node | null, path: string): Mounted {
   for (const k of Object.keys(obj)) {
@@ -505,6 +567,7 @@ function renderEach(obj: Record<string, unknown>, env: RenderEnv, parent: Node, 
   }
   if (!("do" in obj)) throw new SpecError('az each csomópontban hiányzik a "do" lista', `${path}.each`);
   const { ctx, scope } = env;
+  const store = ctx.store;
   const as = spec.as as string;
   const start = document.createComment("each");
   const end = document.createComment("/each");
@@ -512,6 +575,10 @@ function renderEach(obj: Record<string, unknown>, env: RenderEnv, parent: Node, 
   parent.insertBefore(end, ref);
   let items = new Map<unknown, EachItem>();
   const deps = new Set<string>();
+  // az elemek állapot-helye: $each.<n>.s<m>
+  ctx.counters.$each = (ctx.counters.$each ?? 0) + 1;
+  const base = `$each.e${ctx.counters.$each}`;
+  let slots = 0;
 
   const keyOf = (value: unknown, index: number): unknown => {
     if (spec.key === undefined) return index;
@@ -519,55 +586,65 @@ function renderEach(obj: Record<string, unknown>, env: RenderEnv, parent: Node, 
     return k;
   };
 
+  const removeItem = (item: EachItem): void => {
+    item.owner.dispose();
+    item.mounted.forEach((m) => m.dispose());
+    store.unset(item.slot);
+  };
+
   const draw = (d: Set<string> | null): void => {
     const raw = evalValue(spec.in, scope, ctx, d, `${path}.each.in`);
     const list = Array.isArray(raw) ? raw : [];
     const next = new Map<unknown, EachItem>();
     const order: EachItem[] = [];
+    /** a megmaradó, de megváltozott elemek: a rendezés után, egyetlen értesítéssel frissülnek helyben */
+    const changed: EachItem[] = [];
     list.forEach((value, index) => {
       const key = keyOf(value, index);
       if (next.has(key)) throw new SpecError(`ismétlődő kulcs az each-ben: ${JSON.stringify(key)}`, `${path}.each`);
       const old = items.get(key);
       let item: EachItem;
-      if (old && Object.is(old.value, value)) {
+      if (old) {
+        // azonos kulcs: az elem marad; ha az értéke (szerkezetileg) vagy a helye változott, helyben frissül
         item = old;
         items.delete(key);
+        if (!deepEqual(old.value, value) || old.index !== index) {
+          item.value = value;
+          item.index = index;
+          changed.push(item);
+        }
       } else {
-        item = { key, value, owner: new Owner(), mounted: [], first: end, last: end };
-        item.mounted = []; // a tényleges felépítés a rendezés közben, a helyes pozícióban történik
+        item = { key, value, index, slot: `${base}.s${++slots}`, owner: new Owner(), mounted: [] };
       }
       next.set(key, item);
       order.push(item);
     });
     // a már nem szereplő elemek eltávolítása
-    for (const stale of items.values()) {
-      stale.owner.dispose();
-      stale.mounted.forEach((m) => m.dispose());
-    }
+    for (const stale of items.values()) removeItem(stale);
     // rendezés / felépítés
     let cursor: Node = start.nextSibling ?? end;
-    order.forEach((item, index) => {
+    order.forEach((item) => {
       if (item.mounted.length === 0) {
-        const itemScope = child(scope, { [as]: item.value, index });
+        // az új elem helye (a set értesít, de erre az útvonalra még senki nem figyel)
+        store.set(item.slot, { v: item.value, i: item.index });
+        const itemScope = child(scope, { [as]: new ScopeRef(`${item.slot}.v`), index: new ScopeRef(`${item.slot}.i`) });
         const before = cursor;
         item.mounted = renderNodes(obj.do, { ...env, scope: itemScope, owner: item.owner }, parent, before, `${path}.do`);
-        if (item.mounted.length) {
-          item.first = item.mounted[0].first;
-          item.last = item.mounted[item.mounted.length - 1].last;
-        } else {
-          item.first = item.last = document.createComment("item");
-          parent.insertBefore(item.first, before);
-          item.mounted = [{ first: item.first, last: item.last, dispose: () => item.first.parentNode?.removeChild(item.first) }];
+        if (item.mounted.length === 0) {
+          const marker = document.createComment("item");
+          parent.insertBefore(marker, before);
+          item.mounted = [{ first: marker, last: marker, dispose: () => marker.parentNode?.removeChild(marker) }];
         }
-      } else if (item.first !== cursor) {
-        insertAll(nodesBetween(item.first, item.last), parent, cursor);
+      } else if (firstOf(item) !== cursor) {
+        insertAll(nodesBetween(firstOf(item), lastOf(item)), parent, cursor);
       } else {
-        cursor = item.last.nextSibling ?? end;
+        cursor = lastOf(item).nextSibling ?? end;
         return;
       }
-      cursor = item.last.nextSibling ?? end;
+      cursor = lastOf(item).nextSibling ?? end;
     });
     items = next;
+    if (changed.length) store.batch(() => changed.forEach((item) => store.set(item.slot, { v: item.value, i: item.index })));
   };
   draw(deps);
   watch(deps, ctx, env.owner, () => draw(null), env.isStatic);
@@ -575,10 +652,8 @@ function renderEach(obj: Record<string, unknown>, env: RenderEnv, parent: Node, 
     first: start,
     last: end,
     dispose: () => {
-      items.forEach((it) => {
-        it.owner.dispose();
-        it.mounted.forEach((m) => m.dispose());
-      });
+      items.forEach(removeItem);
+      items.clear();
       removeRange(start, end);
     },
   };
@@ -983,6 +1058,63 @@ function applyTheme(theme: Record<string, unknown>, ownerList: Array<() => void>
   ownerList.push(() => style.remove());
 }
 
+/* ===== Származtatott állapot ===== */
+
+/**
+ * A `derive` szabályok bekötése: kezdeti számítás függőségi sorrendben, újraszámolás a forrás változásakor
+ * (csak szerkezeti változásnál ír), a számolt kulcsok írásvédelme, körkörös függés felismerése.
+ */
+function setupDerive(store: Store, rules: Record<string, DeriveRule>, initialState: Record<string, unknown>, cleanups: Array<() => void>): void {
+  const keys = Object.keys(rules);
+  const derived = new Set(keys);
+  const head = (p: string): string => normalizePath(p).split(".")[0];
+  for (const k of keys) {
+    const r = rules[k];
+    const where = `derive.${k}`;
+    if (!r || !Array.isArray(r.deps) || typeof r.fn !== "function") throw new SpecError("a szabály { deps: [útvonalak], fn: (state) => érték } alakú legyen", where);
+    if (!/^[A-Za-z_]\w*$/.test(k) || k === "locale") throw new SpecError(`érvénytelen vagy foglalt név: "${k}"`, where);
+    if (k in initialState) throw new SpecError(`a "${k}" származtatott kulcs, nem lehet kezdőállapota (state)`, where);
+    if (r.deps.some((d) => head(d) === k)) throw new SpecError("a szabály nem függhet saját magától", where);
+  }
+  // körkörös függés a származtatott kulcsok között → hiba; különben függőségi sorrend
+  const order: string[] = [];
+  const mark = new Map<string, "visiting" | "done">();
+  const visit = (k: string, trail: string[]): void => {
+    if (mark.get(k) === "done") return;
+    if (mark.get(k) === "visiting") throw new SpecError(`körkörös függés: ${[...trail, k].join(" → ")}`, `derive.${k}`);
+    mark.set(k, "visiting");
+    for (const d of rules[k].deps) if (derived.has(head(d))) visit(head(d), [...trail, k]);
+    mark.set(k, "done");
+    order.push(k);
+  };
+  keys.forEach((k) => visit(k, []));
+
+  let writing = false;
+  store.setGuard((p) => {
+    const k = head(p);
+    if (!writing && derived.has(k)) throw new SpecError(`a "${k}" származtatott állapot (derive), kézzel nem írható; a forrását (${rules[k].deps.join(", ")}) módosítsd`, `state.${k}`);
+  });
+  cleanups.push(() => store.setGuard(null));
+
+  const compute = (k: string): void => {
+    let next: unknown;
+    try {
+      next = rules[k].fn(store.snapshot);
+    } catch (e) {
+      throw new SpecError(`a számítás hibát dobott: ${(e as Error).message}`, `derive.${k}`);
+    }
+    if (store.get(k) !== undefined && deepEqual(store.get(k), next)) return;
+    writing = true;
+    try {
+      store.set(k, next);
+    } finally {
+      writing = false;
+    }
+  };
+  store.batch(() => order.forEach(compute));
+  for (const k of order) cleanups.push(store.subscribe(rules[k].deps, () => compute(k)));
+}
+
 /* ===== Belépési pont ===== */
 
 /**
@@ -1024,6 +1156,7 @@ export function buildUI(spec: unknown, options: BuildOptions = {}): UI {
   if ("locale" in initialState) throw new SpecError('a "locale" név foglalt (a kifejezésekben az aktuális nyelv), állapot-kulcsnak válassz másik nevet', "state.locale");
   const store = new Store({ ...initialState, [LOCALE_PATH]: getLocale() });
   cleanups.push(onLocaleChange((lang) => store.set(LOCALE_PATH, lang)));
+  if (options.derive) setupDerive(store, options.derive, initialState, cleanups);
   const ctx = {
     store,
     data: { ...((root.data as Record<string, unknown>) ?? {}), ...(options.data ?? {}) },
@@ -1032,6 +1165,8 @@ export function buildUI(spec: unknown, options: BuildOptions = {}): UI {
     byId: new Map<string, HTMLElement>(),
     counters: {} as Record<string, number>,
     scratch: document.createElement("div"),
+    strict: !!options.strict,
+    warned: new Set<string>(),
   } as unknown as Ctx;
   const rootOwner = new Owner();
   const ui: UI = {

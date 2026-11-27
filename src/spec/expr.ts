@@ -31,6 +31,8 @@ export interface ExprEnv {
   resolve(name: string): { value: unknown; statePath?: string } | undefined;
   /** Egy állapot-útvonal olvasása (függőség-gyűjtéshez). */
   read?(path: string): void;
+  /** Hiányzó mező egy létező objektumon (strict mód: figyelmeztetéshez); a második paraméter az objektum kulcsai. */
+  missing?(key: string, candidates: string[]): void;
 }
 
 const FORBIDDEN = new Set(["__proto__", "constructor", "prototype"]);
@@ -246,6 +248,9 @@ function evalRef(node: ExprNode, env: ExprEnv): Ref {
     case "member": {
       const o = evalRef(node.obj, env);
       if (FORBIDDEN.has(node.key)) return { value: undefined };
+      if (env.missing && o.value !== null && typeof o.value === "object" && !Array.isArray(o.value) && !(node.key in (o.value as object))) {
+        env.missing(node.key, Object.keys(o.value as object));
+      }
       const v = o.value !== null && o.value !== undefined ? (o.value as Record<string, unknown>)[node.key] : undefined;
       return { value: v, path: o.path !== undefined ? `${o.path}.${node.key}` : undefined };
     }

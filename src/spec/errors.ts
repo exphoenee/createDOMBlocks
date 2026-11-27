@@ -2,7 +2,11 @@
  * @group yaml
  */
 export class SpecError extends Error {
-  constructor(message: string, public path = "") {
+  constructor(
+    message: string,
+    /** A hiba helye a leírásban (pl. `ui[2].Card.body[0]`); üres, ha az egész leírásra vonatkozik */
+    public path = "",
+  ) {
     super(path ? `${path}: ${message}` : message);
     this.name = "SpecError";
   }

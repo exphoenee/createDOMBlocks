@@ -16,7 +16,13 @@
  * @group yaml
  */
 export class YamlError extends Error {
-  constructor(message: string, public line: number, public column = 1) {
+  constructor(
+    message: string,
+    /** A hibás sor száma (1-től) */
+    public line: number,
+    /** A hibás oszlop (1-től) */
+    public column = 1,
+  ) {
     super(`YAML hiba (${line}. sor): ${message}`);
     this.name = "YamlError";
   }

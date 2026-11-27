@@ -33,6 +33,7 @@ export class Store {
   private subs = new Set<Sub>();
   private batchDepth = 0;
   private pending = new Set<string>();
+  private guard: ((path: string) => void) | null = null;
 
   constructor(initial: Record<string, unknown> = {}) {
     this.data = JSON.parse(JSON.stringify(initial ?? {}));
@@ -43,6 +44,7 @@ export class Store {
     return this.data;
   }
 
+  /** Érték kiolvasása útvonal alapján (`a.b`, `a[0].c`); nem létező útvonalnál `undefined`. */
   get(path: string): unknown {
     let cur: unknown = this.data;
     for (const k of split(path)) {
@@ -57,6 +59,7 @@ export class Store {
     const keys = split(path);
     if (keys.length === 0) throw new Error("Az állapot gyökere nem írható felül");
     checkKeys(keys);
+    this.guard?.(normalizePath(path));
     if (Object.is(this.get(path), value) && (value === null || typeof value !== "object")) return;
     const update = (node: unknown, i: number): unknown => {
       const k = keys[i];
@@ -69,14 +72,37 @@ export class Store {
     this.notify(normalizePath(path));
   }
 
+  /** Írás-ellenőrző: minden `set` előtt meghívódik az útvonallal, és hibát dobhat (pl. a származtatott kulcsok védelme). */
+  setGuard(guard: ((path: string) => void) | null): void {
+    this.guard = guard;
+  }
+
+  /** Egy kulcs eltávolítása értesítés nélkül (belső takarításhoz: már senki nem figyeli). */
+  unset(path: string): void {
+    const keys = split(path);
+    if (keys.length === 0) return;
+    checkKeys(keys);
+    const remove = (node: unknown, i: number): unknown => {
+      if (node === null || typeof node !== "object") return node;
+      const copy: Record<string, unknown> = Array.isArray(node) ? ([...node] as unknown as Record<string, unknown>) : { ...(node as Record<string, unknown>) };
+      if (i === keys.length - 1) delete copy[keys[i]];
+      else copy[keys[i]] = remove(copy[keys[i]], i + 1);
+      return copy;
+    };
+    this.data = remove(this.data, 0) as Record<string, unknown>;
+  }
+
+  /** Logikai érték megfordítása. */
   toggle(path: string): void {
     this.set(path, !this.get(path));
   }
 
+  /** Szám növelése (alapból 1-gyel; a nem szám érték 0-nak számít). */
   inc(path: string, by = 1): void {
     this.set(path, (Number(this.get(path)) || 0) + by);
   }
 
+  /** Elem hozzáfűzése egy listához (új listát állít be; ha nincs lista, egyelemű lesz). */
   push(path: string, value: unknown): void {
     const cur = this.get(path);
     this.set(path, Array.isArray(cur) ? [...cur, value] : [value]);

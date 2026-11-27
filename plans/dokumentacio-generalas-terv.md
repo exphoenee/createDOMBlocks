@@ -10,16 +10,16 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész.
 - [x] D2 YAML-minta függvény-paraméterrel (`"@kezelő"`, fejléc-megjegyzés; a docs és a teszt üres kezelőket ad: `exampleHandlers`)
 - [x] D3 „YAML-ban” doboz a komponensoldalakon (`documentation/page-components/yamlFacts.ts`, futásidőben a leíró regisztrációjából)
 - [x] D4 `src/spec/keywords.json` + referencia-táblázatok a `yaml.html`-en
-- [ ] D5 a beállítás-típusok mezői az API-oldalon
+- [x] D5 a beállítás-típusok mezői az API-oldalon (a függvények objektum-paramétereinek saját mezői; az örökölt `Error`-tagok kimaradnak; teszt: minden mezőnek van leírása)
 - [x] D6 közös kulcsok (`attrs`, `onMount`) a JSON Schemában
-- [~] D7 YAML-útmutató új fejezetei
+- [x] D7 YAML-útmutató új fejezetei
   - [x] 1. attribútumok (`attrs`)
   - [x] 2. HTML-fordítás (`t` + `html`)
   - [x] 3. nyelvfüggő adat (`locale`)
   - [x] 4. életciklus (`onMount`)
-  - [ ] 5. származtatott állapot (`derive`)
-  - [ ] 6. `strict` mód és HTML-validálás
-  - [ ] 7. listák és teljesítmény
+  - [x] 5. származtatott állapot (`derive`)
+  - [x] 6. `strict` mód és HTML-validálás
+  - [x] 7. listák és teljesítmény (a `derive` fejezetben: „Listák: mi épül újra?”)
 - [~] D8 állapotos kézi YAML-minták (formátum kész: `YAML_EXAMPLE_HANDLERS` a `yamlExamples.ts`-ben; a minták a komponensekkel együtt készülnek)
   - [ ] SegmentedControl
   - [ ] Timeline

@@ -26,6 +26,33 @@ function signaturesOf(symbol, name, checker, decl) {
   return type.getCallSignatures().map((sig) => `function ${name}${checker.signatureToString(sig, decl, FLAGS).replace(/\s*=>\s*/, ": ")}`);
 }
 
+/**
+ * A függvény objektum-paramétereinek mezői (pl. `buildUI(spec, options: BuildOptions)` → `options.derive`, ...),
+ * a mezők JSDoc-jával. Csak a könyvtár saját (src/) típusainak mezői kerülnek be, a beépített DOM-típusoké nem.
+ */
+function optionMembers(symbol, checker, decl) {
+  const sig = checker.getTypeOfSymbolAtLocation(symbol, decl).getCallSignatures()[0];
+  const out = [];
+  for (const p of sig?.getParameters() ?? []) {
+    const pt = checker.getNonNullableType(checker.getTypeOfSymbolAtLocation(p, decl));
+    const own = pt.getProperties().filter((m) => {
+      const file = m.declarations?.[0]?.getSourceFile().fileName.replace(/\\/g, "/") ?? "";
+      return file.includes("/src/") && !file.includes("/node_modules/");
+    });
+    for (const m of own) {
+      const md = m.declarations[0];
+      const optional = m.flags & ts.SymbolFlags.Optional ? "?" : "";
+      const mt = checker.getNonNullableType(checker.getTypeOfSymbolAtLocation(m, md));
+      out.push({
+        name: `${p.name}.${m.name}`,
+        signature: `${p.name}.${m.name}${optional}: ${checker.typeToString(mt, md, FLAGS)}`,
+        summary: summaryOf(m, checker),
+      });
+    }
+  }
+  return out;
+}
+
 export function writeApi(root) {
   const cfg = ts.readConfigFile(path.join(root, "tsconfig.json"), ts.sys.readFile);
   const parsed = ts.parseJsonConfigFileContent(cfg.config, ts.sys, root);
@@ -50,6 +77,8 @@ export function writeApi(root) {
       for (const m of instance.getProperties()) {
         const md = m.declarations?.[0];
         if (!md || md.modifiers?.some((x) => x.kind === ts.SyntaxKind.PrivateKeyword || x.kind === ts.SyntaxKind.ProtectedKeyword)) continue;
+        // az örökölt beépített tagok (Error: name, message, stack) nem a könyvtár API-ja
+        if (!md.getSourceFile().fileName.replace(/\\/g, "/").includes("/src/")) continue;
         const mt = checker.getTypeOfSymbolAtLocation(m, md);
         const sig = mt.getCallSignatures()[0];
         entry.members.push({
@@ -61,6 +90,7 @@ export function writeApi(root) {
     } else if (fnDecl || symbol.flags & ts.SymbolFlags.Function) {
       entry.kind = "function";
       entry.signatures = signaturesOf(symbol, exported.name, checker, decl);
+      entry.members = optionMembers(symbol, checker, decl);
     } else {
       entry.signatures = [`const ${exported.name}: ${checker.typeToString(checker.getTypeOfSymbolAtLocation(symbol, decl), decl, FLAGS)}`];
     }

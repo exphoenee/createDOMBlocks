@@ -1,10 +1,15 @@
 import { createDOMElem } from "../dom";
 
 export interface AsyncImageParams {
+  /** Szülő elem (elem vagy azonosító) */
   parent?: HTMLElement | string;
+  /** A kép URL-je */
   src: string;
+  /** Alternatív szöveg */
   alt?: string;
+  /** CSS osztály */
   class?: string;
+  /** Lusta betöltés (`loading="lazy"`) */
   lazy?: boolean;
 }
 

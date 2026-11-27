@@ -12,11 +12,11 @@ Jelölés: `[ ]` nincs elkezdve, `[~]` folyamatban, `[x]` kész (a 7. fejezet k�
 - [x] A2 nyelvesített HTML-szöveg (`t` + `html: true`, nyers elemen)
 - [x] A3 `locale` a kifejezésekben (belső útvonal: `$locale`; a `locale` állapot-kulcs tiltott)
 - [x] A4 `onMount` életciklus-horog
-- [ ] A5 `each`: tartalom szerinti újrahasznosítás (1. lépés: szerkezeti egyenlőség; 2. lépés: helyben frissítés)
-- [ ] A6 származtatott állapot (`derive`)
-- [ ] A7 elírt útvonalak jelzése (`strict`)
-- [ ] A8 beágyazott YAML ellenőrzése (`validate-spec <html>#page`, vendorolható)
-- [ ] A9 a leíró-tesztek kiegészítve
+- [x] A5 `each`: tartalom szerinti újrahasznosítás és helyben frissítés (az elem-változó és az `index` az állapotban él: `$each.eN.sM`; a megváltozott elem nem épül újra)
+- [x] A6 származtatott állapot (`derive`; írásvédelem `Store.setGuard`-dal, körkörös függés felismerése, csak szerkezeti változásnál ír)
+- [x] A7 elírt útvonalak jelzése (`strict`; ismeretlen név és hiányzó mező, javaslattal, egyszer)
+- [x] A8 beágyazott YAML ellenőrzése (`validate-spec <html>[#id] [--strict] [--lib]`; a vendorba másolás az oldalprojektek szinkronszkriptjében)
+- [x] A9 a leíró-tesztek kiegészítve (`test/spec-keywords.test.ts`, `test/spec-ergonomics.test.ts`)
 
 **B. Meglévő komponensek**
 - [ ] B1 Carousel: dia-tartalom YAML-ból, `setSlides`, `goTo`
