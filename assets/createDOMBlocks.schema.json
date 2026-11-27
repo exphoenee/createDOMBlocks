@@ -1558,6 +1558,9 @@
                       ],
                       "description": "A színpad magassága (CSS érték, pl. \"420px\"); a `--carousel-height` változót állítja"
                     },
+                    "arrowIcons": {
+                      "description": "Saját nyíl-ikonok (HTML, pl. SVG; csak megbízható tartalom); alapból ◀ / ▶"
+                    },
                     "labels": {
                       "anyOf": [
                         {

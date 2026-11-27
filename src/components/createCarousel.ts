@@ -72,7 +72,7 @@ export function createCarousel(params: CarouselParams): CarouselElement {
   if (showArrows) {
     navChildren.push({
       tag: "button",
-      text: "\u25C0",
+      ...(params.arrowIcons?.prev ? { content: params.arrowIcons.prev } : { text: "\u25C0" }),
       attrs: { type: "button", class: "carousel-arrow carousel-prev", "aria-label": labels.prev ?? builtin("carousel.prev", "Previous") },
     });
   }
@@ -82,7 +82,7 @@ export function createCarousel(params: CarouselParams): CarouselElement {
   if (showArrows) {
     navChildren.push({
       tag: "button",
-      text: "\u25B6",
+      ...(params.arrowIcons?.next ? { content: params.arrowIcons.next } : { text: "\u25B6" }),
       attrs: { type: "button", class: "carousel-arrow carousel-next", "aria-label": labels.next ?? builtin("carousel.next", "Next") },
     });
   }

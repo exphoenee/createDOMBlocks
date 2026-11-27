@@ -9,7 +9,7 @@ export const SPEC_PARAMS: Record<string, { all: string[]; required: string[]; fn
   Button: { all: ["parent","id","class","text","style","click","handleEvent","throttle","debounce"], required: ["parent","id"], fns: ["click"] },
   ButtonInput: { all: ["type","text","parent","id","class","name","value","placeholder","labelText","labelfirst","checked","onChange","click","handleEvent","min","max","step","start","rows","cols"], required: ["parent","id"], fns: ["onChange","click"] },
   Card: { all: ["parent","id","class","title","body","footer"], required: ["parent","id"], fns: [] },
-  Carousel: { all: ["parent","id","class","slides","showArrows","showDots","startIndex","onChange","slideWidth","height","labels"], required: ["parent","id"], fns: ["onChange","labels"] },
+  Carousel: { all: ["parent","id","class","slides","showArrows","showDots","startIndex","onChange","slideWidth","height","arrowIcons","labels"], required: ["parent","id"], fns: ["onChange","labels"] },
   Checkbox: { all: ["type","parent","id","class","name","value","placeholder","labelText","labelfirst","checked","onChange","click","handleEvent","min","max","step","start","rows","cols"], required: ["parent","id"], fns: ["onChange","click"] },
   CodeBlock: { all: ["parent","id","class","code","language","copyable"], required: ["parent","id","code"], fns: [] },
   ColorInput: { all: ["type","parent","id","class","name","value","placeholder","labelText","labelfirst","checked","onChange","click","handleEvent","min","max","step","start","rows","cols"], required: ["parent","id"], fns: ["onChange","click"] },

@@ -944,6 +944,7 @@
   "SaaS Landing": "SaaS Landing",
   "Saját elem frissítése nyelvváltáskor (gyenge hivatkozás, nem szivárog).": "Refresh your own element on language change (weak reference, does not leak).",
   "Saját kezelő (@név)": "Custom handler (@name)",
+  "Saját nyíl-ikonok (HTML, pl. SVG; csak megbízható tartalom); alapból ◀ / ▶": "Own arrow icons (HTML, e.g. SVG; trusted content only); ◀ / ▶ by default",
   "Saját szövegek és logika": "Your own texts and logic",
   "Sáv stílusa: `solid` – vastag, szöveges; `thin` – vékony, áttetsző (kártyás mérföldkövekhez)": "Bar style: `solid` – thick, with text; `thin` – thin, translucent (for card milestones)",
   "Sávok csoportokba rendezve, mérföldkövekkel és a mai nap vonalával. A sorra vagy a sávra kattintva kijelölhető, a sorok a bal oldali címkénél fogva húzással (vagy Alt + nyíllal) átrendezhetők.": "Bars arranged in groups, with milestones and a today line. Click a row or a bar to select it; rows can be reordered by dragging the left label (or with Alt + arrow keys).",

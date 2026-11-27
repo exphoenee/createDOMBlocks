@@ -1406,6 +1406,8 @@ export interface CarouselParams {
   slideWidth?: string;
   /** A színpad magassága (CSS érték, pl. "420px"); a `--carousel-height` változót állítja */
   height?: string;
+  /** Saját nyíl-ikonok (HTML, pl. SVG; csak megbízható tartalom); alapból ◀ / ▶ */
+  arrowIcons?: { prev?: string; next?: string };
   /** Elérhetőségi feliratok (fordításhoz) */
   labels?: {
     stage?: TextValue;
