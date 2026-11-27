@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
 import type { ToastParams } from "../types";
 
 /** Cache for toast containers keyed by position */
@@ -32,6 +33,14 @@ function removeToast(toast: HTMLElement): void {
   }, 300);
 }
 
+/**
+ * Ideiglenes értesítés.
+ *
+ * @category feedback
+ * @menu Toast
+ * @order 5
+ * @summary Ideiglenes értesítés.
+ */
 export function createToast(params: ToastParams): HTMLElement {
   const duration = params.duration || 3000;
   const position = params.position || "top-right";
@@ -54,7 +63,7 @@ export function createToast(params: ToastParams): HTMLElement {
       {
         tag: "button",
         text: "\u00D7",
-        attrs: { class: "toast-close" },
+        attrs: { class: "toast-close", "aria-label": builtin("toast.close", "Close") },
         handleEvent: {
           event: "click",
           cb: (e: Event) => {

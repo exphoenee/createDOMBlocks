@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { HiddenInputParams } from "../types";
 import { createInputElem } from "../helpers";
 

@@ -1,4 +1,4 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 
 export interface AsyncImageParams {
   parent?: HTMLElement | string;
@@ -8,6 +8,11 @@ export interface AsyncImageParams {
   lazy?: boolean;
 }
 
+/**
+ * Aszinkron betöltődő kép; új kódban a `createImage` az ajánlott.
+ *
+ * @group utils
+ */
 export function asyncImage(params: AsyncImageParams): HTMLElement {
   const attrs: Record<string, string | boolean> = {
     src: params.src,

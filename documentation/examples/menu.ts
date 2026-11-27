@@ -1,12 +1,12 @@
 import { initDocPage, renderSections, example } from "../page-components/index";
+import { tr } from "../page-components/i18n";
 import { createMenu, createCard } from "../../src/index";
-import { createDOMElem } from "domelemjs";
 
 const done = initDocPage();
 
 const sections = [
   example(
-    { title: "createMenu (egyszerű)", description: "Egyszerű menü linkekkel, drawer-ben használható navigációs listaként.", component: createMenu },
+    { title: tr("Menu (egyszerű)"), description: tr("Egyszerű menü linkekkel, drawer-ben használható navigációs listaként."), component: createMenu },
     (parent) => {
       const menu = createMenu({
         id: "menu-ex-1",
@@ -26,7 +26,7 @@ const sections = [
     },
   ),
   example(
-    { title: "createMenu (almenüvel)", description: "Menü csoportosított almenükkel, ahol a csoportcímek nem linkek, hanem szöveges fejlécek." },
+    { title: tr("Menu (almenüvel)"), description: tr("Menü csoportosított almenükkel, ahol a csoportcímek nem linkek, hanem szöveges fejlécek.") },
     (parent) => {
       const menu = createMenu({
         id: "menu-ex-2",
@@ -58,7 +58,21 @@ const sections = [
       });
     },
   ),
-
+  example(
+    { title: tr("Menu (összecsukható csoportok)"), description: tr("A `collapsible: true` a gyermekes csoportokat összecsukhatóvá teszi (fejlécre kattintva nyílnak). A `open` mezővel a kezdőállapot állítható; alapból az aktuális oldalt tartalmazó csoport nyitott."), component: createMenu },
+    (parent) => {
+      const menu = createMenu({
+        id: "menu-ex-collapsible",
+        collapsible: true,
+        items: [
+          { label: "Kezdőlap", href: "#" },
+          { label: "Forms", open: true, children: [{ label: "Text input", href: "#" }, { label: "Select", href: "#" }] },
+          { label: "Gombok", children: [{ label: "Button", href: "#" }, { label: "Submit", href: "#" }] },
+        ],
+      });
+      createCard({ parent, id: "menu-card-collapsible", title: "Összecsukható menü", body: { tag: "div", children: [menu] } });
+    },
+  ),
 ];
 
 renderSections(sections);

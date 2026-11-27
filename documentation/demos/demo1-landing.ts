@@ -1,5 +1,6 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import type { DOMOptions as CreateDOMElemOptions } from "../../src/index";
+import { tr } from "../page-components/i18n";
 import { section, div, heading, para, button, chip, img } from "./_shared";
 
 const app = document.getElementById("app")!;
@@ -13,9 +14,9 @@ function buildNav(): CreateDOMElemOptions {
     children: [
       div("demo1-nav-brand", [heading(3, "\u25cf Lumen")]),
       div("demo1-nav-links", [
-        { tag: "a", text: "Funkci\u00f3k", attrs: { href: "#features" } },
-        { tag: "a", text: "\u00c1rak", attrs: { href: "#pricing" } },
-        { tag: "a", text: "Dokument\u00e1ci\u00f3", attrs: { href: "#" } },
+        { tag: "a", text: tr("Funkci\u00f3k"), attrs: { href: "#features" } },
+        { tag: "a", text: tr("\u00c1rak"), attrs: { href: "#pricing" } },
+        { tag: "a", text: tr("Dokument\u00e1ci\u00f3"), attrs: { href: "#" } },
       ]),
       div("demo1-nav-cta", [button("Kezd\u00e9s")]),
     ],
@@ -120,7 +121,7 @@ function buildFaq(): CreateDOMElemOptions {
         {
           tag: "div",
           attrs: { class: "demo1-faq-q" },
-          text: item.q,
+          text: tr(item.q),
           handleEvent: {
             event: "click",
             cb: () => {
@@ -150,9 +151,9 @@ function buildFooter(): CreateDOMElemOptions {
     children: [
       para("\u00a9 2024 createDOMBlocks. Minden jog fenntartva."),
       div("demo1-footer-links", [
-        { tag: "a", text: "Adatv\u00e9delem", attrs: { href: "#" } },
-        { tag: "a", text: "Felhaszn\u00e1l\u00e1si felt\u00e9telek", attrs: { href: "#" } },
-        { tag: "a", text: "Kapcsolat", attrs: { href: "#" } },
+        { tag: "a", text: tr("Adatv\u00e9delem"), attrs: { href: "#" } },
+        { tag: "a", text: tr("Felhaszn\u00e1l\u00e1si felt\u00e9telek"), attrs: { href: "#" } },
+        { tag: "a", text: tr("Kapcsolat"), attrs: { href: "#" } },
       ]),
     ],
   };

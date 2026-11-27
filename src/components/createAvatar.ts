@@ -1,9 +1,17 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { AvatarParams } from "../types";
 
+/**
+ * Avatar monogrammal különböző méretben.
+ *
+ * @category content
+ * @menu Avatar
+ * @order 15
+ * @summary Avatar monogrammal különböző méretben.
+ */
 export function createAvatar(params: AvatarParams): HTMLElement {
-  const children: CreateDOMElemOptions[] = [];
+  const children: DOMOptions[] = [];
 
   if (params.src) {
     children.push({

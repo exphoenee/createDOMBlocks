@@ -1,9 +1,18 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { resolveText } from "../i18n";
+import type { DOMOptions } from "../dom";
 import type { BlockquoteParams } from "../types";
 
+/**
+ * Idézet szerzővel.
+ *
+ * @category content
+ * @menu Blockquote
+ * @order 5
+ * @summary Idézet szerzővel.
+ */
 export function createBlockquote(params: BlockquoteParams): HTMLElement {
-  const children: CreateDOMElemOptions[] = [];
+  const children: DOMOptions[] = [];
 
   children.push({ tag: "p", text: params.text, attrs: { class: "blockquote-text" } });
 
@@ -11,7 +20,7 @@ export function createBlockquote(params: BlockquoteParams): HTMLElement {
     children.push({
       tag: "footer",
       attrs: { class: "blockquote-author" },
-      children: [{ tag: "cite", text: `\u2014 ${params.author}` }],
+      children: [{ tag: "cite", text: typeof params.author === "string" ? `\u2014 ${params.author}` : () => `\u2014 ${resolveText(params.author)}` }],
     });
   }
 

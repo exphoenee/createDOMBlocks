@@ -1,9 +1,9 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { NavParams, NavItem } from "../types";
 
-function buildNavItem(item: NavItem): CreateDOMElemOptions {
-  const children: CreateDOMElemOptions[] = [];
+function buildNavItem(item: NavItem): DOMOptions {
+  const children: DOMOptions[] = [];
 
   if (item.href) {
     const linkAttrs: Record<string, string> = { href: item.href };
@@ -43,6 +43,14 @@ function buildNavItem(item: NavItem): CreateDOMElemOptions {
   };
 }
 
+/**
+ * Navigációs sáv menüpontokkal és almenüvel.
+ *
+ * @category navigation
+ * @menu Nav
+ * @order 1
+ * @summary Navigációs sáv menüpontokkal és almenüvel.
+ */
 export function createNav(params: NavParams): HTMLElement {
   const navAttrs: Record<string, string> = { class: `nav${params.class ? ` ${params.class}` : ""}` };
   if (params.id) navAttrs.id = params.id;

@@ -1,17 +1,26 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { CodeBlockParams } from "../types";
 import { highlightCode } from "./highlighter";
+import { builtin, resolveText } from "../i18n";
 
+/**
+ * Kódblokk nyelv megadásával és syntax highlighting-gel.
+ *
+ * @category content
+ * @menu Code block
+ * @order 6
+ * @summary Kódblokk nyelv megadásával és syntax highlighting-gel.
+ */
 export function createCodeBlock(params: CodeBlockParams): HTMLElement {
-  const children: CreateDOMElemOptions[] = [];
+  const children: DOMOptions[] = [];
 
   const copyable = params.copyable !== false;
   const hasLanguage = !!params.language;
 
   // Header row: language label + copy button
   if (hasLanguage || copyable) {
-    const headerChildren: CreateDOMElemOptions[] = [];
+    const headerChildren: DOMOptions[] = [];
 
     if (hasLanguage) {
       headerChildren.push({
@@ -29,16 +38,16 @@ export function createCodeBlock(params: CodeBlockParams): HTMLElement {
           type: "button",
           "data-code": params.code,
         },
-        text: "Copy",
+        text: builtin("codeblock.copy", "Copy"),
         handleEvent: {
           event: "click",
           cb: (e: Event) => {
             const btn = e.currentTarget as HTMLElement;
             const code = btn.getAttribute("data-code") || "";
             navigator.clipboard.writeText(code).then(() => {
-              btn.textContent = "Copied!";
+              btn.textContent = resolveText(builtin("codeblock.copied", "Copied!"));
               setTimeout(() => {
-                btn.textContent = "Copy";
+                btn.textContent = resolveText(builtin("codeblock.copy", "Copy"));
               }, 2000);
             }).catch(() => {
               /* clipboard write failed — silently ignore */
@@ -74,7 +83,7 @@ export function createCodeBlock(params: CodeBlockParams): HTMLElement {
   };
   if (params.id) rootAttrs.id = params.id;
 
-  const opts: CreateDOMElemOptions = {
+  const opts: DOMOptions = {
     tag: "div",
     attrs: rootAttrs,
     children,

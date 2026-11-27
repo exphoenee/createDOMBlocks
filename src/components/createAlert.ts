@@ -1,9 +1,18 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { AlertParams } from "../types";
+import { builtin } from "../i18n";
 
+/**
+ * Figyelmeztető üzenet típusonként: success, error, warning, info.
+ *
+ * @category feedback
+ * @menu Alert
+ * @order 1
+ * @summary Figyelmeztető üzenet típusonként: success, error, warning, info.
+ */
 export function createAlert(params: AlertParams): HTMLElement {
-  const children: CreateDOMElemOptions[] = [];
+  const children: DOMOptions[] = [];
 
   if (params.title) {
     children.push({ tag: "strong", text: params.title, attrs: { class: "alert-title" } });
@@ -15,7 +24,7 @@ export function createAlert(params: AlertParams): HTMLElement {
     children.push({
       tag: "button",
       text: "\u00D7",
-      attrs: { class: "alert-close" },
+      attrs: { class: "alert-close", "aria-label": builtin("alert.close", "Close") },
       handleEvent: {
         event: "click",
         cb: (e: Event) => {

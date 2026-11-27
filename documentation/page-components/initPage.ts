@@ -1,26 +1,34 @@
-import { createDOMElem } from "domelemjs";
-import { createDrawer, openDrawer, createMenu, createCodeBlock } from "../../src/index";
+import { createLocalizedElem as createDOMElem } from "../../src/index";
+import { initI18n, tr } from "./i18n";
+import { createDrawer, openDrawer, createMenu, createCodeBlock, buildUI } from "../../src/index";
 import { createHeader } from "./createHeader";
 import { createFooter } from "./createFooter";
 import { getDrawerMenuItems } from "./menuItems";
 import { createPageLoading } from "./createPageLoading";
 import type { DocSection } from "./example";
 import { propsTable } from "./propsTable";
+import { yamlExample } from "./yamlExamples";
+// A TS példákból generált YAML minták (scripts/gen-yaml-examples.mjs): a kézi minta hiányában ezek jelennek meg
+import generatedYaml from "../generated/yamlExamples.json";
+import { initTheme } from "./theme";
 
 export function initDocPage(): () => void {
+  initTheme();
+  const i18nReady = initI18n();
   const done = createPageLoading();
   const items = getDrawerMenuItems();
   createDrawer({
     id: "sidebar-drawer",
     title: "createDOMBlocks",
-    children: [createMenu({ id: "sidebar-drawer", items })],
+    children: [createMenu({ id: "sidebar-drawer", items, collapsible: true })],
     defaultState: "open",
     hasOverlay: false,
     mode: "push",
   });
   createHeader({ onMenuClick: () => openDrawer() });
   createFooter();
-  return done;
+  // a betöltő overlay addig marad, amíg az (angol) katalógus be nem töltődött
+  return () => void i18nReady.finally(done);
 }
 
 export function addFooter(): HTMLElement {
@@ -59,7 +67,7 @@ export function renderSections(sections: DocSection[]): void {
     // Eredmény címke
     const resultLabel = createDOMElem({
       tag: "div",
-      text: "Eredm\u00E9ny:",
+      text: tr("Eredmény:"),
       attrs: { class: "doc-result-label" },
     });
     sectionEl.appendChild(resultLabel);
@@ -80,5 +88,40 @@ export function renderSections(sections: DocSection[]): void {
     }
 
     section.render(resultContainer);
+  }
+
+  // A komponens oldalának végén: ugyanaz a komponens a YAML leíróval (opcionális réteg)
+  for (const component of renderedComponents) {
+    appendYamlSection(main, component.name.replace(/^create/, ""));
+  }
+}
+
+/** "YAML leíró" szakasz: a minta kódja és az ugyanabból élőben felépített eredmény. */
+function appendYamlSection(main: HTMLElement, componentName: string): void {
+  const source = yamlExample(componentName) ?? (generatedYaml as Record<string, string>)[componentName];
+  if (!source) return;
+  const id = `yaml-${componentName.toLowerCase()}`;
+
+  const sectionEl = createDOMElem({
+    tag: "section",
+    attrs: { class: "doc-section", id },
+    children: [
+      createDOMElem({ tag: "h2", text: tr("YAML leíró"), attrs: { class: "doc-section-title" } }),
+      createDOMElem({
+        tag: "p",
+        text: tr("Ugyanez a komponens a YAML leíróval (buildUI / mountYaml). A YAML leíró opcionális, a createX hívások változatlanul használhatók."),
+        attrs: { class: "doc-section-desc" },
+      }),
+    ],
+  });
+  main.appendChild(sectionEl);
+  createCodeBlock({ parent: sectionEl, id: `${id}-code`, language: "yaml", code: source });
+  sectionEl.appendChild(createDOMElem({ tag: "div", text: tr("Eredmény:"), attrs: { class: "doc-result-label" } }));
+  const result = createDOMElem({ tag: "div", attrs: { class: "doc-result", id: `${id}-result` } });
+  sectionEl.appendChild(result);
+  try {
+    buildUI(source, { parent: result });
+  } catch (e) {
+    createDOMElem({ tag: "pre", parent: result, text: (e as Error).message, style: { color: "var(--error)", whiteSpace: "pre-wrap", margin: "0" } });
   }
 }

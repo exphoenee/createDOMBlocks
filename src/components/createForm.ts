@@ -1,4 +1,10 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
+import type { TextValue } from "../i18n";
+
+/** Gomb-felirat: a megadott érték (szöveg / tr() / szám), különben az alapértelmezett */
+const txt = (v: unknown, fallback: TextValue): TextValue =>
+  v == null || v === "" ? fallback : typeof v === "number" ? String(v) : (v as TextValue);
 import type { FormConfig, FormInputConfig } from "../types";
 import { createTextInput } from "../inputs/createTextInput";
 import { createTelInput } from "../inputs/createTelInput";
@@ -50,13 +56,21 @@ function getInputFactory(type: string): InputFactory | null {
     select:     (p, i) => createSelect({ ...cast(i), parent: p, options: i.options || [] }),
     radio:      (p, i) => createRadio({ ...cast(i), parent: p, options: (i.options || []) as any }),
     textarea:   (p, i) => createTextarea({ ...cast({ ...i, type: "textarea" as const }), parent: p }),
-    button:     (p, i) => createButtonInput({ ...cast(i), parent: p, type: "button", text: String(i.value ?? i.placeholder ?? "") }),
-    submit:     (p, i) => createSubmitInput({ ...cast(i), parent: p, type: "submit", text: String(i.value ?? i.placeholder ?? "Küldés") }),
-    reset:      (p, i) => createResetInput({ ...cast(i), parent: p, type: "reset", text: String(i.value ?? i.placeholder ?? "Visszaállítás") }),
+    button:     (p, i) => createButtonInput({ ...cast(i), parent: p, type: "button", text: txt(i.value ?? i.placeholder, "") }),
+    submit:     (p, i) => createSubmitInput({ ...cast(i), parent: p, type: "submit", text: txt(i.value ?? i.placeholder, builtin("form.submit", "Küldés")) }),
+    reset:      (p, i) => createResetInput({ ...cast(i), parent: p, type: "reset", text: txt(i.value ?? i.placeholder, builtin("form.reset", "Visszaállítás")) }),
   };
   return map[type] || null;
 }
 
+/**
+ * Általáns form tömbbe szedett input konfigurációkkal.
+ *
+ * @category forms
+ * @menu Form
+ * @order 17
+ * @summary Általáns form tömbbe szedett input konfigurációkkal.
+ */
 export function createForm(params: FormConfig): HTMLElement {
   const formAttrs: Record<string, string> = {};
   if (params.id) formAttrs.id = params.id;

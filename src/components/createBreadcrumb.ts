@@ -1,10 +1,18 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { BreadcrumbParams, BreadcrumbItem } from "../types";
 
+/**
+ * Morzsa menü a navigációs út vonatkozásában.
+ *
+ * @category navigation
+ * @menu Breadcrumb
+ * @order 2
+ * @summary Morzsa menü a navigációs út vonatkozásában.
+ */
 export function createBreadcrumb(params: BreadcrumbParams): HTMLElement {
   const separator = params.separator || "/";
-  const children: CreateDOMElemOptions[] = [];
+  const children: DOMOptions[] = [];
 
   params.items.forEach((item: BreadcrumbItem, index: number) => {
     if (index > 0) {
@@ -39,7 +47,7 @@ export function createBreadcrumb(params: BreadcrumbParams): HTMLElement {
       {
         tag: "ol",
         attrs: { class: "breadcrumb-list" },
-        children: children.map((child: CreateDOMElemOptions) => ({
+        children: children.map((child: DOMOptions) => ({
           tag: "li",
           attrs: { class: "breadcrumb-item" },
           children: [child],

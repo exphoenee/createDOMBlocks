@@ -1,8 +1,18 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
 import type { TooltipParams } from "../types";
+import { builtin } from "../i18n";
+import type { TextValue } from "../i18n";
 
+/**
+ * Buborék tooltip különböző pozíciókkal. Vidd az egeret az elemek fölé!
+ *
+ * @category interactive
+ * @menu Tooltip
+ * @order 2
+ * @summary Buborék tooltip különböző pozíciókkal. Vidd az egeret az elemek fölé!
+ */
 export function createTooltip(params: TooltipParams): HTMLElement {
-  const rootAttrs: Record<string, string> = {
+  const rootAttrs: Record<string, TextValue> = {
     class: `tooltip-wrapper${params.class ? ` ${params.class}` : ""}`,
     "data-tooltip": params.text,
     "data-tooltip-position": params.position || "top",
@@ -19,7 +29,7 @@ export function createTooltip(params: TooltipParams): HTMLElement {
         attrs: { class: "tooltip-trigger" },
         children: [
           { tag: "span", text: "\u24D8", attrs: { class: "tooltip-icon" } },
-          { tag: "span", text: "Info", attrs: { class: "tooltip-trigger-text" } },
+          { tag: "span", text: builtin("tooltip.info", "Info"), attrs: { class: "tooltip-trigger-text" } },
         ],
       },
       { tag: "span", attrs: { class: "tooltip-content" }, text: params.text },

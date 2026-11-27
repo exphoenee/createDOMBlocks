@@ -1,8 +1,14 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { ModalContent, ModalActions, ModalParams } from "../types";
 import { createButton } from "../buttons/createButton";
+import { builtin } from "../i18n";
 
+/**
+ * Megnyit egy `createModal`-lal létrehozott modált az azonosítója alapján.
+ *
+ * @group overlays
+ */
 export function openModal(id: string): void {
   const portal = document.getElementById(`${id}-portal`);
   if (portal) {
@@ -13,6 +19,11 @@ export function openModal(id: string): void {
   }
 }
 
+/**
+ * Bezár egy modált az azonosítója alapján.
+ *
+ * @group overlays
+ */
 export function closeModal(id: string): void {
   const portal = document.getElementById(`${id}-portal`);
   if (portal) {
@@ -24,6 +35,16 @@ export function closeModal(id: string): void {
   }
 }
 
+const toCss = (v: string | number): string => (typeof v === "number" ? `${v}px` : v);
+
+/**
+ * Modál dialógus ablak, ami portálként a body végére kerül.
+ *
+ * @category overlays
+ * @menu Modal
+ * @order 1
+ * @summary Modál dialógus ablak, ami portálként a body végére kerül.
+ */
 export function createModal(
   content: ModalContent,
   actions: ModalActions,
@@ -54,12 +75,14 @@ export function createModal(
     children: [{
       tag: "div",
       style: {
-        background: "white",
+        background: "var(--bg)",
+        color: "var(--text)",
         padding: "1.5rem",
-        borderRadius: "1rem",
-        boxShadow: "0 0.5rem 1rem rgba(0,0,0,0.5)",
-        minWidth: "320px",
-        maxWidth: "90vw",
+        borderRadius: "var(--radius-lg)",
+        boxShadow: "var(--shadow-lg)",
+        minWidth: params.width !== undefined ? "0" : "320px",
+        ...(params.width !== undefined ? { width: toCss(params.width) } : {}),
+        maxWidth: toCss(params.maxWidth ?? "90vw"),
         maxHeight: "90vh",
         overflow: "auto",
       },
@@ -97,32 +120,52 @@ export function createModal(
           attrs: { class: "modal-body" },
           children: bodyChildren,
         },
-        {
+        ...(params.footer === false ? [] : [{
           tag: "div",
           attrs: { class: "modal-footer" },
-          style: { display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem", borderTop: "1px solid #e5e7eb", paddingTop: "1rem" },
+          style: { display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "1rem", borderTop: "1px solid var(--border)", paddingTop: "1rem" },
           children: [
             createButton({
               id: `${params.id}-cancel-btn`,
               parent: document.body,
               class: "modal-cancel-btn",
               click: () => { actions.cancelAction?.(); closeModal(params.id); },
-              text: "Mégse",
+              text: params.labels?.cancel ?? builtin("modal.cancel", "Mégse"),
             }),
             createButton({
               id: `${params.id}-ok-btn`,
               parent: document.body,
               class: "modal-ok-btn",
               click: () => { actions.okAction?.(); closeModal(params.id); },
-              text: "OK",
+              text: params.labels?.ok ?? builtin("modal.ok", "OK"),
             }),
           ],
-        },
+        }]),
       ],
     }],
   });
 
   document.body.appendChild(modal);
+
+  if (params.closeOnBackdrop) {
+    modal.addEventListener("click", (e) => {
+      if (e.target !== modal) return;
+      closeModal(params.id);
+      actions.closeAction?.();
+    });
+  }
+  if (params.closeOnEscape) {
+    const onKey = (e: KeyboardEvent): void => {
+      if (!modal.isConnected) {
+        document.removeEventListener("keydown", onKey);
+        return;
+      }
+      if (e.key !== "Escape" || modal.classList.contains("hidden") || modal.style.display === "none") return;
+      closeModal(params.id);
+      actions.closeAction?.();
+    };
+    document.addEventListener("keydown", onKey);
+  }
 
   return modal;
 }

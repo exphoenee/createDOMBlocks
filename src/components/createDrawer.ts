@@ -1,8 +1,17 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { DrawerParams } from "../types";
+import { builtin } from "../i18n";
 import { createMenu } from "./createMenu";
 
+/**
+ * Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.
+ *
+ * @category navigation
+ * @menu Drawer
+ * @order 5
+ * @summary Oldalsó panel ami felülúszik a tartalmon, overlay réteggel.
+ */
 export function createDrawer(params: DrawerParams): HTMLElement {
   const id = params.id;
   const defaultState = params.defaultState || "closed";
@@ -23,7 +32,7 @@ export function createDrawer(params: DrawerParams): HTMLElement {
   }
 
   // Backward compatibility: if items is provided (without children), wrap in createMenu
-  const drawerChildren: (CreateDOMElemOptions | HTMLElement)[] = params.children
+  const drawerChildren: (DOMOptions | HTMLElement)[] = params.children
     ? params.children
     : params.items
       ? [createMenu({ id, items: params.items })]
@@ -43,7 +52,7 @@ export function createDrawer(params: DrawerParams): HTMLElement {
         children: [
           {
             tag: "span",
-            text: params.title || "Menu",
+            text: params.title || builtin("drawer.title", "Menu"),
             attrs: { class: "drawer-title" },
           },
           {
@@ -71,6 +80,11 @@ export function createDrawer(params: DrawerParams): HTMLElement {
   return sidebar;
 }
 
+/**
+ * Megnyitja a drawert (alapból a `sidebar-drawer`).
+ *
+ * @group overlays
+ */
 export function openDrawer(id: string = "sidebar-drawer"): void {
   const sidebar = document.getElementById(`${id}-sidebar`) as HTMLElement | null;
   if (!sidebar) return;
@@ -93,6 +107,11 @@ export function openDrawer(id: string = "sidebar-drawer"): void {
   }
 }
 
+/**
+ * Bezárja a drawert (alapból a `sidebar-drawer`).
+ *
+ * @group overlays
+ */
 export function closeDrawer(id: string = "sidebar-drawer"): void {
   const sidebar = document.getElementById(`${id}-sidebar`) as HTMLElement | null;
   if (!sidebar) return;
@@ -106,5 +125,9 @@ export function closeDrawer(id: string = "sidebar-drawer"): void {
   const overlay = document.getElementById(`${id}-overlay`);
   if (overlay) overlay.classList.remove("open");
   sidebar.classList.remove("open");
-  document.body.classList.remove("drawer-push-open");
+
+  // A tartalom eltolása csak akkor szűnik meg, ha már egyetlen push módú drawer sincs nyitva
+  if (!document.querySelector(".drawer-sidebar.drawer-push.open")) {
+    document.body.classList.remove("drawer-push-open");
+  }
 }

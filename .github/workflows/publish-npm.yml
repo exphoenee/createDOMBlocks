@@ -1,0 +1,67 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Egyszerre csak egy release fusson, a sorban álló nem szakad meg.
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # verzió-commit és tag visszatolása
+  id-token: write   # npm provenance
+
+jobs:
+  publish:
+    # A saját verzió-bump commitunk ne indítson újabb kört.
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+
+      - run: npm run typecheck
+      - run: npm run test:unit
+
+      # Ha a package.json verziója már megjelent az npm-en, patch bump jön;
+      # ha kézzel emeltél verziót (új, még nem publikált), azt használjuk.
+      - name: Determine version
+        id: version
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          CURRENT=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$CURRENT" version >/dev/null 2>&1; then
+            npm version patch --no-git-tag-version
+            echo "bumped=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "bumped=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - run: npm run build
+
+      - name: Publish
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Commit version and tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ "${{ steps.version.outputs.bumped }}" = "true" ]; then
+            git add package.json package-lock.json
+            git commit -m "chore(release): v${{ steps.version.outputs.version }} [skip ci]"
+          fi
+          git tag "v${{ steps.version.outputs.version }}"
+          git push origin HEAD:main --follow-tags

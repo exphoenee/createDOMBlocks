@@ -1,10 +1,19 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
 import type { CustomDateRangePickerParams } from "../types";
 import {
   buildMonthCalendar,
   setupCalendarCloseHandler,
 } from "./calendar-helper";
 
+/**
+ * Egyéni dátumtartomány kiválasztó.
+ *
+ * @category forms
+ * @menu Custom date range picker
+ * @order 26
+ * @summary Egyéni dátumtartomány kiválasztó.
+ */
 export function createCustomDateRangePicker(params: CustomDateRangePickerParams): HTMLElement {
   let startDate = params.startValue || "";
   let endDate = params.endValue || "";
@@ -21,7 +30,7 @@ export function createCustomDateRangePicker(params: CustomDateRangePickerParams)
     tag: "input",
     attrs: {
       type: "text", readonly: "true", class: "custom-date-range-picker-input",
-      placeholder: "Kezdet...",
+      placeholder: builtin("picker.rangeStart", "Kezdet…"),
       ...(startDate ? { value: startDate } : {}),
     },
   });
@@ -30,7 +39,7 @@ export function createCustomDateRangePicker(params: CustomDateRangePickerParams)
     tag: "input",
     attrs: {
       type: "text", readonly: "true", class: "custom-date-range-picker-input",
-      placeholder: "Veg...",
+      placeholder: builtin("picker.rangeEnd", "Vég…"),
       ...(endDate ? { value: endDate } : {}),
     },
   });

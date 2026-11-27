@@ -1,8 +1,8 @@
-import { createDOMElem } from "domelemjs";
-import type { CreateDOMElemOptions } from "domelemjs";
+import { createDOMElem } from "../dom";
+import type { DOMOptions } from "../dom";
 import type { AccordionParams, AccordionItem } from "../types";
 
-function buildAccordionItem(item: AccordionItem, multiple: boolean): CreateDOMElemOptions {
+function buildAccordionItem(item: AccordionItem, multiple: boolean): DOMOptions {
   const content = Array.isArray(item.content) ? item.content : [item.content];
 
   return {
@@ -54,6 +54,14 @@ function buildAccordionItem(item: AccordionItem, multiple: boolean): CreateDOMEl
   };
 }
 
+/**
+ * Összecsukható szekciók. A multiple: true opcióval egyszerre több szekció is nyitva lehet.
+ *
+ * @category interactive
+ * @menu Accordion
+ * @order 1
+ * @summary Összecsukható szekciók. A multiple: true opcióval egyszerre több szekció is nyitva lehet.
+ */
 export function createAccordion(params: AccordionParams): HTMLElement {
   const rootAttrs: Record<string, string> = { class: `accordion${params.class ? ` ${params.class}` : ""}` };
   if (params.id) rootAttrs.id = params.id;

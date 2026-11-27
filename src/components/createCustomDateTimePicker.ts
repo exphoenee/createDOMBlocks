@@ -1,4 +1,5 @@
-import { createDOMElem } from "domelemjs";
+import { createDOMElem } from "../dom";
+import { builtin } from "../i18n";
 import type { CustomDateTimePickerParams } from "../types";
 import {
   buildMonthCalendar,
@@ -6,6 +7,14 @@ import {
   toggleCalendar,
 } from "./calendar-helper";
 
+/**
+ * Egyéni dátum + idő kiválasztó.
+ *
+ * @category forms
+ * @menu Custom date time picker
+ * @order 25
+ * @summary Egyéni dátum + idő kiválasztó.
+ */
 export function createCustomDateTimePicker(params: CustomDateTimePickerParams): HTMLElement {
   let selectedDate = params.value || "";
   let currentYear = new Date().getFullYear();
@@ -38,7 +47,7 @@ export function createCustomDateTimePicker(params: CustomDateTimePickerParams): 
     tag: "input",
     attrs: {
       type: "text", readonly: "true", class: "custom-datetime-picker-input",
-      placeholder: params.placeholder || "Valassz datumot es idot...",
+      placeholder: builtin("picker.datetime", "Válassz dátumot és időt…"),
       ...(params.id ? { id: `${params.id}-input` } : {}),
       ...(selectedDate ? { value: selectedDate } : {}),
     },

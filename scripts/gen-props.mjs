@@ -6,9 +6,12 @@
  * Használat: node scripts/gen-props.mjs
  */
 
+import { writeIfChanged } from "./fs-utils.mjs";
 import { createRequire } from "module";
 import { existsSync, mkdirSync, writeFileSync, readdirSync, statSync } from "fs";
 import { resolve, dirname } from "path";
+import { writeSpecMeta, writeSpecSchema } from "./spec-meta.mjs";
+import { writeDocs } from "./gen-docs.mjs";
 import { fileURLToPath } from "url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -63,7 +66,7 @@ function collectTsFiles(dir, acc) {
 }
 
 // ── Főlétra ──────────────────────────────────────────────────────────
-function main() {
+async function main() {
   const srcDir = resolve(PROJECT_ROOT, "src");
   const fileNames = [];
   collectTsFiles(srcDir, fileNames);
@@ -156,8 +159,11 @@ function main() {
   const outDir = resolve(PROJECT_ROOT, "documentation", "generated");
   const outFile = resolve(outDir, "props.json");
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
-  writeFileSync(outFile, JSON.stringify(result, null, 2), "utf-8");
+  writeIfChanged(outFile, JSON.stringify(result, null, 2));
   console.log(`[gen-props] ✅ ${outFile} (${Object.keys(result).length} típusbejegyzés)`);
+  writeSpecMeta(result, PROJECT_ROOT);
+  writeSpecSchema(result, PROJECT_ROOT);
+  await writeDocs(PROJECT_ROOT, result);
 }
 
 // ── Helper: paraméterből kinyeri a props típus infót ────────────────
@@ -314,4 +320,4 @@ function findTypeSymbol(name, checker, program) {
   return null;
 }
 
-main();
+await main();
